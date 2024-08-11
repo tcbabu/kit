@@ -37,7 +37,7 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
     2,24, 
     e0,
     0,1,
-    NULL,ScrollTabletablebox1callback,0,0,18,10 /* args,Call back */
+    NULL,ScrollTabletablebox1callback,0,0,16,10 /* args,Call back */
   };
   strcpy(T0.Wid,(char *)"ScrollTable");
   T0.pt=NULL;
@@ -168,8 +168,8 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   butn6[2].butncode='';
   DIN b6 = { 
     'n',
-    3,36,  
-    255,66,
+    11,36,  
+    239,66,
     2,2,  
     72, 
     24, 
@@ -285,7 +285,7 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   butn9[7].xpmn=NULL;
   butn9[7].xpmp=NULL;
   butn9[7].xpmh=NULL;
-  butn9[7].bkgr=-240245255;
+  butn9[7].bkgr=-206255245;
   butn9[7].butncode='';
   DIN b9 = { 
     'n',

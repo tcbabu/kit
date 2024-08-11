@@ -5,9 +5,13 @@ extern char *flname;
   int main ( int argc , char **argv  ) {
       Dlink *S;
       char *pt;
-      if(argc<2) return 0;
+      if(argc<2) {
+	      fprintf(stderr,"Usage: %s [file]\n",argv[0]);
+	      return 0;
+      }
       flname=argv[1];
-      S = RunScrollTable ( NULL , Dlinktoarray ( Dreadfile ( argv [ 1 ] ) ) ) ;
+      RunScrollTable ( NULL ,  argv [ 1 ]  ) ;
+#if 0
       if ( S != NULL ) {
           Dend ( S ) ;
           pt = ( char * ) Getrecord ( S ) ;
@@ -19,5 +23,6 @@ extern char *flname;
           Dempty ( S ) ;
       }
       else fprintf ( stderr , "S is NULL\n" ) ;
+#endif
       return 1;
   }

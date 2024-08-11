@@ -15,7 +15,7 @@ T     //code
 "%80s"
 924 557  //x2,y2
 0 1 20000 //Cursor Position,bordr+10*type(0:0)+1000*t->width(20)
-18 10 0 //hide
+16 10 0 //hide
 "ScrollTable"
 //VertScroll
 v
@@ -101,8 +101,8 @@ NULL // XPM
 //Button Box
 n
 n     //code
-3 36  //x1,y1
-255 66  //x2,y2
+11 36  //x1,y1
+239 66  //x2,y2
 2 2  //xgap,ygap
 72 //length 
 24 //Width 
@@ -225,7 +225,7 @@ NULL // XPM
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--240245255 //back ground color
+-206255245 //back ground color
  //keyboard code
 8 0.500000 0  //type,fac
 1 0 //hide
