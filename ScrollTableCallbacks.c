@@ -97,8 +97,10 @@
               if ( cpt [ j ] != '\t' ) Buf [ k++ ] = cpt [ j ] ;
               else {
                   Buf [ k++ ] = cpt [ j ] ;
+#if 0
                   l = ( j/8+1 ) *8;
                   while ( k < l ) Buf [ k++ ] = ' ';
+#endif
               }
               j++;
           }
