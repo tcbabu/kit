@@ -80,7 +80,7 @@ NULL // XPM
 NULL // XPM 
 -240245255 //back ground color
  //keyboard code
-7 0.500000 0  //type,fac
+4 0.500000 0  //type,fac
 0 0 //hide
 "Button1"
 //Button Box
@@ -97,14 +97,14 @@ n     //code
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--216226216 //back ground color
+-221221221 //back ground color
  //keyboard code
 1 //status
 "Undo" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--216226216 //back ground color
+-221221221 //back ground color
  //keyboard code
 1 0.500000 0  //type,fac
 0 0 //hide
@@ -154,50 +154,50 @@ n     //code
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--216226216 //back ground color
+-221221221 //back ground color
  //keyboard code
 1 //status
 "Mark" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--216226216 //back ground color
+-221221221 //back ground color
  //keyboard code
 1 //status
 "Write To" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--216226216 //back ground color
+-221221221 //back ground color
  //keyboard code
 1 //status
 "Cut" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--216226216 //back ground color
+-221221221 //back ground color
  //keyboard code
 1 //status
 "Copy" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--216226216 //back ground color
+-221221221 //back ground color
  //keyboard code
 1 //status
 "Paste" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--216226216 //back ground color
+-221221221 //back ground color
  //keyboard code
 1 //status
 "ToMark" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--216226216 //back ground color
- //keyboard code
+-221221221 //back ground color
+} //keyboard code
 1 0.500000 0  //type,fac
 0 0 //hide
 "Optionals"

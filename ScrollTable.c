@@ -116,7 +116,7 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
     64, 
     24, 
     3,1, 
-    7,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    4,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn3, 
     ScrollTablebutton1callback, /*  Callbak */
@@ -131,14 +131,14 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   butn4[0].xpmn=NULL;
   butn4[0].xpmp=NULL;
   butn4[0].xpmh=NULL;
-  butn4[0].bkgr=-216226216;
+  butn4[0].bkgr=-221221221;
   butn4[0].butncode='';
   butn4[1].sw=1;
   strcpy(butn4[1].title,(char *)"Undo");
   butn4[1].xpmn=NULL;
   butn4[1].xpmp=NULL;
   butn4[1].xpmh=NULL;
-  butn4[1].bkgr=-216226216;
+  butn4[1].bkgr=-221221221;
   butn4[1].butncode='';
   DIN b4 = { 
     'n',
@@ -210,50 +210,50 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   butn7[0].xpmn=NULL;
   butn7[0].xpmp=NULL;
   butn7[0].xpmh=NULL;
-  butn7[0].bkgr=-216226216;
+  butn7[0].bkgr=-221221221;
   butn7[0].butncode='';
   butn7[1].sw=1;
   strcpy(butn7[1].title,(char *)"Mark");
   butn7[1].xpmn=NULL;
   butn7[1].xpmp=NULL;
   butn7[1].xpmh=NULL;
-  butn7[1].bkgr=-216226216;
+  butn7[1].bkgr=-221221221;
   butn7[1].butncode='';
   butn7[2].sw=1;
   strcpy(butn7[2].title,(char *)"Write To");
   butn7[2].xpmn=NULL;
   butn7[2].xpmp=NULL;
   butn7[2].xpmh=NULL;
-  butn7[2].bkgr=-216226216;
+  butn7[2].bkgr=-221221221;
   butn7[2].butncode='';
   butn7[3].sw=1;
   strcpy(butn7[3].title,(char *)"Cut");
   butn7[3].xpmn=NULL;
   butn7[3].xpmp=NULL;
   butn7[3].xpmh=NULL;
-  butn7[3].bkgr=-216226216;
+  butn7[3].bkgr=-221221221;
   butn7[3].butncode='';
   butn7[4].sw=1;
   strcpy(butn7[4].title,(char *)"Copy");
   butn7[4].xpmn=NULL;
   butn7[4].xpmp=NULL;
   butn7[4].xpmh=NULL;
-  butn7[4].bkgr=-216226216;
+  butn7[4].bkgr=-221221221;
   butn7[4].butncode='';
   butn7[5].sw=1;
   strcpy(butn7[5].title,(char *)"Paste");
   butn7[5].xpmn=NULL;
   butn7[5].xpmp=NULL;
   butn7[5].xpmh=NULL;
-  butn7[5].bkgr=-216226216;
+  butn7[5].bkgr=-221221221;
   butn7[5].butncode='';
   butn7[6].sw=1;
   strcpy(butn7[6].title,(char *)"ToMark");
   butn7[6].xpmn=NULL;
   butn7[6].xpmp=NULL;
   butn7[6].xpmh=NULL;
-  butn7[6].bkgr=-216226216;
-  butn7[6].butncode='';
+  butn7[6].bkgr=-221221221;
+  butn7[6].butncode='}';
   DIN b7 = { 
     'n',
     148,36,  
