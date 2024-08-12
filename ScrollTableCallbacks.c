@@ -15,27 +15,25 @@
   static double Vsize , Vpos;
   static int MarkPos = 1;
   char *flname = NULL;
-  static char Msg[200];
-  static char Bkup[300];
-  static char Buf[500],Buf1[500];
-
-  void *RunGetFileName(void *parent ,void *args);
-  static int GetLength ( char *s1 , char *s2 );
-
-
+  static char Msg [ 200 ] ;
+  static char Bkup [ 300 ] ;
+  static char SaveFile [ 300 ] ;
+  static char Buf [ 500 ] , Buf1 [ 500 ] ;
+  void *RunGetFileName ( void *parent , void *args ) ;
+  void *RunGetMarkPos ( void *parent , void *args ) ;
+  static int GetLength ( char *s1 , char *s2 ) ;
 #define RETURN(n) {\
    Vpos = ( double ) ( StartLine-1 ) *100.0/Count;\
-     ReadTbl();\
+       ReadTbl ( ) ;\
        kgSetScrollPos ( V , Vpos ) ;\
        kgUpdateWidget ( V ) ;\
        kgUpdateOn ( Tmp ) ;\
        kgSetAttnWidget ( Tmp , Tbl ) ;\
        return ( n ) ;\
    }
-
-  static int Splash(char *Msg){
-          kgSplashMessage(Tbl->D,50,100,400,25,Msg,23,0,15);
-          return 1;
+  static int Splash ( char *Msg ) {
+      kgSplashMessage ( Tbl->D , 50 , 100 , 400 , 25 , Msg , 23 , 0 , 15 ) ;
+      return 1;
   }
   static int SetupVbar ( ) {
       Count = Dcount ( Slist ) ;
@@ -98,9 +96,9 @@
           while ( ( cpt [ j ] >= ' ' ) || ( cpt [ j ] == '\t' ) ) {
               if ( cpt [ j ] != '\t' ) Buf [ k++ ] = cpt [ j ] ;
               else {
+                  Buf [ k++ ] = cpt [ j ] ;
                   l = ( j/8+1 ) *8;
                   while ( k < l ) Buf [ k++ ] = ' ';
-                  Buf[l-1]='\t';
               }
               j++;
           }
@@ -328,36 +326,35 @@
       kgUpdateOn ( D ) ;
       return ret;
   }
-  static int GotoMark() {
-      int pos=MarkPos -StartLine;
+  static int GotoMark ( ) {
+      int pos = MarkPos -StartLine;
       ReadTbl ( ) ;
-      Count = Dcount(Slist);
-      if(MarkPos > Count) MarkPos=Count;
+      Count = Dcount ( Slist ) ;
+      if ( MarkPos > Count ) MarkPos = Count;
       pos = MarkPos -StartLine;
 #if 1
-      if((pos> 0) &&(pos < Nlines )) {
-        WriteTbl ( ) ;
-        kgSetTableCursor ( Tbl , ( pos ) *Tbl->nx+1 ) ;
-        kgSetAttnWidget ( Tbl->D , Tbl ) ;
-        SetupVbar();
-        kgUpdateOn ( Tbl->D ) ;
-        return 1;
+      if ( ( pos > 0 ) && ( pos < Nlines ) ) {
+          WriteTbl ( ) ;
+          kgSetTableCursor ( Tbl , ( pos ) *Tbl->nx+1 ) ;
+          kgSetAttnWidget ( Tbl->D , Tbl ) ;
+          SetupVbar ( ) ;
+          kgUpdateOn ( Tbl->D ) ;
+          return 1;
       }
 #endif
       EndLine = MarkPos;
       StartLine = EndLine -Nlines +1;
-      if(StartLine < 1 ) {
-              StartLine=1;
-              EndLine = Nlines;
-              if(EndLine > Count ) EndLine = Count;
+      if ( StartLine < 1 ) {
+          StartLine = 1;
+          EndLine = Nlines;
+          if ( EndLine > Count ) EndLine = Count;
       }
-
       WriteTbl ( ) ;
       pos = MarkPos - StartLine;
 //      printf("pos = %d\n",pos);
       kgSetTableCursor ( Tbl , ( pos ) *Tbl->nx+1 ) ;
       kgSetAttnWidget ( Tbl->D , Tbl ) ;
-      SetupVbar();
+      SetupVbar ( ) ;
       kgUpdateOn ( Tbl->D ) ;
       return 1;
   }
@@ -393,13 +390,13 @@
           break;
           case 2:
           ReadTbl ( ) ;
-       	  Dwritefile(Slist,flname);
-          pt [ 1 ] = pt[0];
-          Dempty(Slist);
+          Dwritefile ( Slist , flname ) ;
+          pt [ 1 ] = pt [ 0 ] ;
+          Dempty ( Slist ) ;
           break;
       }
-      remove(Bkup);
-      kgSetAttnWidget ( Tmp , Tbl ) ;
+      remove ( Bkup ) ;
+      remove ( SaveFile ) ;
       return ret;
   }
   void ScrollTablesplbutton1init ( DIL *B , void *pt ) {
@@ -465,33 +462,32 @@
   }
   void ScrollTablebutton1init ( DIN *B , void *pt ) {
   }
-static char * ReplaceString(char *lptr,char *ptmp){
-     int k,l1,l2,loc;
-     char *s = (char *)kgGetString(ST,0);
-     char *r = (char *)kgGetString(RT,0);
-     l1 = strlen(lptr);
-     l2 = strlen(ptmp);
-     loc = l1 -l2;
-     strcpy(Buf,lptr);
-     Buf[loc]='\0';
-     strcat(Buf,r);
-     strcat(Buf,ptmp+strlen(s));
-     printf("lptr : %s\n",lptr);
-     printf("Buf: %s",Buf);
-     return Buf;
-}
-
-int  ScrollTablebutton5callback(int butno,int i,void *Tmp) {
+  static char * ReplaceString ( char *lptr , char *ptmp ) {
+      int k , l1 , l2 , loc;
+      char *s = ( char * ) kgGetString ( ST , 0 ) ;
+      char *r = ( char * ) kgGetString ( RT , 0 ) ;
+      l1 = strlen ( lptr ) ;
+      l2 = strlen ( ptmp ) ;
+      loc = l1 -l2;
+      strcpy ( Buf , lptr ) ;
+      Buf [ loc ] = '\0';
+      strcat ( Buf , r ) ;
+      strcat ( Buf , ptmp+strlen ( s ) ) ;
+      printf ( "lptr : %s\n" , lptr ) ;
+      printf ( "Buf: %s" , Buf ) ;
+      return Buf;
+  }
+  int ScrollTablebutton5callback ( int butno , int i , void *Tmp ) {
   /***********************************
     butno : selected item (1 to max_item)
     i :  Index of Widget  (0 to max_widgets-1)
     Tmp :  Pointer to DIALOG
    ***********************************/
-  DIALOG *D;DIN *B;
-  int n,ret =0;
+      DIALOG *D;DIN *B;
+      int n , ret = 0;
       int k = 0 , loc , count;
-      char *spt , *lptr , *ptmp,*npt;
-      int row , curpos , stchar , rowbk,spos;
+      char *spt , *lptr , *ptmp , *npt;
+      int row , curpos , stchar , rowbk , spos;
       int Slbak , Elbak , curbk;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
       D = ( DIALOG * ) Tmp;
@@ -502,7 +498,7 @@ int  ScrollTablebutton5callback(int butno,int i,void *Tmp) {
       while ( spt [ k ] == ' ' ) k++;
       if ( spt [ k ] < ' ' ) return ret;
 //      printf("%s\n",spt+k);
-      ReadTbl();
+      ReadTbl ( ) ;
       Count = Dcount ( Slist ) ;
       row = kgGetTableRow ( Tbl ) ;
       rowbk = row;
@@ -519,11 +515,11 @@ int  ScrollTablebutton5callback(int butno,int i,void *Tmp) {
  //     printf("%s\n",lptr+stchar);
       if ( ( ptmp = ( char * ) strstr ( lptr+curpos , spt ) ) != NULL ) {
           loc = GetLength ( lptr+curpos , ptmp ) ;
-          npt = (char *)malloc(strlen(ReplaceString(lptr,ptmp))+1);
-          strcpy(npt,Buf);
+          npt = ( char * ) malloc ( strlen ( ReplaceString ( lptr , ptmp ) ) +1 ) ;
+          strcpy ( npt , Buf ) ;
           spos = StartLine+row -1;
-          Dreplace(Slist,npt,spos);
-          WriteTbl();
+          Dreplace ( Slist , npt , spos ) ;
+          WriteTbl ( ) ;
           kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc+curpos ) ;
           RETURN ( 0 ) ;
       }
@@ -533,11 +529,11 @@ int  ScrollTablebutton5callback(int butno,int i,void *Tmp) {
               if ( ( ptmp = ( char * ) strstr ( lptr , spt ) ) != NULL ) {
                   loc = GetLength ( lptr , ptmp ) ;
                   row += count;
-          npt = (char *)malloc(strlen(ReplaceString(lptr,ptmp))+1);
-          strcpy(npt,Buf);
-          spos = StartLine+row -1;
-          Dreplace(Slist,npt,spos);
-          WriteTbl();
+                  npt = ( char * ) malloc ( strlen ( ReplaceString ( lptr , ptmp ) ) +1 ) ;
+                  strcpy ( npt , Buf ) ;
+                  spos = StartLine+row -1;
+                  Dreplace ( Slist , npt , spos ) ;
+                  WriteTbl ( ) ;
                   kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc ) ;
                   RETURN ( 0 ) ;
               }
@@ -550,11 +546,11 @@ int  ScrollTablebutton5callback(int butno,int i,void *Tmp) {
               if ( lptr == NULL ) break;
               if ( ( ptmp = ( char * ) strstr ( lptr , spt ) ) != NULL ) {
                   loc = GetLength ( lptr , ptmp ) ;
-          npt = (char *)malloc(strlen(ReplaceString(lptr,ptmp))+1);
-          strcpy(npt,Buf);
-      spos = StartLine+row -1;
-          Dreplace(Slist,npt,spos);
-          WriteTbl();
+                  npt = ( char * ) malloc ( strlen ( ReplaceString ( lptr , ptmp ) ) +1 ) ;
+                  strcpy ( npt , Buf ) ;
+                  spos = StartLine+row -1;
+                  Dreplace ( Slist , npt , spos ) ;
+                  WriteTbl ( ) ;
                   kgSetTableCursorPos ( Tbl , ( k ) *Tbl->nx+1 , loc ) ;
                   RETURN ( 0 ) ;
               }
@@ -574,11 +570,11 @@ int  ScrollTablebutton5callback(int butno,int i,void *Tmp) {
                       StartLine = EndLine -Nlines+1;
                       row+= offset;
                   }
-          npt = (char *)malloc(strlen(ReplaceString(lptr,ptmp))+1);
-          strcpy(npt,Buf);
-          spos = StartLine+row -1;
-          Dreplace(Slist,npt,spos);
-          WriteTbl();
+                  npt = ( char * ) malloc ( strlen ( ReplaceString ( lptr , ptmp ) ) +1 ) ;
+                  strcpy ( npt , Buf ) ;
+                  spos = StartLine+row -1;
+                  Dreplace ( Slist , npt , spos ) ;
+                  WriteTbl ( ) ;
                   kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc ) ;
                   RETURN ( 0 ) ;
               }
@@ -594,11 +590,11 @@ int  ScrollTablebutton5callback(int butno,int i,void *Tmp) {
                       loc = GetLength ( lptr , ptmp ) ;
                       StartLine = k+1;
                       EndLine = k+Nlines;
-          npt = (char *)malloc(strlen(ReplaceString(lptr,ptmp))+1);
-          strcpy(npt,Buf);
-          spos = StartLine+row -1;
-          Dreplace(Slist,npt,spos);
-          WriteTbl();
+                      npt = ( char * ) malloc ( strlen ( ReplaceString ( lptr , ptmp ) ) +1 ) ;
+                      strcpy ( npt , Buf ) ;
+                      spos = StartLine+row -1;
+                      Dreplace ( Slist , npt , spos ) ;
+                      WriteTbl ( ) ;
                       kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc ) ;
                       RETURN ( 0 ) ;
                   }
@@ -606,28 +602,28 @@ int  ScrollTablebutton5callback(int butno,int i,void *Tmp) {
           }
       }
       kgSetAttnWidget ( Tmp , Tbl ) ;
-      Splash((char *)"Could not find");
-  ReadTbl();
-  return ret;
-}
-void  ScrollTablebutton5init(DIN *B,void *ptmp) {
- void **pt=(void **)ptmp; //pt[0] is arg
-}
-int  ScrollTabletextbox2callback(int cellno,int i,void *Tmp) {
+      Splash ( ( char * ) "Could not find" ) ;
+      ReadTbl ( ) ;
+      return ret;
+  }
+  void ScrollTablebutton5init ( DIN *B , void *ptmp ) {
+      void **pt = ( void ** ) ptmp; //pt [ 0 ] is arg
+  }
+  int ScrollTabletextbox2callback ( int cellno , int i , void *Tmp ) {
   /*************************************************
    cellno: current cell counted along column strting with 0
            ie 0 to (nx*ny-1)
    i     : widget id starting from 0
    Tmp   : Pointer to DIALOG
    *************************************************/
-  DIALOG *D;DIT *T;T_ELMT *e;
-  int ret=1;
-  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
-  D = (DIALOG *)Tmp;
-  T = (DIT *)kgGetWidget(Tmp,i);
-  e = T->elmt;
-  return ret;
-}
+      DIALOG *D;DIT *T;T_ELMT *e;
+      int ret = 1;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      D = ( DIALOG * ) Tmp;
+      T = ( DIT * ) kgGetWidget ( Tmp , i ) ;
+      e = T->elmt;
+      return ret;
+  }
   int ScrollTableinit ( void *Tmp ) {
   /***********************************
     Tmp :  Pointer to DIALOG
@@ -640,15 +636,18 @@ int  ScrollTabletextbox2callback(int cellno,int i,void *Tmp) {
       char **Strs;
       char *cpt;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
-      flname = (char *)pt[0];
+      flname = ( char * ) pt [ 0 ] ;
       Tbl = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "ScrollTable" ) ;
       E = Tbl->elmt;
       nlines = Tbl->ny;
       Nlines = Tbl->ny;
-      Slist = Dreadfile(flname);
-      Strs = (char **)Dlinktoarray(Slist);
-      sprintf(Bkup,".%s.%d",flname,getpid());
-      printf("Bkup: %s\n",Bkup);
+      Slist = Dreadfile ( flname ) ;
+      Strs = ( char ** ) Dlinktoarray ( Slist ) ;
+      sprintf ( Bkup , ".%s.%d" , flname , getpid ( ) ) ;
+      sprintf ( SaveFile , ".%s.save.%d" , flname , getpid ( ) ) ;
+//      printf("Bkup: %s\n",Bkup);
+      remove ( Bkup ) ;
+      remove ( SaveFile ) ;
       StartLine = EndLine = 1;
       if ( ( Strs == NULL ) || ( Strs [ 0 ] == NULL ) ) {
           cpt = ( char * ) malloc ( 2 ) ;
@@ -705,7 +704,7 @@ int  ScrollTabletextbox2callback(int cellno,int i,void *Tmp) {
       kgSetTableCursor ( Tbl , 1 ) ;
       kgSetDefaultAttnWidget ( Tmp , Tbl ) ;
       kgUpdateOn ( Tmp ) ;
-      free(Strs);
+      free ( Strs ) ;
       return ret;
   }
   int ScrollTablebutton2callback ( int butno , int i , void *Tmp ) {
@@ -723,17 +722,19 @@ int  ScrollTabletextbox2callback(int cellno,int i,void *Tmp) {
       switch ( butno ) {
           case 1:
           ReadTbl ( ) ;
-          if ( flname != NULL ) {
-              Dwritefile ( Slist , flname ) ;
-          }
+          Dwritefile ( Slist , SaveFile ) ;
           break;
           case 2:
 //        printf("%s\n",flname);
           if ( flname != NULL ) {
               int k;
-              MarkPos = StartLine+kgGetTableRow(Tbl);
+              MarkPos = StartLine+kgGetTableRow ( Tbl ) ;
               Dempty ( Slist ) ;
-              Slist = Dreadfile ( flname ) ;
+              Slist = Dreadfile ( SaveFile ) ;
+              if ( ( Count = Dcount ( Slist ) ) == 0 ) {
+                  Dempty ( Slist ) ;
+                  Slist = Dreadfile ( flname ) ;
+              }
               Count = Dcount ( Slist ) ;
               if ( ( EndLine - StartLine +1 ) < Count ) {
                   EndLine = Count;
@@ -752,7 +753,7 @@ int  ScrollTabletextbox2callback(int cellno,int i,void *Tmp) {
                       kgSetOffTableCell ( Tbl , k*2+1 ) ;
                   }
               }
-              GotoMark();
+              GotoMark ( ) ;
               SetupVbar ( ) ;
               WriteTbl ( ) ;
               kgUpdateOn ( Tbl->D ) ;
@@ -814,7 +815,7 @@ int  ScrollTabletextbox2callback(int cellno,int i,void *Tmp) {
       while ( spt [ k ] == ' ' ) k++;
       if ( spt [ k ] < ' ' ) return ret;
 //     printf("%s\n",spt+k);
-      ReadTbl();
+      ReadTbl ( ) ;
       Count = Dcount ( Slist ) ;
       row = kgGetTableRow ( Tbl ) ;
       rowbk = row;
@@ -894,103 +895,103 @@ int  ScrollTabletextbox2callback(int cellno,int i,void *Tmp) {
           }
       }
       kgSetAttnWidget ( Tmp , Tbl ) ;
-      Splash((char *)"Could not find");
+      Splash ( ( char * ) "Could not find" ) ;
 //      ReadTbl();
       return ret;
   }
   void ScrollTablebutton3init ( DIN *B , void *pt ) {
   }
-static int ReadInFile(char *flname) {
-              Dlink *Rlist = Dreadfile ( flname ) ;
-              void *ptmp;
-              int count=Count,row;
-              if ( Rlist != NULL ) {
-                  ReadTbl ( ) ;
-                  row = kgGetTableRow ( Tbl ) ;
-                  Dposition ( Slist , StartLine+row ) ;
-                  Resetlink ( Rlist ) ;
-                  while ( ( ptmp = Getrecord ( Rlist ) ) != NULL ) Dadd ( Slist , ptmp ) ;
-                  Dfree ( Rlist ) ;
-                  if(count<Nlines) SetupTbl ( ) ;
-                  SetupVbar ( ) ;
-                  WriteTbl ( ) ;
-          kgSetTableCursorPos( Tbl , row *Tbl->nx+1 , 0 ) ;
-                  kgUpdateOn ( Tbl->D ) ;
-              }
-              return 1;
-}
-static int WriteToFile(char *fpt) {
-            if(fpt != NULL) {
-            Dlink *Wlist=Dopen();
-            char *dpt,*spt;
-            int endpos = StartLine+kgGetTableRow(Tbl);
-            int k,s,e;
+  static int ReadInFile ( char *flname ) {
+      Dlink *Rlist = Dreadfile ( flname ) ;
+      void *ptmp;
+      int count = Count , row;
+      if ( Rlist != NULL ) {
+          ReadTbl ( ) ;
+          row = kgGetTableRow ( Tbl ) ;
+          Dposition ( Slist , StartLine+row ) ;
+          Resetlink ( Rlist ) ;
+          while ( ( ptmp = Getrecord ( Rlist ) ) != NULL ) Dadd ( Slist , ptmp ) ;
+          Dfree ( Rlist ) ;
+          if ( count < Nlines ) SetupTbl ( ) ;
+          SetupVbar ( ) ;
+          WriteTbl ( ) ;
+          kgSetTableCursorPos ( Tbl , row *Tbl->nx+1 , 0 ) ;
+          kgUpdateOn ( Tbl->D ) ;
+      }
+      return 1;
+  }
+  static int WriteToFile ( char *fpt ) {
+      if ( fpt != NULL ) {
+          Dlink *Wlist = Dopen ( ) ;
+          char *dpt , *spt;
+          int endpos = StartLine+kgGetTableRow ( Tbl ) ;
+          int k , s , e;
 //          printf("File : %s\n",fpt);
-            ReadTbl();
-            if(endpos >= MarkPos ) {
-            s = MarkPos;
-            e = endpos;
-            }
-            else {
-            s= endpos;
-            e = MarkPos;
-            }
-            Dposition(Slist,s);
-            for(k=s;k<=e;k++) {
-            spt = (char *)Getrecord(Slist);
-            if(spt==NULL) break;
-            dpt = (char *)malloc(strlen(spt)+1);
-            strcpy(dpt,spt);
-            Dadd(Wlist,dpt);
-            }
-            Dwritefile(Wlist,fpt);
-            Dempty(Wlist);
-            }
-        return 1;
-}
-static int CutToFile(char *fpt) {
-        int k;
-            if(fpt != NULL) {
-            Dlink *Wlist=Dopen();
-            char *dpt,*spt;
-            int endpos = StartLine+kgGetTableRow(Tbl);
-            int k,s,e,lines;
+          ReadTbl ( ) ;
+          if ( endpos >= MarkPos ) {
+              s = MarkPos;
+              e = endpos;
+          }
+          else {
+              s = endpos;
+              e = MarkPos;
+          }
+          Dposition ( Slist , s ) ;
+          for ( k = s;k <= e;k++ ) {
+              spt = ( char * ) Getrecord ( Slist ) ;
+              if ( spt == NULL ) break;
+              dpt = ( char * ) malloc ( strlen ( spt ) +1 ) ;
+              strcpy ( dpt , spt ) ;
+              Dadd ( Wlist , dpt ) ;
+          }
+          Dwritefile ( Wlist , fpt ) ;
+          Dempty ( Wlist ) ;
+      }
+      return 1;
+  }
+  static int CutToFile ( char *fpt ) {
+      int k;
+      if ( fpt != NULL ) {
+          Dlink *Wlist = Dopen ( ) ;
+          char *dpt , *spt;
+          int endpos = StartLine+kgGetTableRow ( Tbl ) ;
+          int k , s , e , lines;
 //          printf("File : %s\n",fpt);
-            ReadTbl();
-            if(endpos >= MarkPos ) {
-            s = MarkPos;
-            e = endpos;
-            }
-            else {
-            s= endpos;
-            e = MarkPos;
-            }
-            sprintf(Buf1,"Cut(&copy) lines %d to %d ?",s,e);
-            if(!kgQstMenu(Tbl->D,10,100,Buf1,1)) return 0;
-            Dposition(Slist,s);
-            for(k=s;k<=e;k++) {
-            spt = (char *)Dpick(Slist);
-            if(spt==NULL) break;
-            Dadd(Wlist,spt);
-            }
-            Dwritefile(Wlist,fpt);
-            lines= Dcount(Wlist);
-            Dempty(Wlist);
-            Count = Dcount(Slist);
-            if(EndLine >Count) {
-            EndLine=Count;
-            StartLine = EndLine -Nlines+1;
-            if(StartLine < 1) StartLine =1;
-            }
-                    for ( k = EndLine;k < Nlines;k++ ){
-            kgSetOffTableCell ( Tbl , k*2+1 ) ;
-            kgSetString(Tbl,k*2,(char *)"");
-            kgSetString(Tbl,k*2+1,(char *)"");
-            }
-            }
-            WriteTbl();
-        return 1;
-}
+          ReadTbl ( ) ;
+          if ( endpos >= MarkPos ) {
+              s = MarkPos;
+              e = endpos;
+          }
+          else {
+              s = endpos;
+              e = MarkPos;
+          }
+          sprintf ( Buf1 , "Cut(&copy) lines %d to %d ?" , s , e ) ;
+          if ( ! kgQstMenu ( Tbl->D , 10 , 100 , Buf1 , 1 ) ) return 0;
+          Dposition ( Slist , s ) ;
+          for ( k = s;k <= e;k++ ) {
+              spt = ( char * ) Dpick ( Slist ) ;
+              if ( spt == NULL ) break;
+              Dadd ( Wlist , spt ) ;
+          }
+          Dwritefile ( Wlist , fpt ) ;
+          lines = Dcount ( Wlist ) ;
+          Dempty ( Wlist ) ;
+          Count = Dcount ( Slist ) ;
+          if ( EndLine > Count ) {
+              EndLine = Count;
+              StartLine = EndLine -Nlines+1;
+              if ( StartLine < 1 ) StartLine = 1;
+          }
+          for ( k = EndLine;k < Nlines;k++ ) {
+              kgSetOffTableCell ( Tbl , k*2+1 ) ;
+              kgSetString ( Tbl , k*2 , ( char * ) "" ) ;
+              kgSetString ( Tbl , k*2+1 , ( char * ) "" ) ;
+          }
+      }
+      WriteTbl ( ) ;
+      return 1;
+  }
   int ScrollTablebutton4callback ( int butno , int i , void *Tmp ) {
   /***********************************
     butno : selected item (1 to max_item)
@@ -1010,11 +1011,11 @@ i :  Index of Widget  (0 to max_widgets-1)
           case 1:
           flname [ 0 ] = '\0';
           if ( kgFolderBrowser ( NULL , 100 , 100 , flname , ( char * ) "*" ) ) {
-              kgSkipEvents(Tmp);
+              kgSkipEvents ( Tmp ) ;
 #if 0
               Dlink *Rlist = Dreadfile ( flname ) ;
               void *ptmp;
-              int count=Count;
+              int count = Count;
               if ( Rlist != NULL ) {
                   ReadTbl ( ) ;
                   row = kgGetTableRow ( Tbl ) ;
@@ -1022,86 +1023,87 @@ i :  Index of Widget  (0 to max_widgets-1)
                   Resetlink ( Rlist ) ;
                   while ( ( ptmp = Getrecord ( Rlist ) ) != NULL ) Dadd ( Slist , ptmp ) ;
                   Dfree ( Rlist ) ;
-                  if(count<Nlines) SetupTbl ( ) ;
+                  if ( count < Nlines ) SetupTbl ( ) ;
                   SetupVbar ( ) ;
                   WriteTbl ( ) ;
 #if 0
-                  if ( Count <= Nlines ) kgSetTableCursorPos  \
-                      ( Tbl , ( EndLine -1 ) *Tbl->nx+1 , 0 ) ;
-          else kgSetTableCursorPos( Tbl , row *Tbl->nx+1 , 0 ) ;
+                  if ( Count <= Nlines ) kgSetTableCursorPos \
+                   ( Tbl , ( EndLine -1 ) *Tbl->nx+1 , 0 ) ;
+                  else kgSetTableCursorPos ( Tbl , row *Tbl->nx+1 , 0 ) ;
 #else
-          kgSetTableCursorPos( Tbl , row *Tbl->nx+1 , 0 ) ;
+                  kgSetTableCursorPos ( Tbl , row *Tbl->nx+1 , 0 ) ;
 #endif
                   kgUpdateOn ( Tmp ) ;
               }
 #else
-          ReadInFile(flname);
+              ReadInFile ( flname ) ;
 #endif
-          sprintf(Msg,"Read in %s at %d",flname,row);
-          Splash(Msg);
+              sprintf ( Msg , "Read in %s at %d" , flname , row ) ;
+              Splash ( Msg ) ;
           }
           break;
           case 3:
-            fpt = RunGetFileName(NULL,NULL);
+          fpt = RunGetFileName ( NULL , NULL ) ;
 #if 0
-            if(fpt != NULL) {
-            Dlink *Wlist=Dopen();
-            char *dpt,*spt;
-            int endpos = StartLine+kgGetTableRow(Tbl);
-            int k,s,e;
+          if ( fpt != NULL ) {
+              Dlink *Wlist = Dopen ( ) ;
+              char *dpt , *spt;
+              int endpos = StartLine+kgGetTableRow ( Tbl ) ;
+              int k , s , e;
 //          printf("File : %s\n",fpt);
-            ReadTbl();
-            if(endpos >= MarkPos ) {
-            s = MarkPos;
-            e = endpos;
-            }
-            else {
-            s= endpos;
-            e = MarkPos;
-            }
-            Dposition(Slist,s);
-            for(k=s;k<=e;k++) {
-            spt = (char *)Getrecord(Slist);
-            if(spt==NULL) break;
-            dpt = (char *)malloc(strlen(spt)+1);
-            strcpy(dpt,spt);
-            Dadd(Wlist,dpt);
-            }
-            Dwritefile(Wlist,fpt);
-            sprintf(Msg,"Wrote(%d:%d) to  %s",s,e,fpt);
-            Splash(Msg);
-            free(fpt);
-            Dempty(Wlist);
-            }
+              ReadTbl ( ) ;
+              if ( endpos >= MarkPos ) {
+                  s = MarkPos;
+                  e = endpos;
+              }
+              else {
+                  s = endpos;
+                  e = MarkPos;
+              }
+              Dposition ( Slist , s ) ;
+              for ( k = s;k <= e;k++ ) {
+                  spt = ( char * ) Getrecord ( Slist ) ;
+                  if ( spt == NULL ) break;
+                  dpt = ( char * ) malloc ( strlen ( spt ) +1 ) ;
+                  strcpy ( dpt , spt ) ;
+                  Dadd ( Wlist , dpt ) ;
+              }
+              Dwritefile ( Wlist , fpt ) ;
+              sprintf ( Msg , "Wrote(%d:%d) to  %s" , s , e , fpt ) ;
+              Splash ( Msg ) ;
+              free ( fpt ) ;
+              Dempty ( Wlist ) ;
+          }
 #else
-            WriteToFile(fpt);
-            if(fpt != NULL){
-            sprintf(Msg,"Wrote to  %s",fpt);
-            Splash(Msg);
-            free(fpt);
-            }
+          WriteToFile ( fpt ) ;
+          if ( fpt != NULL ) {
+              sprintf ( Msg , "Wrote to  %s" , fpt ) ;
+              Splash ( Msg ) ;
+              free ( fpt ) ;
+          }
 #endif
           break;
           case 2:
           MarkPos = kgGetTableRow ( Tbl ) +StartLine;
-          sprintf (Msg,"Marked Line: %d",MarkPos);
-          Splash(Msg);
+          RunGetMarkPos(Tbl->D,&MarkPos);
+          sprintf ( Msg , "Marked Line: %d" , MarkPos ) ;
+//        Splash ( Msg ) ;
           break;
           case 4:
-          if(CutToFile(Bkup)){
-          SetupVbar();
-          GotoMark();
-          kgUpdateOn ( Tmp ) ;
+          if ( CutToFile ( Bkup ) ) {
+              SetupVbar ( ) ;
+              GotoMark ( ) ;
+              kgUpdateOn ( Tmp ) ;
           }
           break;
           case 5:
-          WriteToFile(Bkup);
+          WriteToFile ( Bkup ) ;
           break;
           case 6:
-          ReadInFile(Bkup);
+          ReadInFile ( Bkup ) ;
           break;
           case 7:
-          GotoMark();
+          GotoMark ( ) ;
           break;
           case 8:
           kgSetWidgetVisibility ( Opt , 0 ) ;
@@ -1140,7 +1142,7 @@ i :  Index of Widget  (0 to max_widgets-1)
       int xo , yo , xl , yl;
       int xres , yres;
       d = D->d;
-      D->NoTabProcess =1;
+      D->NoTabProcess = 1;
       i = 0;while ( d [ i ] .t != NULL ) {;
           i++;
       };
