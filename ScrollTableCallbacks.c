@@ -21,7 +21,7 @@
 
   static int Splash(char *Msg){
           kgSplashMessage(Tbl->D,50,100,400,25,Msg,23,0,15);
-	  return 1;
+          return 1;
   }
   static int SetupVbar ( ) {
       Count = Dcount ( Slist ) ;
@@ -326,15 +326,15 @@
         kgSetAttnWidget ( Tbl->D , Tbl ) ;
         SetupVbar();
         kgUpdateOn ( Tbl->D ) ;
-	return 1;
+        return 1;
       }
 #endif
       EndLine = MarkPos;
       StartLine = EndLine -Nlines +1;
       if(StartLine < 1 ) {
-	      StartLine=1;
-	      EndLine = Nlines;
-	      if(EndLine > Count ) EndLine = Count;
+              StartLine=1;
+              EndLine = Nlines;
+              if(EndLine > Count ) EndLine = Count;
       }
 
       WriteTbl ( ) ;
@@ -380,9 +380,10 @@
           ReadTbl ( ) ;
 	  Dwritefile(Slist,flname);
           pt [ 1 ] = pt[0];
-	  Dempty(Slist);
+          Dempty(Slist);
           break;
       }
+      remove(Bkup);
       kgSetAttnWidget ( Tmp , Tbl ) ;
       return ret;
   }
@@ -449,6 +450,42 @@
   }
   void ScrollTablebutton1init ( DIN *B , void *pt ) {
   }
+int  ScrollTablebutton5callback(int butno,int i,void *Tmp) {
+  /***********************************
+    butno : selected item (1 to max_item)
+    i :  Index of Widget  (0 to max_widgets-1)
+    Tmp :  Pointer to DIALOG
+   ***********************************/
+  DIALOG *D;DIN *B;
+  int n,ret =0;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+  D = (DIALOG *)Tmp;
+  B = (DIN *)kgGetWidget(Tmp,i);
+  n = B->nx*B->ny;
+  switch(butno) {
+    case 1:
+      break;
+  }
+  return ret;
+}
+void  ScrollTablebutton5init(DIN *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg
+}
+int  ScrollTabletextbox2callback(int cellno,int i,void *Tmp) {
+  /*************************************************
+   cellno: current cell counted along column strting with 0
+           ie 0 to (nx*ny-1)
+   i     : widget id starting from 0
+   Tmp   : Pointer to DIALOG
+   *************************************************/
+  DIALOG *D;DIT *T;T_ELMT *e;
+  int ret=1;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+  D = (DIALOG *)Tmp;
+  T = (DIT *)kgGetWidget(Tmp,i);
+  e = T->elmt;
+  return ret;
+}
   int ScrollTableinit ( void *Tmp ) {
   /***********************************
     Tmp :  Pointer to DIALOG
@@ -528,149 +565,6 @@
       free(Strs);
       return ret;
   }
-  int ScrollTablecleanup ( void *Tmp ) {
-  /* you add any cleanup/mem free here */
-  /***********************************
-    Tmp :  Pointer to DIALOG
-   ***********************************/
-      int ret = 1;
-      DIALOG *D;
-      D = ( DIALOG * ) Tmp;
-      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
- /* pt[1] is outputs, if any  to be given to caller */
- /* pt[0] is inputs, given by caller */
-      return ret;
-  }
-  int ModifyScrollTable ( void *Tmp , int GrpId ) {
-      DIALOG *D;
-      D = ( DIALOG * ) Tmp;
-      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
- /* pt[0] is inputs given by caller */
-      DIA *d;
-      int i , n;
-      int xo , yo , xl , yl;
-      int xres , yres;
-      d = D->d;
-      i = 0;while ( d [ i ] .t != NULL ) {;
-          i++;
-      };
-      n = 1;
-      strcpy ( D->name , "Kit ver 1.0" ) ; /* Dialog name you may change */
-      DB = ( DIL * ) kgGetNamedWidget ( D , ( char * ) "SplButn" ) ;
-      xl = DB->x2 -DB->x1;
-      yl = DB->y2 -DB->y1;
-      kgDisplaySize ( & xres , & yres ) ;
-      xo = ( D->xl-xl ) /2;
-      DB->x1 = xo;
-      DB->x2 = xo+xl;
-      B1 = ( DIN * ) kgGetNamedWidget ( D , ( char * ) "Button1" ) ;
-      xl = B1->x2 -B1->x1;
-      xo = D->xl-xl-25;
-      B1->x1 = xo;
-      B1->x2 = xo+xl;
-#if 0
-      if ( D->fullscreen != 1 ) { /* if not fullscreen mode */
-          int xres , yres;
-          kgDisplaySize ( & xres , & yres ) ;
-      // D->xo=D->yo=0; D->xl = xres-10; D->yl=yres-80;
-      }
-      else { // for fullscreen
-          int xres , yres;
-          kgDisplaySize ( & xres , & yres ) ;
-          D->xo = D->yo = 0; D->xl = xres; D->yl = yres;
-//     D->StackPos = 1; // you may need it
-      } /* end of fullscreen mode */
-#endif
-      return GrpId;
-  }
-  int ScrollTableCallBack ( void *Tmp , void *tmp ) {
-  /***********************************
-    Tmp :  Pointer to DIALOG
-    tmp :  Pointer to KBEVENT
-   ***********************************/
-      int ret = 0;
-      DIALOG *D;
-      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
-      KBEVENT *kbe;
-      D = ( DIALOG * ) Tmp;
-      kbe = ( KBEVENT * ) tmp;
-      if ( kbe->event == 1 ) {
-          if ( kbe->button == 1 ) {
-          }
-      }
-      return ret;
-  }
-  int ScrollTableResizeCallBack ( void *Tmp ) {
-  /***********************************
-    Tmp :  Pointer to DIALOG
-   ***********************************/
-      int ret = 0 , k;
-      int xres , yres , dx , dy;
-      int xo , yo , xl , yl , Fz1 , Fz2i , nchr;
-      static int Xl = -1 , Yl = -1 , Fz = -1 , By1;
-      char Fmt [ 8 ] ;
-      DIALOG *D;
-      T_ELMT *elmt;
-      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
-      D = ( DIALOG * ) Tmp;
-      kgGetWindowSize ( D , & xres , & yres ) ;
-      dx = xres - D->xl;
-      dy = yres - D->yl;
-      if ( Xl == -1 ) {
-          Xl = D->xl;
-          Yl = D->yl;
-          Fz = Tbl->FontSize;
-          By1 = B1->y1;
-      }
-  /* extra code */
-      D->xl = xres;
-      D->yl = yres;
-      xl = DB->x2 -DB->x1;
-      yl = DB->y2 -DB->y1;
-      xo = ( D->xl-xl ) /2;
-      DB->x1 = xo;
-      DB->x2 = xo+xl;
-      DB->y1 = D->yl- yl -2;
-      DB->y2 = DB->y1 + yl;
-      xl = B1->x2 -B1->x1;
-      yl = B1->y2 -B1->y1;
-      if ( D->xl < Xl ) B1->y1 = 3;
-      else B1->y1 = By1;
-      B1->y2 = B1->y1+yl;
-      xo = D->xl-xl-25;
-      B1->x1 = xo;
-      B1->x2 = xo+xl;
-      Tbl->x2 = xres - 40;
-      Tbl->y2 = yres - 40;
-      Fz1 = ( Tbl->y2 - Tbl->y1-4 ) /48;
-      if ( Fz1 > 12 ) Fz1 = 10;
-      nchr = ( Tbl->x2 - Tbl->x1 ) /Fz1 -11;
-      sprintf ( Fmt , "%%%ds" , nchr ) ;
-      elmt = ( T_ELMT * ) Tbl->elmt;
-      for ( k = 0;k < Tbl->ny;k++ ) {
-          strcpy ( elmt [ k*Tbl->nx+1 ] .fmt , Fmt ) ;
-      }
-      Tbl->FontSize = Fz1;
-      Tbl->width = 20;
-      xl = V->x2 - V->x1;
-      yl = V->y2 - V->y1;
-      V->x1 = Tbl->x2+7;
-      V->x2 = V->x1 + xl;
-      V->y2 = Tbl->y2;
-      kgRedrawDialog ( D ) ;
-      kgSetAttnWidget ( Tmp , Tbl ) ;
-      return ret;
-  }
-  int ScrollTableWaitCallBack ( void *Tmp ) {
-  /***********************************
-    Tmp :  Pointer to DIALOG
-    Called while waiting for event
-    return value 1 will close the the UI
-   ***********************************/
-      int ret = 0;
-      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
-      return ret;
-  }
   int ScrollTablebutton2callback ( int butno , int i , void *Tmp ) {
   /***********************************
     butno : selected item (1 to max_item)
@@ -691,7 +585,7 @@
           }
           break;
           case 2:
-//	  printf("%s\n",flname);
+//        printf("%s\n",flname);
           if ( flname != NULL ) {
               int k;
               Dempty ( Slist ) ;
@@ -871,7 +765,7 @@
 static int ReadInFile(char *flname) {
               Dlink *Rlist = Dreadfile ( flname ) ;
               void *ptmp;
-	      int count=Count,row;
+              int count=Count,row;
               if ( Rlist != NULL ) {
                   ReadTbl ( ) ;
                   row = kgGetTableRow ( Tbl ) ;
@@ -882,17 +776,47 @@ static int ReadInFile(char *flname) {
                   if(count<Nlines) SetupTbl ( ) ;
                   SetupVbar ( ) ;
                   WriteTbl ( ) ;
-		  kgSetTableCursorPos( Tbl , row *Tbl->nx+1 , 0 ) ;
+          kgSetTableCursorPos( Tbl , row *Tbl->nx+1 , 0 ) ;
                   kgUpdateOn ( Tbl->D ) ;
               }
-	      return 1;
+              return 1;
 }
 static int WriteToFile(char *fpt) {
+            if(fpt != NULL) {
+            Dlink *Wlist=Dopen();
+            char *dpt,*spt;
+            int endpos = StartLine+kgGetTableRow(Tbl);
+            int k,s,e;
+//          printf("File : %s\n",fpt);
+            ReadTbl();
+            if(endpos >= MarkPos ) {
+            s = MarkPos;
+            e = endpos;
+            }
+            else {
+            s= endpos;
+            e = MarkPos;
+            }
+            Dposition(Slist,s);
+            for(k=s;k<=e;k++) {
+            spt = (char *)Getrecord(Slist);
+            if(spt==NULL) break;
+            dpt = (char *)malloc(strlen(spt)+1);
+            strcpy(dpt,spt);
+            Dadd(Wlist,dpt);
+            }
+		    Dwritefile(Wlist,fpt);
+		    Dempty(Wlist);
+	    }
+	return 1;
+}
+static int CutToFile(char *fpt) {
+	int k;
 	    if(fpt != NULL) {
 		    Dlink *Wlist=Dopen();
 		    char *dpt,*spt;
 		    int endpos = StartLine+kgGetTableRow(Tbl);
-		    int k,s,e;
+		    int k,s,e,lines;
 //		    printf("File : %s\n",fpt);
 		    ReadTbl();
 		    if(endpos >= MarkPos ) {
@@ -905,23 +829,34 @@ static int WriteToFile(char *fpt) {
 		    }
 		    Dposition(Slist,s);
 		    for(k=s;k<=e;k++) {
-			    spt = (char *)Getrecord(Slist);
+			    spt = (char *)Dpick(Slist);
 			    if(spt==NULL) break;
-			    dpt = (char *)malloc(strlen(spt)+1);
-			    strcpy(dpt,spt);
-			    Dadd(Wlist,dpt);
+			    Dadd(Wlist,spt);
 		    }
 		    Dwritefile(Wlist,fpt);
+		    lines= Dcount(Wlist);
 		    Dempty(Wlist);
-	    }
-	return 1;
+		    Count = Dcount(Slist);
+		    if(EndLine >Count) {
+            EndLine=Count;
+            StartLine = EndLine -Nlines+1;
+            if(StartLine < 1) StartLine =1;
+            }
+                    for ( k = EndLine;k < Nlines;k++ ){
+            kgSetOffTableCell ( Tbl , k*2+1 ) ;
+            kgSetString(Tbl,k*2,(char *)"");
+            kgSetString(Tbl,k*2+1,(char *)"");
+            }
+            }
+            WriteTbl();
+        return 1;
 }
   int ScrollTablebutton4callback ( int butno , int i , void *Tmp ) {
-  /*********************************** 
-    butno : selected item (1 to max_item) 
-i :  Index of Widget  (0 to max_widgets-1) 
-    Tmp :  Pointer to DIALOG  
-   ***********************************/ 
+  /***********************************
+    butno : selected item (1 to max_item)
+i :  Index of Widget  (0 to max_widgets-1)
+    Tmp :  Pointer to DIALOG
+   ***********************************/
       DIALOG *D;DIN *B;
       int n , ret = 0;
       char flname [ 300 ] ;
@@ -935,11 +870,11 @@ i :  Index of Widget  (0 to max_widgets-1)
           case 1:
           flname [ 0 ] = '\0';
           if ( kgFolderBrowser ( NULL , 100 , 100 , flname , ( char * ) "*" ) ) {
-	      kgSkipEvents(Tmp);
+              kgSkipEvents(Tmp);
 #if 0
               Dlink *Rlist = Dreadfile ( flname ) ;
               void *ptmp;
-	      int count=Count;
+              int count=Count;
               if ( Rlist != NULL ) {
                   ReadTbl ( ) ;
                   row = kgGetTableRow ( Tbl ) ;
@@ -953,29 +888,29 @@ i :  Index of Widget  (0 to max_widgets-1)
 #if 0
                   if ( Count <= Nlines ) kgSetTableCursorPos  \
                       ( Tbl , ( EndLine -1 ) *Tbl->nx+1 , 0 ) ;
-		  else kgSetTableCursorPos( Tbl , row *Tbl->nx+1 , 0 ) ;
+          else kgSetTableCursorPos( Tbl , row *Tbl->nx+1 , 0 ) ;
 #else
-		  kgSetTableCursorPos( Tbl , row *Tbl->nx+1 , 0 ) ;
+          kgSetTableCursorPos( Tbl , row *Tbl->nx+1 , 0 ) ;
 #endif
                   kgUpdateOn ( Tmp ) ;
               }
 #else
-		  ReadInFile(flname);
+          ReadInFile(flname);
 #endif
-		  sprintf(Msg,"Read in %s at %d",flname,row);
-		  Splash(Msg);
+          sprintf(Msg,"Read in %s at %d",flname,row);
+          Splash(Msg);
           }
           break;
           case 3:
-	    fpt = RunGetFileName(NULL,NULL);
+            fpt = RunGetFileName(NULL,NULL);
 #if 0
-	    if(fpt != NULL) {
-		    Dlink *Wlist=Dopen();
-		    char *dpt,*spt;
-		    int endpos = StartLine+kgGetTableRow(Tbl);
-		    int k,s,e;
-//		    printf("File : %s\n",fpt);
-		    ReadTbl();
+            if(fpt != NULL) {
+            Dlink *Wlist=Dopen();
+            char *dpt,*spt;
+            int endpos = StartLine+kgGetTableRow(Tbl);
+            int k,s,e;
+//          printf("File : %s\n",fpt);
+            ReadTbl();
 		    if(endpos >= MarkPos ) {
 			    s = MarkPos;
 			    e = endpos;
@@ -1013,16 +948,18 @@ i :  Index of Widget  (0 to max_widgets-1)
           Splash(Msg);
           break;
           case 4:
-	  WriteToFile(Bkup);
+	  CutToFile(Bkup);
+	  SetupVbar();
+          kgUpdateOn ( Tmp ) ;
           break;
           case 5:
-	  WriteToFile(Bkup);
+          WriteToFile(Bkup);
           break;
           case 6:
-	  ReadInFile(Bkup);
+          ReadInFile(Bkup);
           break;
           case 7:
-	  GotoMark();
+          GotoMark();
           break;
           case 8:
           kgSetWidgetVisibility ( Opt , 0 ) ;
@@ -1037,4 +974,147 @@ i :  Index of Widget  (0 to max_widgets-1)
       return ret;
   }
   void ScrollTablebutton4init ( DIN *B , void *pt ) {
+  }
+  int ScrollTablecleanup ( void *Tmp ) {
+  /* you add any cleanup/mem free here */
+  /***********************************
+    Tmp :  Pointer to DIALOG
+   ***********************************/
+      int ret = 1;
+      DIALOG *D;
+      D = ( DIALOG * ) Tmp;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+ /* pt[1] is outputs, if any  to be given to caller */
+ /* pt[0] is inputs, given by caller */
+      return ret;
+  }
+  int ModifyScrollTable ( void *Tmp , int GrpId ) {
+      DIALOG *D;
+      D = ( DIALOG * ) Tmp;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+ /* pt[0] is inputs given by caller */
+      DIA *d;
+      int i , n;
+      int xo , yo , xl , yl;
+      int xres , yres;
+      d = D->d;
+      i = 0;while ( d [ i ] .t != NULL ) {;
+          i++;
+      };
+      n = 1;
+      strcpy ( D->name , "Kit ver 1.0" ) ; /* Dialog name you may change */
+      DB = ( DIL * ) kgGetNamedWidget ( D , ( char * ) "SplButn" ) ;
+      xl = DB->x2 -DB->x1;
+      yl = DB->y2 -DB->y1;
+      kgDisplaySize ( & xres , & yres ) ;
+      xo = ( D->xl-xl ) /2;
+      DB->x1 = xo;
+      DB->x2 = xo+xl;
+      B1 = ( DIN * ) kgGetNamedWidget ( D , ( char * ) "Button1" ) ;
+      xl = B1->x2 -B1->x1;
+      xo = D->xl-xl-25;
+      B1->x1 = xo;
+      B1->x2 = xo+xl;
+#if 0
+      if ( D->fullscreen != 1 ) { /* if not fullscreen mode */
+          int xres , yres;
+          kgDisplaySize ( & xres , & yres ) ;
+      // D->xo=D->yo=0; D->xl = xres-10; D->yl=yres-80;
+      }
+      else { // for fullscreen
+          int xres , yres;
+          kgDisplaySize ( & xres , & yres ) ;
+          D->xo = D->yo = 0; D->xl = xres; D->yl = yres;
+//     D->StackPos = 1; // you may need it
+      } /* end of fullscreen mode */
+#endif
+      return GrpId;
+  }
+  int ScrollTableCallBack ( void *Tmp , void *tmp ) {
+  /***********************************
+    Tmp :  Pointer to DIALOG
+    tmp :  Pointer to KBEVENT
+   ***********************************/
+      int ret = 0;
+      DIALOG *D;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      KBEVENT *kbe;
+      D = ( DIALOG * ) Tmp;
+      kbe = ( KBEVENT * ) tmp;
+      if ( kbe->event == 1 ) {
+          if ( kbe->button == 1 ) {
+          }
+      }
+      return ret;
+  }
+  int ScrollTableResizeCallBack ( void *Tmp ) {
+  /***********************************
+    Tmp :  Pointer to DIALOG
+   ***********************************/
+      int ret = 0 , k;
+      int xres , yres , dx , dy;
+      int xo , yo , xl , yl , Fz1 , Fz2i , nchr;
+      static int Xl = -1 , Yl = -1 , Fz = -1 , By1;
+      char Fmt [ 8 ] ;
+      DIALOG *D;
+      T_ELMT *elmt;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      D = ( DIALOG * ) Tmp;
+      kgGetWindowSize ( D , & xres , & yres ) ;
+      dx = xres - D->xl;
+      dy = yres - D->yl;
+      if ( Xl == -1 ) {
+          Xl = D->xl;
+          Yl = D->yl;
+          Fz = Tbl->FontSize;
+          By1 = B1->y1;
+      }
+  /* extra code */
+      D->xl = xres;
+      D->yl = yres;
+      xl = DB->x2 -DB->x1;
+      yl = DB->y2 -DB->y1;
+      xo = ( D->xl-xl ) /2;
+      DB->x1 = xo;
+      DB->x2 = xo+xl;
+      DB->y1 = D->yl- yl -2;
+      DB->y2 = DB->y1 + yl;
+      xl = B1->x2 -B1->x1;
+      yl = B1->y2 -B1->y1;
+      if ( D->xl < Xl ) B1->y1 = 6;
+      else B1->y1 = By1;
+      B1->y2 = B1->y1+yl;
+      xo = D->xl-xl-10;
+      B1->x1 = xo;
+      B1->x2 = xo+xl;
+      Tbl->x2 = xres - 40;
+      Tbl->y2 = yres - 40;
+      Fz1 = ( Tbl->y2 - Tbl->y1-4 ) /48;
+      if ( Fz1 > 12 ) Fz1 = 10;
+      nchr = ( Tbl->x2 - Tbl->x1 ) /Fz1 -11;
+      sprintf ( Fmt , "%%%ds" , nchr ) ;
+      elmt = ( T_ELMT * ) Tbl->elmt;
+      for ( k = 0;k < Tbl->ny;k++ ) {
+          strcpy ( elmt [ k*Tbl->nx+1 ] .fmt , Fmt ) ;
+      }
+      Tbl->FontSize = Fz1;
+      Tbl->width = 20;
+      xl = V->x2 - V->x1;
+      yl = V->y2 - V->y1;
+      V->x1 = Tbl->x2+7;
+      V->x2 = V->x1 + xl;
+      V->y2 = Tbl->y2;
+      kgRedrawDialog ( D ) ;
+      kgSetAttnWidget ( Tmp , Tbl ) ;
+      return ret;
+  }
+  int ScrollTableWaitCallBack ( void *Tmp ) {
+  /***********************************
+    Tmp :  Pointer to DIALOG
+    Called while waiting for event
+    return value 1 will close the the UI
+   ***********************************/
+      int ret = 0;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      return ret;
   }

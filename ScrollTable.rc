@@ -1,11 +1,11 @@
 D      //GUI dimensions xo,yo,xl,yl,lw,rw,tw,bw,df,bor_type,bkup
-768 141 955 613
+768 141 957 601
 4 4 4 4
-8 4 1 0 1 1 0 0 0 0 1 0 0.000000 1 600 400 0
+9 4 1 0 1 1 0 0 0 0 1 0 0.000000 1 750 400 0
 //Table Box
 T
 T     //code
-7 66  //x1,y1
+8 66  //x1,y1
 20 //Width 
 2 24  //Nx,Ny,
 //element switch+10*noecho  and formats
@@ -13,7 +13,7 @@ T     //code
 "%4s"
 1
 "%80s"
-924 557  //x2,y2
+925 557  //x2,y2
 0 1 20000 //Cursor Position,bordr+10*type(0:0)+1000*t->width(20)
 16 10 0 //hide
 "ScrollTable"
@@ -24,18 +24,11 @@ v     //code
 945 558 //x2,y2
 0 //hide
 "VertScroll"
-//HorizScroll
-z
-z     //code
-7 556  //x1,y1
-942 576 //x2,y2
-1 //hide
-"HoriScroll"
 //Horiz bar
 h
 h     //code
-336 576  //x1,y1
-515 607  //x2,y2
+336 561  //x1,y1
+515 592  //x2,y2
 2 0  //xgap,ygap
 84 //length 
 25 //Width 
@@ -57,21 +50,13 @@ NULL // XPM
 2 0.500000 0  //type,fac
 0 0 //hide
 "SplButn"
-//Message Box
-m
-m     //code
-14 6  //x1,y1
-""/Message
-785 28 //x2,y2
-0 1 //justification,hide
-"ScrollTableWidget7"
 //Button Box
 n
 n     //code
-562 36  //x1,y1
-790 66  //x2,y2
+712 36  //x1,y1
+914 66  //x2,y2
 2 2  //xgap,ygap
-72 //length 
+64 //length 
 24 //Width 
 3 1  //Nx,Ny,
 1 //status
@@ -101,53 +86,46 @@ NULL // XPM
 //Button Box
 n
 n     //code
-11 36  //x1,y1
-239 66  //x2,y2
+13 36  //x1,y1
+148 66  //x2,y2
 2 2  //xgap,ygap
-72 //length 
+64 //length 
 24 //Width 
-3 1  //Nx,Ny,
+2 1  //Nx,Ny,
 1 //status
 "Save" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--240245255 //back ground color
+-216226216 //back ground color
  //keyboard code
 1 //status
 "Undo" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--240245255 //back ground color
+-216226216 //back ground color
  //keyboard code
-1 //status
-"More..." //title 
-NULL // XPM 
-NULL // XPM 
-NULL // XPM 
--240245255 //back ground color
- //keyboard code
-7 0.500000 0  //type,fac
+1 0.500000 0  //type,fac
 0 0 //hide
 "Button2"
 //Text Box
 t
 t     //code
-325 36  //x1,y1
+90 6  //x1,y1
 20 //Width 
 1 1  //Nx,Ny,
 //element formats
-"%20s" sw: 1
-545 64  //x2,y2
+"%15s" sw: 1
+270 34  //x2,y2
 1 1 10 //Cursor Position,bordr+10*type(1:0)
 18 9 0 //hide
 "SearchText"
 //Button Box
 n
 n     //code
-248 36  //x1,y1
-325 66  //x2,y2
+13 6  //x1,y1
+90 36  //x2,y2
 2 2  //xgap,ygap
 72 //length 
 24 //Width 
@@ -165,68 +143,92 @@ NULL // XPM
 //Button Box
 n
 n     //code
-3 36  //x1,y1
-597 66  //x2,y2
+148 36  //x1,y1
+613 66  //x2,y2
 2 2  //xgap,ygap
-72 //length 
+64 //length 
 24 //Width 
-8 1  //Nx,Ny,
+7 1  //Nx,Ny,
 1 //status
 "Read in" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--240245255 //back ground color
+-216226216 //back ground color
  //keyboard code
 1 //status
 "Mark" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--240245255 //back ground color
+-216226216 //back ground color
  //keyboard code
 1 //status
 "Write To" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--240245255 //back ground color
+-216226216 //back ground color
  //keyboard code
 1 //status
 "Cut" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--240245255 //back ground color
+-216226216 //back ground color
  //keyboard code
 1 //status
 "Copy" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--240245255 //back ground color
+-216226216 //back ground color
  //keyboard code
 1 //status
 "Paste" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--240245255 //back ground color
+-216226216 //back ground color
  //keyboard code
 1 //status
-"To Mark" //title 
+"ToMark" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--240245255 //back ground color
+-216226216 //back ground color
  //keyboard code
-1 //status
-"GoBack" //title 
-NULL // XPM 
-NULL // XPM 
-NULL // XPM 
--206255245 //back ground color
- //keyboard code
-8 0.500000 0  //type,fac
-1 0 //hide
+1 0.500000 0  //type,fac
+0 0 //hide
 "Optionals"
+//Button Box
+n
+n     //code
+270 6  //x1,y1
+344 36  //x2,y2
+2 2  //xgap,ygap
+64 //length 
+24 //Width 
+1 1  //Nx,Ny,
+1 //status
+"Replace" //title 
+NULL // XPM 
+NULL // XPM 
+NULL // XPM 
+-240245255 //back ground color
+ //keyboard code
+2 0.500000 0  //type,fac
+0 0 //hide
+"Replace"
+//Text Box
+t
+t     //code
+340 6  //x1,y1
+20 //Width 
+1 1  //Nx,Ny,
+//element formats
+"%15s" sw: 1
+520 36  //x2,y2
+1 1 10 //Cursor Position,bordr+10*type(1:0)
+18 9 0 //hide
+"Tbox2"

@@ -1,6 +1,5 @@
 int  ScrollTabletablebox1callback(int cellno,int i,void *Tmp);
 int  ScrollTablevertscroll1callback(double val,int i,void *Tmp) ;
-int  ScrollTablehorizscroll1callback(double val,int i,void *Tmp) ;
 int  ScrollTablesplbutton1callback(int butno,int i,void *Tmp) ;
 void  ScrollTablesplbutton1init(DIL *B,void *pt) ;
 int  ScrollTablebutton1callback(int butno,int i,void *Tmp) ;
@@ -12,6 +11,9 @@ int  ScrollTablebutton3callback(int butno,int i,void *Tmp) ;
 void  ScrollTablebutton3init(DIN *B,void *pt) ;
 int  ScrollTablebutton4callback(int butno,int i,void *Tmp) ;
 void  ScrollTablebutton4init(DIN *B,void *pt) ;
+int  ScrollTablebutton5callback(int butno,int i,void *Tmp) ;
+void  ScrollTablebutton5init(DIN *B,void *pt) ;
+int  ScrollTabletextbox2callback(int cellno,int i,void *Tmp);
 int ScrollTableinit(void *Tmp) ;
 int ScrollTablecleanup(void *Tmp) ;
 int ModifyScrollTable(void *Tmp,int GrpId) ;
