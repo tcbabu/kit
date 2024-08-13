@@ -6,8 +6,10 @@ extern char *flname;
       Dlink *S;
       char *pt;
       if(argc<2) {
-	      fprintf(stderr,"Usage: %s [file]\n",argv[0]);
-	      return 0;
+//	      fprintf(stderr,"Usage: %s [file]\n",argv[0]);
+//	      return 0;
+              RunScrollTable ( NULL , NULL);
+              return 1;
       }
       flname=argv[1];
       RunScrollTable ( NULL ,  argv [ 1 ]  ) ;

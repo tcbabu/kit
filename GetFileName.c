@@ -22,7 +22,7 @@ int  GetFileNamebutton1callback(int butno,int i,void *Tmp) {
     Tmp :  Pointer to DIALOG
    ***********************************/
   DIALOG *D;DIN *B;
-  int n,ret =0; 
+  int n,ret =0;
   char flname[200];
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
   D = (DIALOG *)Tmp;
@@ -34,22 +34,22 @@ int  GetFileNamebutton1callback(int butno,int i,void *Tmp) {
 	  kgUpdateOn(Tmp);
   }
   switch(butno) {
-    case 1: 
+    case 1:
       break;
   }
   return ret;
 }
 void  GetFileNamebutton1init(DIN *B,void *ptmp) {
- void **pt=(void **)ptmp; //pt[0] is arg 
+ void **pt=(void **)ptmp; //pt[0] is arg
 }
 int  GetFileNamesplbutton1callback(int butno,int i,void *Tmp) {
-  /*********************************** 
-    butno : selected item (1 to max_item) 
-    i :  Index of Widget  (0 to max_widgets-1) 
-    Tmp :  Pointer to DIALOG  
-   ***********************************/ 
-  DIALOG *D;DIL *B; 
-  int n,ret=1; 
+  /***********************************
+    butno : selected item (1 to max_item)
+    i :  Index of Widget  (0 to max_widgets-1)
+    Tmp :  Pointer to DIALOG
+   ***********************************/
+  DIALOG *D;DIL *B;
+  int n,ret=1;
   char *flname=NULL;
   char *fpt;
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
@@ -57,10 +57,10 @@ int  GetFileNamesplbutton1callback(int butno,int i,void *Tmp) {
   B = (DIL *) kgGetWidget(Tmp,i);
   n = B->nx;
   switch(butno) {
-    case 1: 
+    case 1:
 	    pt[1]=NULL;
       break;
-    case 2: 
+    case 2:
       fpt = kgGetString(Tx,0);
       flname = (char *)malloc(strlen(fpt)+1);
       strcpy(flname,fpt);
@@ -70,12 +70,12 @@ int  GetFileNamesplbutton1callback(int butno,int i,void *Tmp) {
   return ret;
 }
 void  GetFileNamesplbutton1init(DIL *B,void *ptmp) {
- void **pt=(void **)ptmp; //pt[0] is arg 
+ void **pt=(void **)ptmp; //pt[0] is arg
 }
 int GetFileNameinit(void *Tmp) {
-  /*********************************** 
-    Tmp :  Pointer to DIALOG  
-   ***********************************/ 
+  /***********************************
+    Tmp :  Pointer to DIALOG
+   ***********************************/
   /* you add any initialisation here */
   int ret = 1;
   DIALOG *D;
@@ -83,13 +83,17 @@ int GetFileNameinit(void *Tmp) {
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
  /* pt[0] is inputs, given by caller */
   Tx= (DIT *)kgGetNamedWidget(Tmp,"Text");
+  if(pt[0]!= NULL) {
+    kgSetString(Tx,0,(char *)pt[0]);
+    kgUpdateWidget(Tx);
+  }
   return ret;
 }
 int GetFileNamecleanup(void *Tmp) {
   /* you add any cleanup/mem free here */
-  /*********************************** 
-    Tmp :  Pointer to DIALOG  
-   ***********************************/ 
+  /***********************************
+    Tmp :  Pointer to DIALOG
+   ***********************************/
   int ret = 1;
   DIALOG *D;
   D = (DIALOG *)Tmp;
@@ -283,7 +287,7 @@ int GetFileNameGroup( DIALOG *D,void **v,void *pt) {
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
   dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+4));
-  d =dtmp+i; 
+  d =dtmp+i;
   d[3].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIT));
   *d[0].t = t0;
@@ -302,7 +306,7 @@ int GetFileNameGroup( DIALOG *D,void **v,void *pt) {
   j=0;
   while(d[j].t!=NULL){ kgAddtoGrp(D,GrpId,(void *)(d[j].t));j++;}
   return GrpId;
-} 
+}
 
 /* One can also use the following code to add Widgets to an existing Dialog */
 
@@ -349,7 +353,7 @@ int GetFileName( void *parent,void **v,void *pt) {
   D.bw = 4;
   D.lw = 4;
   D.rw = 4;
-  D.xo = 567;   /* Position of Dialog */ 
+  D.xo = 567;   /* Position of Dialog */
   D.yo = 164;
   D.xl = 499;    /*  Length of Dialog */
   D.yl = 85;    /*  Width  of Dialog */

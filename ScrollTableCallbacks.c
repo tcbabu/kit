@@ -6,14 +6,18 @@
   static DIL *DB;
   static DIN *B1;
   static int Mid;
+  static int Igrp;
   static DIN *Opt;
   static DIN *SB;
+  static DIN *RB;
   static DIT *ST;
   static DIT *RT;
+  static DIP *P1;
   static int StartLine = 0 , EndLine = 0 , Nlines , Count;
   static int AddMode = 0 , AddRow = -1;;
   static double Vsize , Vpos;
   static int MarkPos = 1;
+  static int ExpandTab = 0;
   char *flname = NULL;
   static char Msg [ 200 ] ;
   static char Bkup [ 300 ] ;
@@ -22,6 +26,7 @@
   void *RunGetFileName ( void *parent , void *args ) ;
   void *RunGetMarkPos ( void *parent , void *args ) ;
   static int GetLength ( char *s1 , char *s2 ) ;
+  int MakeinitkitGroup ( DIALOG *D , void *arg ) ;
 #define RETURN(n) {\
    Vpos = ( double ) ( StartLine-1 ) *100.0/Count;\
        ReadTbl ( ) ;\
@@ -96,11 +101,15 @@
           while ( ( cpt [ j ] >= ' ' ) || ( cpt [ j ] == '\t' ) ) {
               if ( cpt [ j ] != '\t' ) Buf [ k++ ] = cpt [ j ] ;
               else {
-                  Buf [ k++ ] = cpt [ j ] ;
-#if 0
-                  l = ( j/8+1 ) *8;
-                  while ( k < l ) Buf [ k++ ] = ' ';
-#endif
+                  if ( ExpandTab ) {
+                      l = ( j/8+1 ) *8;
+                      while ( k < l ) Buf [ k++ ] = ' ';
+                  }
+                  else {
+                      Buf [ k++ ] = cpt [ j ] ;
+                      l = ( j/8+1 ) *8;
+                      while ( k < l ) Buf [ k++ ] = 127;
+                  }
               }
               j++;
           }
@@ -118,9 +127,17 @@
       for ( i = 0;i < n;i++ ) {
           cpt = ( char * ) kgGetString ( Tbl , i*2+1 ) ;
           spt = ( char * ) malloc ( strlen ( cpt ) +3 ) ;
-          strcpy ( spt , cpt ) ;
-          strcat ( spt , "\n" ) ;
-//        printf("%s",spt);
+          k = 0;j = 0;
+          while ( cpt [ k ] != '\0' ) {
+              if ( cpt [ k ] == 127 ) {k++;continue;}
+              spt [ j ] = cpt [ k ] ;
+              k++;j++;
+          }
+          spt [ j++ ] = '\n';
+          spt [ j ] = '\0';
+//          strcpy ( spt , cpt ) ;
+//          strcat ( spt , "\n" ) ;
+//       printf("%s",spt);
           Dreplace ( Slist , spt , StartLine+i-1 ) ;
       }
       return 1;
@@ -131,6 +148,29 @@
       Dposition ( Slist , StartLine+row ) ;
       buf = ( char * ) malloc ( 2 ) ;
       strcpy ( buf , ( char * ) "\n" ) ;
+      Dadd ( Slist , buf ) ;
+      Count = Dcount ( Slist ) ;
+      if ( Count <= ( Tbl->ny ) ) {
+          EndLine+= 1;
+          if ( EndLine <= Nlines ) {
+              kgSetOnTableCell ( Tbl , ( EndLine-1 ) *2+1 ) ;
+          }
+      }
+      if ( row == ( Nlines-1 ) ) {
+          StartLine += 1;
+          EndLine += 1;
+      }
+      WriteTbl ( ) ;
+      SetupVbar ( ) ;
+      kgUpdateWidget ( V ) ;
+      return 1;
+  }
+  static int AddStringLine ( int row ) {
+      char *buf;
+      ReadTbl ( ) ;
+      Dposition ( Slist , StartLine+row ) ;
+      buf = ( char * ) malloc ( strlen ( Buf1 ) +1 ) ;
+      strcpy ( buf , ( char * ) Buf1 ) ;
       Dadd ( Slist , buf ) ;
       Count = Dcount ( Slist ) ;
       if ( Count <= ( Tbl->ny ) ) {
@@ -293,6 +333,25 @@
 //        printf("Row: %d:%d  %d %d\n",row, cellno,Tbl->nx,Tbl->ny);
               kgUpdateOn ( Tbl->D ) ;
           }
+          else {
+              int curpos = kgGetTableCurpos ( Tbl ) ;
+              int row = kgGetTableRow ( Tbl ) ;
+              char *spt = kgGetString ( Tbl , cellno ) ;
+              strcpy ( Buf , spt ) ;
+              strcpy ( Buf1 , Buf+curpos ) ;
+              strcat ( Buf1 , ( char * ) "\n" ) ;
+              Buf [ curpos ] = '\0';
+              strcat ( Buf , "\n" ) ;
+              kgSetString ( Tbl , cellno , Buf ) ;
+              kgUpdateWidget ( Tbl ) ;
+              kgUpdateOn ( Tbl->D ) ;
+              ReadTbl ( ) ;
+              AddStringLine ( row ) ;
+              if ( row < ( Tbl->ny-1 ) ) row++;
+              kgSetTableCursor ( Tbl , ( row ) *Tbl->nx+1 ) ;
+//      kgSetTableCursorPos ( Tbl , ( row) *Tbl->nx+1 , 0) ;
+              kgUpdateOn ( Tbl->D ) ;
+          }
       }
       kgSetAttnWidget ( Tmp , Tbl ) ;
       return ret;
@@ -389,6 +448,24 @@
       switch ( butno ) {
           case 1:
           pt [ 1 ] = NULL;
+          Dempty ( Slist ) ;
+          Slist = Dreadfile ( SaveFile ) ;
+          if ( Dcount ( Slist ) == 0 ) {
+              Dempty ( Slist ) ;
+              break;
+          }
+          if ( kgCheckMenu ( D , 10 , 100 , ( char * ) "Want to keep Saved File ?" , 1 ) ) \
+          {
+              char *fpt;
+              strcpy ( Buf , flname ) ;
+              if ( ( fpt = RunGetFileName ( NULL , Buf ) ) == NULL ) break;
+              strcpy ( Buf , fpt ) ;
+              free ( fpt ) ;
+              Dempty ( Slist ) ;
+              Slist = Dreadfile ( SaveFile ) ;
+              Dwritefile ( Slist , Buf ) ;
+              Dempty ( Slist ) ;
+          }
           break;
           case 2:
           ReadTbl ( ) ;
@@ -475,8 +552,8 @@
       Buf [ loc ] = '\0';
       strcat ( Buf , r ) ;
       strcat ( Buf , ptmp+strlen ( s ) ) ;
-      printf ( "lptr : %s\n" , lptr ) ;
-      printf ( "Buf: %s" , Buf ) ;
+//      printf ( "lptr : %s\n" , lptr ) ;
+//      printf ( "Buf: %s" , Buf ) ;
       return Buf;
   }
   int ScrollTablebutton5callback ( int butno , int i , void *Tmp ) {
@@ -626,31 +703,36 @@
       e = T->elmt;
       return ret;
   }
-  int ScrollTableinit ( void *Tmp ) {
-  /***********************************
-    Tmp :  Pointer to DIALOG
-   ***********************************/
-  /* you add any initialisation here */
-      int ret = 1 , k;
-      int nlines ;
-      DIALOG *D;
-      D = ( DIALOG * ) Tmp;
-      char **Strs;
-      char *cpt;
-      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
-      flname = ( char * ) pt [ 0 ] ;
-      Tbl = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "ScrollTable" ) ;
-      E = Tbl->elmt;
-      nlines = Tbl->ny;
-      Nlines = Tbl->ny;
-      Slist = Dreadfile ( flname ) ;
-      Strs = ( char ** ) Dlinktoarray ( Slist ) ;
-      sprintf ( Bkup , ".%s.%d" , flname , getpid ( ) ) ;
-      sprintf ( SaveFile , ".%s.save.%d" , flname , getpid ( ) ) ;
+  static int MakeFileNames ( ) {
+      char BaseName [ 200 ] ;
+      kgExtractBaseName ( flname , BaseName ) ;
+//      printf("BaseName: %s\n",BaseName);
+      sprintf ( Bkup , ".%s.%d" , BaseName , getpid ( ) ) ;
+      sprintf ( SaveFile , "%s.save.%d" , BaseName , getpid ( ) ) ;
 //      printf("Bkup: %s\n",Bkup);
       remove ( Bkup ) ;
       remove ( SaveFile ) ;
+      return 1;
+  }
+  int InitTable ( char *fl ) {
+      char **Strs;
+      char *cpt;
+      DIALOG *D= (DIALOG *)Tbl->D;
+      int nlines,k;
+      kgSetGrpVisibility ( Tbl->D,Igrp , 0 ) ;
+      kgUpdateGrp ( D , Igrp ) ;
+      kgSetGrpVisibility ( D,Mid , 1 ) ;
+      kgSetWidgetVisibility ( V , 0 ) ;
+      kgUpdateGrp ( D, Mid ) ;
+      kgUpdateOn ( D) ;
+      flname = fl;
+      Slist = Dreadfile ( flname ) ;
+      MakeFileNames ( ) ;
+      Strs = ( char ** ) Dlinktoarray ( Slist ) ;
       StartLine = EndLine = 1;
+      E = Tbl->elmt;
+      nlines = Tbl->ny;
+      Nlines = Tbl->ny;
       if ( ( Strs == NULL ) || ( Strs [ 0 ] == NULL ) ) {
           cpt = ( char * ) malloc ( 2 ) ;
           strcpy ( cpt , "\n" ) ;
@@ -684,7 +766,6 @@
       }
       Count = Dcount ( Slist ) ;
       Resetlink ( Slist ) ;
-      V = ( DIV * ) kgGetNamedWidget ( D , ( char * ) "VertScroll" ) ;
       if ( Count <= Nlines ) kgSetWidgetVisibility ( V , 0 ) ;
       else {
           Vsize = ( double ) Nlines/Count*100;
@@ -692,19 +773,118 @@
           kgSetScrollLength ( V , Vsize ) ;
           kgSetScrollPos ( V , Vpos ) ;
       }
-      Opt = ( DIN * ) kgGetNamedWidget ( Tmp , ( char * ) "Optionals" ) ;
-      Mid = kgOpenGrp ( Tmp ) ;
-//      kgAddtoGrp ( Tmp , Mid , kgGetNamedWidget ( Tmp , ( char * ) "Button1" ) ) ;
-      kgAddtoGrp ( Tmp , Mid , kgGetNamedWidget ( Tmp , ( char * ) "Button2" ) ) ;
-      SB = ( DIN * ) kgGetNamedWidget ( Tmp , ( char * ) "SearchButn" ) ;
-      kgAddtoGrp ( Tmp , Mid , SB ) ;
-      ST = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "SearchText" ) ;
-      RT = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "Tbox2" ) ;
-      kgAddtoGrp ( Tmp , Mid , ST ) ;
       kgUpdateWidget ( V ) ;
       kgUpdateWidget ( Tbl ) ;
       kgSetTableCursor ( Tbl , 1 ) ;
-      kgSetDefaultAttnWidget ( Tmp , Tbl ) ;
+      kgSetDefaultAttnWidget ( D , Tbl ) ;
+      kgUpdateOn ( D ) ;
+      return 1;
+  }
+  static int SetupGrps ( ) {
+      DIALOG *Tmp= (DIALOG *)Tbl->D;
+      Mid = kgOpenGrp ( Tmp ) ;
+      Opt = ( DIN * ) kgGetNamedWidget ( Tmp , ( char * ) "Optionals" ) ;
+      kgAddtoGrp ( Tmp , Mid , kgGetNamedWidget ( Tmp , ( char * ) "Button1" ) ) ;
+      kgAddtoGrp ( Tmp , Mid , kgGetNamedWidget ( Tmp , ( char * ) "Button2" ) ) ;
+      SB = ( DIN * ) kgGetNamedWidget ( Tmp , ( char * ) "SearchButn" ) ;
+      RB = ( DIN * ) kgGetNamedWidget ( Tmp , ( char * ) "Replace" ) ;
+      kgAddtoGrp ( Tmp , Mid , SB ) ;
+      kgAddtoGrp ( Tmp , Mid , RB ) ;
+      kgAddtoGrp ( Tmp , Mid , Opt ) ;
+      kgAddtoGrp ( Tmp , Mid , Tbl ) ;
+      ST = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "SearchText" ) ;
+      RT = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "Tbox2" ) ;
+      kgAddtoGrp ( Tmp , Mid , ST ) ;
+      kgAddtoGrp ( Tmp , Mid , RT ) ;
+      kgAddtoGrp ( Tmp , Mid , V ) ;
+      kgAddtoGrp ( Tmp , Mid , ST ) ;
+      return 1;
+  }
+  int ScrollTableinit ( void *Tmp ) {
+  /***********************************
+    Tmp :  Pointer to DIALOG
+   ***********************************/
+  /* you add any initialisation here */
+      int ret = 1 , k;
+      int nlines ;
+      DIALOG *D;
+      D = ( DIALOG * ) Tmp;
+      char **Strs;
+      char *cpt;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      flname = ( char * ) pt [ 0 ] ;
+      Tbl = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "ScrollTable" ) ;
+      V = ( DIV * ) kgGetNamedWidget ( D , ( char * ) "VertScroll" ) ;
+      SetupGrps ( ) ;
+      if ( flname == NULL ) {
+          kgSetGrpVisibility ( Tmp , Igrp , 1 ) ;
+          kgSetGrpVisibility ( Tmp , Mid , 0 ) ;
+#if 0
+          flname = RunGetFileName ( NULL , NULL ) ;
+          if ( flname == NULL ) {
+              kgSetExit ( D ) ;
+              return 1;
+          }
+#endif
+          kgSetGrpVisibility ( Tmp , Mid , 0 ) ;
+          kgUpdateGrp ( Tmp , Mid ) ;
+          kgUpdateGrp ( Tmp , Igrp ) ;
+          kgUpdateOn ( Tmp ) ;
+          return 1;
+      }
+      Slist = Dreadfile ( flname ) ;
+      MakeFileNames ( ) ;
+      Strs = ( char ** ) Dlinktoarray ( Slist ) ;
+      StartLine = EndLine = 1;
+      E = Tbl->elmt;
+      nlines = Tbl->ny;
+      Nlines = Tbl->ny;
+      if ( flname != NULL ) {
+          if ( ( Strs == NULL ) || ( Strs [ 0 ] == NULL ) ) {
+              cpt = ( char * ) malloc ( 2 ) ;
+              strcpy ( cpt , "\n" ) ;
+              Dadd ( Slist , cpt ) ;
+              kgSetString ( Tbl , 1 , cpt ) ;
+//          kgSetInt ( Tbl , 0 , 1 ) ;
+              WriteLineNo ( 0 ) ;
+              kgSetOnTableCell ( Tbl , 1 ) ;
+              for ( k = 1;k < nlines; k++ ) {
+                  kgSetOffTableCell ( Tbl , k*2+1 ) ;
+              }
+              AddMode = 1;
+              AddRow = 0;
+          }
+          else {
+              k = 0;
+              StartLine = 1;
+              while ( Strs [ k ] != NULL ) {
+                  if ( k < nlines ) {
+                      kgSetOnTableCell ( Tbl , k*2+1 ) ;
+                  }
+                  k++;
+              }
+              if ( k < nlines ) EndLine = k;
+              else EndLine = nlines;
+              while ( k < nlines ) {
+                  kgSetOffTableCell ( Tbl , k*2+1 ) ;
+                  k++;
+              }
+              WriteTbl ( ) ;
+          }
+          Count = Dcount ( Slist ) ;
+          Resetlink ( Slist ) ;
+          if ( Count <= Nlines ) kgSetWidgetVisibility ( V , 0 ) ;
+          else {
+              Vsize = ( double ) Nlines/Count*100;
+              Vpos = 0;
+              kgSetScrollLength ( V , Vsize ) ;
+              kgSetScrollPos ( V , Vpos ) ;
+          }
+          kgUpdateWidget ( V ) ;
+          kgUpdateWidget ( Tbl ) ;
+          kgSetTableCursor ( Tbl , 1 ) ;
+          kgSetDefaultAttnWidget ( Tmp , Tbl ) ;
+      }
       kgUpdateOn ( Tmp ) ;
       free ( Strs ) ;
       return ret;
@@ -728,6 +908,7 @@
           break;
           case 2:
 //        printf("%s\n",flname);
+#if 1
           if ( flname != NULL ) {
               int k;
               MarkPos = StartLine+kgGetTableRow ( Tbl ) ;
@@ -760,6 +941,11 @@
               WriteTbl ( ) ;
               kgUpdateOn ( Tbl->D ) ;
           }
+#else
+          SetupVbar ( ) ;
+          WriteTbl ( ) ;
+          kgUpdateOn ( Tbl->D ) ;
+#endif
           break;
           case 3:
           kgSetGrpVisibility ( Tbl->D , Mid , 0 ) ;
@@ -789,6 +975,29 @@
       D = ( DIALOG * ) Tmp;
       T = ( DIT * ) kgGetWidget ( Tmp , i ) ;
       e = T->elmt;
+      return ret;
+  }
+  int ScrollTabletextbox1callback_test ( int cellno , int i , void *Tmp ) {
+  /*************************************************
+   cellno: current cell counted along column strting with 0
+           ie 0 to (nx*ny-1)
+   i     : widget id starting from 0
+   Tmp   : Pointer to DIALOG
+   *************************************************/
+      DIALOG *D;DIT *T;T_ELMT *e;
+      int ret = 1;
+      int curpos = kgGetTableCurpos ( Tbl ) ;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      char *spt = kgGetString ( Tbl , cellno ) ;
+      D = ( DIALOG * ) Tmp;
+      T = ( DIT * ) kgGetWidget ( Tmp , i ) ;
+      e = T->elmt;
+      strcpy ( Buf , spt ) ;
+      free ( spt ) ;
+      strcpy ( Buf1 , Buf+curpos ) ;
+      Buf [ curpos ] = '\0';
+      strcpy ( Buf , "\n" ) ;
+      printf ( "%s%s" , Buf , Buf1 ) ;
       return ret;
   }
   static int GetLength ( char *s1 , char *s2 ) {
@@ -938,6 +1147,8 @@
               s = endpos;
               e = MarkPos;
           }
+          sprintf ( Buf1 , "Copy lines %d to %d ?" , s , e ) ;
+          if ( ! kgQstMenu ( Tbl->D , 10 , 100 , Buf1 , 1 ) ) return 0;
           Dposition ( Slist , s ) ;
           for ( k = s;k <= e;k++ ) {
               spt = ( char * ) Getrecord ( Slist ) ;
@@ -1077,19 +1288,21 @@ i :  Index of Widget  (0 to max_widgets-1)
               Dempty ( Wlist ) ;
           }
 #else
-          WriteToFile ( fpt ) ;
-          if ( fpt != NULL ) {
-              sprintf ( Msg , "Wrote to  %s" , fpt ) ;
-              Splash ( Msg ) ;
-              free ( fpt ) ;
+          if ( WriteToFile ( fpt ) ) {
+              if ( fpt != NULL ) {
+                  sprintf ( Msg , "Wrote to  %s" , fpt ) ;
+                  Splash ( Msg ) ;
+                  free ( fpt ) ;
+              }
           }
 #endif
           break;
           case 2:
           MarkPos = kgGetTableRow ( Tbl ) +StartLine;
-          RunGetMarkPos(Tbl->D,&MarkPos);
-          sprintf ( Msg , "Marked Line: %d" , MarkPos ) ;
+          if ( RunGetMarkPos ( Tbl->D , & MarkPos ) ) {
+              sprintf ( Msg , "Marked Line: %d" , MarkPos ) ;
 //        Splash ( Msg ) ;
+          }
           break;
           case 4:
           if ( CutToFile ( Bkup ) ) {
@@ -1145,6 +1358,7 @@ i :  Index of Widget  (0 to max_widgets-1)
       int xres , yres;
       d = D->d;
       D->NoTabProcess = 1;
+      Igrp = MakeinitkitGroup ( Tmp , Buf ) ;
       i = 0;while ( d [ i ] .t != NULL ) {;
           i++;
       };
@@ -1162,6 +1376,20 @@ i :  Index of Widget  (0 to max_widgets-1)
       xo = D->xl-xl-25;
       B1->x1 = xo;
       B1->x2 = xo+xl;
+      Buf [ 0 ] = '\0';
+      kgSetGrpVisibility ( Tmp , Igrp , 0 ) ;
+      P1 = ( DIP * ) kgGetNamedWidget ( Tmp , ( char * ) "initkitimg" ) ;
+      xl = P1->x2 -P1->x1;
+      yl = P1->y2 -P1->y1;
+      xo = ( D->xl-xl ) /2;
+      yo = ( D->yl -yl ) /2;
+#if 0
+      P1->x1 = xo;
+      P1->x2 = P->x1+xl;
+      P1->y1 = yo;
+      P1->y2 = P->y1+yl;
+#endif
+      kgShiftGrp ( Tmp , Igrp , xo , yo ) ;
 #if 0
       if ( D->fullscreen != 1 ) { /* if not fullscreen mode */
           int xres , yres;
