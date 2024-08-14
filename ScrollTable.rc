@@ -1,7 +1,7 @@
 D      //GUI dimensions xo,yo,xl,yl,lw,rw,tw,bw,df,bor_type,bkup
 768 141 957 601
 4 4 4 4
-9 4 1 0 1 1 0 0 0 0 1 0 0.000000 1 750 400 0
+11 4 1 0 1 1 0 0 0 0 1 0 0.000000 1 750 400 0
 //Table Box
 T
 T     //code
@@ -185,19 +185,19 @@ NULL // XPM
 -221221221 //back ground color
  //keyboard code
 1 //status
-"Paste" //title 
+"Yank" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
 -221221221 //back ground color
  //keyboard code
 1 //status
-"ToMark" //title 
+"Paste" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
 -221221221 //back ground color
-} //keyboard code
+| //keyboard code
 1 0.500000 0  //type,fac
 0 0 //hide
 "Optionals"
@@ -232,3 +232,34 @@ t     //code
 1 1 10 //Cursor Position,bordr+10*type(1:0)
 18 9 0 //hide
 "Tbox2"
+//Text Box
+t
+t     //code
+10 558  //x1,y1
+20 //Width 
+1 1  //Nx,Ny,
+//element formats
+"MarkPos%4d" sw: 1
+162 586  //x2,y2
+1 1 0 //Cursor Position,bordr+10*type(0:0)
+18 9 0 //hide
+"MarkText"
+//Button Box
+n
+n     //code
+161 557  //x1,y1
+192 587  //x2,y2
+2 2  //xgap,ygap
+25 //length 
+25 //Width 
+1 1  //Nx,Ny,
+1 //status
+"Go" //title 
+NULL // XPM 
+NULL // XPM 
+NULL // XPM 
+-235255250 //back ground color
+ //keyboard code
+5 0.500000 0  //type,fac
+0 0 //hide
+"Go"

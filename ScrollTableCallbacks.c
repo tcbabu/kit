@@ -9,8 +9,10 @@
   static DIN *Opt;
   static DIN *SB;
   static DIN *RB;
+  static DIN *GB;
   static DIT *ST;
   static DIT *RT;
+  static DIT *MT;
   static int StartLine = 0 , EndLine = 0 , Nlines , Count;
   static int AddMode = 0 , AddRow = -1;;
   static double Vsize , Vpos;
@@ -387,6 +389,12 @@
       return ret;
   }
   static int GotoMark ( ) {
+      MarkPos = kgGetInt(MT,0);
+      if(MarkPos< 1) {
+        MarkPos =1;
+        kgSetInt(MT,0,MarkPos);
+        kgUpdateWidget(MT);
+      }
       int pos = MarkPos -StartLine;
       ReadTbl ( ) ;
       Count = Dcount ( Slist ) ;
@@ -810,8 +818,65 @@ static int GetRealPos(){
       kgAddtoGrp ( Tmp , Mid , RT ) ;
       kgAddtoGrp ( Tmp , Mid , V ) ;
       kgAddtoGrp ( Tmp , Mid , ST ) ;
+      MT = (DIT *) kgGetNamedWidget (Tmp,(char *)"MarkText");
+      GB = (DIN *) kgGetNamedWidget (Tmp,(char *)"Go");
+      kgAddtoGrp ( Tmp , Mid , MT ) ;
+      kgAddtoGrp ( Tmp , Mid , GB ) ;
       return 1;
   }
+int  ScrollTabletextbox3callback(int cellno,int i,void *Tmp) {
+  /*************************************************
+   cellno: current cell counted along column strting with 0
+           ie 0 to (nx*ny-1)
+   i     : widget id starting from 0
+   Tmp   : Pointer to DIALOG
+   *************************************************/
+  DIALOG *D;DIT *T;T_ELMT *e;
+  int ret=1;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+  D = (DIALOG *)Tmp;
+  T = (DIT *)kgGetWidget(Tmp,i);
+  e = T->elmt;
+  MarkPos=kgGetInt(MT,0);
+      if(MarkPos< 1) {
+        MarkPos =1;
+        kgSetInt(MT,0,MarkPos);
+        kgUpdateWidget(MT);
+      }
+      kgSetAttnWidget ( Tmp , Tbl ) ;
+  return ret;
+}
+int  ScrollTablebutton6callback(int butno,int i,void *Tmp) {
+  /***********************************
+    butno : selected item (1 to max_item)
+    i :  Index of Widget  (0 to max_widgets-1)
+    Tmp :  Pointer to DIALOG
+   ***********************************/
+  DIALOG *D;DIN *B;
+  int n,ret =0;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+  D = (DIALOG *)Tmp;
+  B = (DIN *)kgGetWidget(Tmp,i);
+  n = B->nx*B->ny;
+  MarkPos=kgGetInt(MT,0);
+      if(MarkPos< 1) {
+        MarkPos =1;
+        kgSetInt(MT,0,MarkPos);
+        kgUpdateWidget(MT);
+      }
+  kgUpdateWidget(MT);
+  GotoMark();
+  kgUpdateOn(Tmp);
+  switch(butno) {
+    case 1:
+      break;
+  }
+      kgSetAttnWidget ( Tmp , Tbl ) ;
+  return ret;
+}
+void  ScrollTablebutton6init(DIN *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg
+}
   int ScrollTableinit ( void *Tmp ) {
   /***********************************
     Tmp :  Pointer to DIALOG
@@ -915,6 +980,8 @@ static int GetRealPos(){
               kgUpdateWidget ( Tbl ) ;
               kgUpdateOn ( Tbl->D ) ;
               MarkPos = StartLine+kgGetTableRow ( Tbl ) ;
+              kgSetInt(MT,0,MarkPos);
+              kgUpdateWidget(MT);
               Dempty ( Slist ) ;
               Slist = Dreadfile ( SaveFile ) ;
               if ( ( Count = Dcount ( Slist ) ) == 0 ) {
@@ -1318,10 +1385,19 @@ i :  Index of Widget  (0 to max_widgets-1)
           break;
           case 2:
           MarkPos = kgGetTableRow ( Tbl ) +StartLine;
+          kgSetInt(MT,0,MarkPos);
+          kgUpdateWidget(MT);
+          kgUpdateOn(Tbl->D);
+#if 0
           if ( RunGetMarkPos ( Tbl->D , & MarkPos ) ) {
               sprintf ( Msg , "Marked Line: %d" , MarkPos ) ;
+
 //        Splash ( Msg ) ;
           }
+#else
+// sprintf ( Msg , "Marked Line: %d" , MarkPos ) ;
+// Splash ( Msg ) ;
+#endif
           break;
           case 4:
           if ( CutToFile ( Bkup ) ) {
@@ -1333,11 +1409,13 @@ i :  Index of Widget  (0 to max_widgets-1)
           case 5:
           WriteToFile ( Bkup ) ;
           break;
-          case 6:
+          case 7:
           ReadInFile ( Bkup ) ;
           break;
-          case 7:
-          GotoMark ( ) ;
+          case 6:
+//          GotoMark ( ) ;
+          Dposition(Slist,StartLine+kgGetTableRow(Tbl));
+          kgSetPrimary(Tmp,(unsigned char *) Getrecord(Slist));
           break;
           case 8:
           kgSetWidgetVisibility ( Opt , 0 ) ;
@@ -1488,6 +1566,12 @@ i :  Index of Widget  (0 to max_widgets-1)
       V->x1 = Tbl->x2+7;
       V->x2 = V->x1 + xl;
       V->y2 = Tbl->y2;
+      yl = MT->y2 -MT->y1;
+      MT->y1 = D->yl-35;
+      MT->y2 = MT->y1+yl;
+      yl = GB->y2 - GB->y1;
+      GB->y1 = D->yl-36;
+      GB->y2 = GB->y1+yl;
       kgRedrawDialog ( D ) ;
       kgSetAttnWidget ( Tmp , Tbl ) ;
       return ret;
