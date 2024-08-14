@@ -1350,7 +1350,7 @@ i :  Index of Widget  (0 to max_widgets-1)
       d = D->d;
       D->NoTabProcess = 1;
       if(pt[0]==NULL) {
-	      pt[0] = Runinitkit(NULL,NULL);
+	      flname = Runinitkit(NULL,NULL);
       }
       else flname = (char *)pt[0];
       i = 0;while ( d [ i ] .t != NULL ) {;
