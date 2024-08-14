@@ -6,13 +6,11 @@
   static DIL *DB;
   static DIN *B1;
   static int Mid;
-  static int Igrp;
   static DIN *Opt;
   static DIN *SB;
   static DIN *RB;
   static DIT *ST;
   static DIT *RT;
-  static DIP *P1;
   static int StartLine = 0 , EndLine = 0 , Nlines , Count;
   static int AddMode = 0 , AddRow = -1;;
   static double Vsize , Vpos;
@@ -26,7 +24,7 @@
   void *RunGetFileName ( void *parent , void *args ) ;
   void *RunGetMarkPos ( void *parent , void *args ) ;
   static int GetLength ( char *s1 , char *s2 ) ;
-  int MakeinitkitGroup ( DIALOG *D , void *arg ) ;
+  void * Runinitkit(void *,void*);
 #define RETURN(n) {\
    Vpos = ( double ) ( StartLine-1 ) *100.0/Count;\
        ReadTbl ( ) ;\
@@ -719,8 +717,6 @@
       char *cpt;
       DIALOG *D= (DIALOG *)Tbl->D;
       int nlines,k;
-      kgSetGrpVisibility ( Tbl->D,Igrp , 0 ) ;
-      kgUpdateGrp ( D , Igrp ) ;
       kgSetGrpVisibility ( D,Mid , 1 ) ;
       kgSetWidgetVisibility ( V , 0 ) ;
       kgUpdateGrp ( D, Mid ) ;
@@ -812,26 +808,10 @@
       char **Strs;
       char *cpt;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
-      flname = ( char * ) pt [ 0 ] ;
+//      flname = ( char * ) pt [ 0 ] ;
       Tbl = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "ScrollTable" ) ;
       V = ( DIV * ) kgGetNamedWidget ( D , ( char * ) "VertScroll" ) ;
       SetupGrps ( ) ;
-      if ( flname == NULL ) {
-          kgSetGrpVisibility ( Tmp , Igrp , 1 ) ;
-          kgSetGrpVisibility ( Tmp , Mid , 0 ) ;
-#if 0
-          flname = RunGetFileName ( NULL , NULL ) ;
-          if ( flname == NULL ) {
-              kgSetExit ( D ) ;
-              return 1;
-          }
-#endif
-          kgSetGrpVisibility ( Tmp , Mid , 0 ) ;
-          kgUpdateGrp ( Tmp , Mid ) ;
-          kgUpdateGrp ( Tmp , Igrp ) ;
-          kgUpdateOn ( Tmp ) ;
-          return 1;
-      }
       Slist = Dreadfile ( flname ) ;
       MakeFileNames ( ) ;
       Strs = ( char ** ) Dlinktoarray ( Slist ) ;
@@ -896,7 +876,7 @@
     Tmp :  Pointer to DIALOG
    ***********************************/
       DIALOG *D;DIN *B;
-      int n , ret = 0;
+      int n , ret = 0,row;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
       D = ( DIALOG * ) Tmp;
       B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
@@ -908,9 +888,16 @@
           break;
           case 2:
 //        printf("%s\n",flname);
+        row = kgGetTableRow ( Tbl ) ;
 #if 1
           if ( flname != NULL ) {
               int k;
+                  for ( k = 0;k < Nlines;k++ ) {
+                      kgSetString ( Tbl , k*2 , ( char * ) "" ) ;
+                      kgSetString ( Tbl , k*2+1 , ( char * ) "" ) ;
+                  }
+		  kgUpdateWidget(Tbl);
+		  kgUpdateOn(Tbl->D);
               MarkPos = StartLine+kgGetTableRow ( Tbl ) ;
               Dempty ( Slist ) ;
               Slist = Dreadfile ( SaveFile ) ;
@@ -936,11 +923,14 @@
                       kgSetOffTableCell ( Tbl , k*2+1 ) ;
                   }
               }
-              GotoMark ( ) ;
-              SetupVbar ( ) ;
               WriteTbl ( ) ;
+              GotoMark ( ) ;
+	      if((Count>=Nlines)&&(StartLine> 1)) row= Nlines-1;
+	      kgSetTableCursorPos(Tbl,row*Tbl->nx+1,0);
+              SetupVbar ( ) ;
               kgUpdateOn ( Tbl->D ) ;
           }
+	  else printf("flname== NULL\n");
 #else
           SetupVbar ( ) ;
           WriteTbl ( ) ;
@@ -1112,8 +1102,8 @@
   }
   void ScrollTablebutton3init ( DIN *B , void *pt ) {
   }
-  static int ReadInFile ( char *flname ) {
-      Dlink *Rlist = Dreadfile ( flname ) ;
+  static int ReadInFile ( char *Infile ) {
+      Dlink *Rlist = Dreadfile ( Infile ) ;
       void *ptmp;
       int count = Count , row;
       if ( Rlist != NULL ) {
@@ -1212,8 +1202,8 @@ i :  Index of Widget  (0 to max_widgets-1)
     Tmp :  Pointer to DIALOG
    ***********************************/
       DIALOG *D;DIN *B;
-      int n , ret = 0;
-      char flname [ 300 ] ;
+      int n , ret = 0,pos;
+      char Infile [ 300 ] ;
       char *fpt;
       int row , k , count;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
@@ -1222,11 +1212,12 @@ i :  Index of Widget  (0 to max_widgets-1)
       n = B->nx*B->ny;
       switch ( butno ) {
           case 1:
-          flname [ 0 ] = '\0';
-          if ( kgFolderBrowser ( NULL , 100 , 100 , flname , ( char * ) "*" ) ) {
+          Infile [ 0 ] = '\0';
+          if ( kgFolderBrowser ( NULL , 100 , 100 , Infile , ( char * ) "*" ) ) {
               kgSkipEvents ( Tmp ) ;
+              pos = kgGetTableRow ( Tbl ) +StartLine;
 #if 0
-              Dlink *Rlist = Dreadfile ( flname ) ;
+              Dlink *Rlist = Dreadfile ( Infile ) ;
               void *ptmp;
               int count = Count;
               if ( Rlist != NULL ) {
@@ -1249,9 +1240,9 @@ i :  Index of Widget  (0 to max_widgets-1)
                   kgUpdateOn ( Tmp ) ;
               }
 #else
-              ReadInFile ( flname ) ;
+              ReadInFile ( Infile ) ;
 #endif
-              sprintf ( Msg , "Read in %s at %d" , flname , row ) ;
+              sprintf ( Msg , "Read in %s at %d" , Infile , pos ) ;
               Splash ( Msg ) ;
           }
           break;
@@ -1358,7 +1349,10 @@ i :  Index of Widget  (0 to max_widgets-1)
       int xres , yres;
       d = D->d;
       D->NoTabProcess = 1;
-      Igrp = MakeinitkitGroup ( Tmp , Buf ) ;
+      if(pt[0]==NULL) {
+	      pt[0] = Runinitkit(NULL,NULL);
+      }
+      else flname = (char *)pt[0];
       i = 0;while ( d [ i ] .t != NULL ) {;
           i++;
       };
@@ -1377,19 +1371,6 @@ i :  Index of Widget  (0 to max_widgets-1)
       B1->x1 = xo;
       B1->x2 = xo+xl;
       Buf [ 0 ] = '\0';
-      kgSetGrpVisibility ( Tmp , Igrp , 0 ) ;
-      P1 = ( DIP * ) kgGetNamedWidget ( Tmp , ( char * ) "initkitimg" ) ;
-      xl = P1->x2 -P1->x1;
-      yl = P1->y2 -P1->y1;
-      xo = ( D->xl-xl ) /2;
-      yo = ( D->yl -yl ) /2;
-#if 0
-      P1->x1 = xo;
-      P1->x2 = P->x1+xl;
-      P1->y1 = yo;
-      P1->y2 = P->y1+yl;
-#endif
-      kgShiftGrp ( Tmp , Igrp , xo , yo ) ;
 #if 0
       if ( D->fullscreen != 1 ) { /* if not fullscreen mode */
           int xres , yres;
