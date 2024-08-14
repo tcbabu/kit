@@ -144,7 +144,7 @@ NULL // XPM
 n
 n     //code
 148 36  //x1,y1
-613 66  //x2,y2
+616 66  //x2,y2
 2 2  //xgap,ygap
 64 //length 
 24 //Width 
@@ -185,19 +185,19 @@ NULL // XPM
 -221221221 //back ground color
  //keyboard code
 1 //status
-"Yank" //title 
+"Paste" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
 -221221221 //back ground color
  //keyboard code
 1 //status
-"Paste" //title 
+"Join" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
 -221221221 //back ground color
-| //keyboard code
+~ //keyboard code
 1 0.500000 0  //type,fac
 0 0 //hide
 "Optionals"

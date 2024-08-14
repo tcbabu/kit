@@ -1409,13 +1409,19 @@ i :  Index of Widget  (0 to max_widgets-1)
           case 5:
           WriteToFile ( Bkup ) ;
           break;
-          case 7:
+          case 6:
           ReadInFile ( Bkup ) ;
           break;
-          case 6:
+          case 7:
+// Join code to be added
 //          GotoMark ( ) ;
+#if 0
+          ReadTbl();
           Dposition(Slist,StartLine+kgGetTableRow(Tbl));
-          kgSetPrimary(Tmp,(unsigned char *) Getrecord(Slist));
+          strcpy(Buf,(char *)Getrecord(Slist));
+          k=0;while(Buf[k]!='\n')k++;Buf[k]='\0';
+          kgSetPrimary(Tmp,(unsigned char *) Buf);
+#endif
           break;
           case 8:
           kgSetWidgetVisibility ( Opt , 0 ) ;

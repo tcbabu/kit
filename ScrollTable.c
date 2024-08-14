@@ -241,23 +241,23 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   butn7[4].bkgr=-221221221;
   butn7[4].butncode=31;
   butn7[5].sw=1;
-  strcpy(butn7[5].title,(char *)"Yank");
+  strcpy(butn7[5].title,(char *)"Paste");
   butn7[5].xpmn=NULL;
   butn7[5].xpmp=NULL;
   butn7[5].xpmh=NULL;
   butn7[5].bkgr=-221221221;
   butn7[5].butncode=31;
   butn7[6].sw=1;
-  strcpy(butn7[6].title,(char *)"Paste");
+  strcpy(butn7[6].title,(char *)"Join");
   butn7[6].xpmn=NULL;
   butn7[6].xpmp=NULL;
   butn7[6].xpmh=NULL;
   butn7[6].bkgr=-221221221;
-  butn7[6].butncode=124;
+  butn7[6].butncode=126;
   DIN b7 = { 
     'n',
     148,36,  
-    613,66,
+    616,66,
     2,2,  
     64, 
     24, 
