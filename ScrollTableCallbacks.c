@@ -24,7 +24,7 @@
   void *RunGetFileName ( void *parent , void *args ) ;
   void *RunGetMarkPos ( void *parent , void *args ) ;
   static int GetLength ( char *s1 , char *s2 ) ;
-  void * Runinitkit(void *,void*);
+  void * Runinitkit ( void *, void* ) ;
 #define RETURN(n) {\
    Vpos = ( double ) ( StartLine-1 ) *100.0/Count;\
        ReadTbl ( ) ;\
@@ -715,12 +715,12 @@
   int InitTable ( char *fl ) {
       char **Strs;
       char *cpt;
-      DIALOG *D= (DIALOG *)Tbl->D;
-      int nlines,k;
-      kgSetGrpVisibility ( D,Mid , 1 ) ;
+      DIALOG *D = ( DIALOG * ) Tbl->D;
+      int nlines , k;
+      kgSetGrpVisibility ( D , Mid , 1 ) ;
       kgSetWidgetVisibility ( V , 0 ) ;
-      kgUpdateGrp ( D, Mid ) ;
-      kgUpdateOn ( D) ;
+      kgUpdateGrp ( D , Mid ) ;
+      kgUpdateOn ( D ) ;
       flname = fl;
       Slist = Dreadfile ( flname ) ;
       MakeFileNames ( ) ;
@@ -777,7 +777,7 @@
       return 1;
   }
   static int SetupGrps ( ) {
-      DIALOG *Tmp= (DIALOG *)Tbl->D;
+      DIALOG *Tmp = ( DIALOG * ) Tbl->D;
       Mid = kgOpenGrp ( Tmp ) ;
       Opt = ( DIN * ) kgGetNamedWidget ( Tmp , ( char * ) "Optionals" ) ;
       kgAddtoGrp ( Tmp , Mid , kgGetNamedWidget ( Tmp , ( char * ) "Button1" ) ) ;
@@ -876,7 +876,7 @@
     Tmp :  Pointer to DIALOG
    ***********************************/
       DIALOG *D;DIN *B;
-      int n , ret = 0,row;
+      int n , ret = 0 , row;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
       D = ( DIALOG * ) Tmp;
       B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
@@ -888,16 +888,16 @@
           break;
           case 2:
 //        printf("%s\n",flname);
-        row = kgGetTableRow ( Tbl ) ;
+          row = kgGetTableRow ( Tbl ) ;
 #if 1
           if ( flname != NULL ) {
               int k;
-                  for ( k = 0;k < Nlines;k++ ) {
-                      kgSetString ( Tbl , k*2 , ( char * ) "" ) ;
-                      kgSetString ( Tbl , k*2+1 , ( char * ) "" ) ;
-                  }
-		  kgUpdateWidget(Tbl);
-		  kgUpdateOn(Tbl->D);
+              for ( k = 0;k < Nlines;k++ ) {
+                  kgSetString ( Tbl , k*2 , ( char * ) "" ) ;
+                  kgSetString ( Tbl , k*2+1 , ( char * ) "" ) ;
+              }
+              kgUpdateWidget ( Tbl ) ;
+              kgUpdateOn ( Tbl->D ) ;
               MarkPos = StartLine+kgGetTableRow ( Tbl ) ;
               Dempty ( Slist ) ;
               Slist = Dreadfile ( SaveFile ) ;
@@ -925,12 +925,12 @@
               }
               WriteTbl ( ) ;
               GotoMark ( ) ;
-	      if((Count>=Nlines)&&(StartLine> 1)) row= Nlines-1;
-	      kgSetTableCursorPos(Tbl,row*Tbl->nx+1,0);
+              if ( ( Count >= Nlines ) && ( StartLine > 1 ) ) row = Nlines-1;
+              kgSetTableCursorPos ( Tbl , row*Tbl->nx+1 , 0 ) ;
               SetupVbar ( ) ;
               kgUpdateOn ( Tbl->D ) ;
           }
-	  else printf("flname== NULL\n");
+          else printf ( "flname== NULL\n" ) ;
 #else
           SetupVbar ( ) ;
           WriteTbl ( ) ;
@@ -1202,7 +1202,7 @@ i :  Index of Widget  (0 to max_widgets-1)
     Tmp :  Pointer to DIALOG
    ***********************************/
       DIALOG *D;DIN *B;
-      int n , ret = 0,pos;
+      int n , ret = 0 , pos;
       char Infile [ 300 ] ;
       char *fpt;
       int row , k , count;
@@ -1349,10 +1349,10 @@ i :  Index of Widget  (0 to max_widgets-1)
       int xres , yres;
       d = D->d;
       D->NoTabProcess = 1;
-      if(pt[0]==NULL) {
-	      flname = Runinitkit(NULL,NULL);
+      if ( pt [ 0 ] == NULL ) {
+          flname = Runinitkit ( NULL , NULL ) ;
       }
-      else flname = (char *)pt[0];
+      else flname = ( char * ) pt [ 0 ] ;
       i = 0;while ( d [ i ] .t != NULL ) {;
           i++;
       };
