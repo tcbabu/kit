@@ -24,6 +24,7 @@
   void *RunGetFileName ( void *parent , void *args ) ;
   void *RunGetMarkPos ( void *parent , void *args ) ;
   static int GetLength ( char *s1 , char *s2 ) ;
+  static int GetRealPos();
   void * Runinitkit ( void *, void* ) ;
 #define RETURN(n) {\
    Vpos = ( double ) ( StartLine-1 ) *100.0/Count;\
@@ -554,6 +555,19 @@
 //      printf ( "Buf: %s" , Buf ) ;
       return Buf;
   }
+static int GetRealPos(){
+   char *s ;
+   int curpos,realpos,i,k;
+   int row,cell;
+   curpos = kgGetTableCurpos(Tbl);
+   cell = kgGetTableCell(Tbl);
+   s = kgGetString(Tbl,cell);
+   k=-1;
+   for(i=0;i<=curpos;i++) {
+      if(s[i]!= 127 )k++;
+   }
+   return k;
+}
   int ScrollTablebutton5callback ( int butno , int i , void *Tmp ) {
   /***********************************
     butno : selected item (1 to max_item)
@@ -564,7 +578,7 @@
       int n , ret = 0;
       int k = 0 , loc , count;
       char *spt , *lptr , *ptmp , *npt;
-      int row , curpos , stchar , rowbk , spos;
+      int row , curpos , stchar , rowbk , spos,rcurpos;
       int Slbak , Elbak , curbk;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
       D = ( DIALOG * ) Tmp;
@@ -580,6 +594,7 @@
       row = kgGetTableRow ( Tbl ) ;
       rowbk = row;
       curpos = kgGetTableCurpos ( Tbl ) ;
+      rcurpos = GetRealPos();
       curbk = curpos;
       Slbak = StartLine;
       Elbak = EndLine;
@@ -590,8 +605,9 @@
       lptr = ( char * ) Getrecord ( Slist ) ;
       if ( lptr == NULL ) return 0;
  //     printf("%s\n",lptr+stchar);
-      if ( ( ptmp = ( char * ) strstr ( lptr+curpos , spt ) ) != NULL ) {
-          loc = GetLength ( lptr+curpos , ptmp ) ;
+      if ( ( ptmp = ( char * ) strstr ( lptr+rcurpos , spt ) ) != NULL ) {
+//        loc = GetLength ( lptr+curpos , ptmp ) ;
+          loc = GetLength ( lptr , ptmp ) -GetLength ( lptr,lptr+rcurpos);
           npt = ( char * ) malloc ( strlen ( ReplaceString ( lptr , ptmp ) ) +1 ) ;
           strcpy ( npt , Buf ) ;
           spos = StartLine+row -1;
@@ -991,9 +1007,20 @@
       return ret;
   }
   static int GetLength ( char *s1 , char *s2 ) {
-      int i = 0;
-      while ( s1+i != s2 ) i++;
-      return i;
+      int i = 0,k=0,l;
+      while ( s1+i != s2 ) {
+#if 1
+        if( s1[i]=='\t') {
+           l = ((i)/8+1)*8;
+           k=l;
+        }
+        else k++;
+#else
+        k++;
+#endif
+        i++;
+      }
+      return k;
   }
   int ScrollTablebutton3callback ( int butno , int i , void *Tmp ) {
   /***********************************
@@ -1005,7 +1032,7 @@
       int n , ret = 0;
       int k = 0 , loc , count;
       char *spt , *lptr , *ptmp;
-      int row , curpos , stchar , rowbk;
+      int row , curpos , stchar , rowbk,rcurpos;
       int Slbak , Elbak , curbk;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
       D = ( DIALOG * ) Tmp;
@@ -1021,6 +1048,7 @@
       row = kgGetTableRow ( Tbl ) ;
       rowbk = row;
       curpos = kgGetTableCurpos ( Tbl ) ;
+      rcurpos=GetRealPos();
       curbk = curpos;
       Slbak = StartLine;
       Elbak = EndLine;
@@ -1030,8 +1058,8 @@
       lptr = ( char * ) Getrecord ( Slist ) ;
       if ( lptr == NULL ) return 0;
  //     printf("%s\n",lptr+stchar);
-      if ( ( ptmp = ( char * ) strstr ( lptr+curpos+1 , spt ) ) != NULL ) {
-          loc = GetLength ( lptr+curpos , ptmp ) ;
+      if ( ( ptmp = ( char * ) strstr ( lptr+rcurpos+1 , spt ) ) != NULL ) {
+          loc = GetLength ( lptr , ptmp ) -GetLength ( lptr,lptr+rcurpos) ;
           kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc+curpos ) ;
           RETURN ( 0 ) ;
       }
