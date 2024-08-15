@@ -1300,11 +1300,13 @@ i :  Index of Widget  (0 to max_widgets-1)
       int n , ret = 0 , pos;
       char Infile [ 300 ] ;
       char *fpt;
-      int row , k , count;
+      int row , k , count,spos,slold;
+      char *cpt,*npt;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
       D = ( DIALOG * ) Tmp;
       B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
       n = B->nx*B->ny;
+      row = kgGetTableRow ( Tbl ) ;
       switch ( butno ) {
           case 1:
           Infile [ 0 ] = '\0';
@@ -1415,6 +1417,26 @@ i :  Index of Widget  (0 to max_widgets-1)
           case 7:
 // Join code to be added
 //          GotoMark ( ) ;
+          slold = StartLine;
+          if(StartLine+row >= Count) break;
+          Dposition(Slist,StartLine+row);
+          cpt = (char *)Getrecord(Slist);
+          strcpy(Buf,cpt);
+          k=0;while(Buf[k]!='\n')k++;Buf[k]='\0';
+          Dposition(Slist,StartLine+row+1);
+          cpt = (char *)Getrecord(Slist);
+          strcat(Buf,cpt);
+          npt = ( char * ) malloc ( strlen ( Buf ) +1 ) ;
+          strcpy ( npt , Buf ) ;
+          spos = StartLine+row ;
+          Dreplace ( Slist , npt , spos-1) ;
+          WriteTbl ( ) ;
+          DeleteLine(row+1);
+//          RemoveLine(row+1);
+//          kgUpdateWidget(Tbl);
+          if(StartLine < slold) row++;
+          kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , 0) ;
+          kgUpdateOn(Tmp);
 #if 0
           ReadTbl();
           Dposition(Slist,StartLine+kgGetTableRow(Tbl));
