@@ -26,7 +26,7 @@
   void *RunGetFileName ( void *parent , void *args ) ;
   void *RunGetMarkPos ( void *parent , void *args ) ;
   static int GetLength ( char *s1 , char *s2 ) ;
-  static int GetRealPos();
+  static int GetRealPos ( ) ;
   void * Runinitkit ( void *, void* ) ;
 #define RETURN(n) {\
    Vpos = ( double ) ( StartLine-1 ) *100.0/Count;\
@@ -389,11 +389,11 @@
       return ret;
   }
   static int GotoMark ( ) {
-      MarkPos = kgGetInt(MT,0);
-      if(MarkPos< 1) {
-        MarkPos =1;
-        kgSetInt(MT,0,MarkPos);
-        kgUpdateWidget(MT);
+      MarkPos = kgGetInt ( MT , 0 ) ;
+      if ( MarkPos < 1 ) {
+          MarkPos = 1;
+          kgSetInt ( MT , 0 , MarkPos ) ;
+          kgUpdateWidget ( MT ) ;
       }
       int pos = MarkPos -StartLine;
       ReadTbl ( ) ;
@@ -563,19 +563,19 @@
 //      printf ( "Buf: %s" , Buf ) ;
       return Buf;
   }
-static int GetRealPos(){
-   char *s ;
-   int curpos,realpos,i,k;
-   int row,cell;
-   curpos = kgGetTableCurpos(Tbl);
-   cell = kgGetTableCell(Tbl);
-   s = kgGetString(Tbl,cell);
-   k=-1;
-   for(i=0;i<=curpos;i++) {
-      if(s[i]!= 127 )k++;
-   }
-   return k;
-}
+  static int GetRealPos ( ) {
+      char *s ;
+      int curpos , realpos , i , k;
+      int row , cell;
+      curpos = kgGetTableCurpos ( Tbl ) ;
+      cell = kgGetTableCell ( Tbl ) ;
+      s = kgGetString ( Tbl , cell ) ;
+      k = -1;
+      for ( i = 0;i <= curpos;i++ ) {
+          if ( s [ i ] != 127 ) k++;
+      }
+      return k;
+  }
   int ScrollTablebutton5callback ( int butno , int i , void *Tmp ) {
   /***********************************
     butno : selected item (1 to max_item)
@@ -586,7 +586,7 @@ static int GetRealPos(){
       int n , ret = 0;
       int k = 0 , loc , count;
       char *spt , *lptr , *ptmp , *npt;
-      int row , curpos , stchar , rowbk , spos,rcurpos;
+      int row , curpos , stchar , rowbk , spos , rcurpos;
       int Slbak , Elbak , curbk;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
       D = ( DIALOG * ) Tmp;
@@ -602,7 +602,7 @@ static int GetRealPos(){
       row = kgGetTableRow ( Tbl ) ;
       rowbk = row;
       curpos = kgGetTableCurpos ( Tbl ) ;
-      rcurpos = GetRealPos();
+      rcurpos = GetRealPos ( ) ;
       curbk = curpos;
       Slbak = StartLine;
       Elbak = EndLine;
@@ -615,7 +615,7 @@ static int GetRealPos(){
  //     printf("%s\n",lptr+stchar);
       if ( ( ptmp = ( char * ) strstr ( lptr+rcurpos , spt ) ) != NULL ) {
 //        loc = GetLength ( lptr+curpos , ptmp ) ;
-          loc = GetLength ( lptr , ptmp ) -GetLength ( lptr,lptr+rcurpos);
+          loc = GetLength ( lptr , ptmp ) -GetLength ( lptr , lptr+rcurpos ) ;
           npt = ( char * ) malloc ( strlen ( ReplaceString ( lptr , ptmp ) ) +1 ) ;
           strcpy ( npt , Buf ) ;
           spos = StartLine+row -1;
@@ -818,65 +818,65 @@ static int GetRealPos(){
       kgAddtoGrp ( Tmp , Mid , RT ) ;
       kgAddtoGrp ( Tmp , Mid , V ) ;
       kgAddtoGrp ( Tmp , Mid , ST ) ;
-      MT = (DIT *) kgGetNamedWidget (Tmp,(char *)"MarkText");
-      GB = (DIN *) kgGetNamedWidget (Tmp,(char *)"Go");
+      MT = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "MarkText" ) ;
+      GB = ( DIN * ) kgGetNamedWidget ( Tmp , ( char * ) "Go" ) ;
       kgAddtoGrp ( Tmp , Mid , MT ) ;
       kgAddtoGrp ( Tmp , Mid , GB ) ;
       return 1;
   }
-int  ScrollTabletextbox3callback(int cellno,int i,void *Tmp) {
+  int ScrollTabletextbox3callback ( int cellno , int i , void *Tmp ) {
   /*************************************************
    cellno: current cell counted along column strting with 0
            ie 0 to (nx*ny-1)
    i     : widget id starting from 0
    Tmp   : Pointer to DIALOG
    *************************************************/
-  DIALOG *D;DIT *T;T_ELMT *e;
-  int ret=1;
-  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
-  D = (DIALOG *)Tmp;
-  T = (DIT *)kgGetWidget(Tmp,i);
-  e = T->elmt;
-  MarkPos=kgGetInt(MT,0);
-      if(MarkPos< 1) {
-        MarkPos =1;
-        kgSetInt(MT,0,MarkPos);
-        kgUpdateWidget(MT);
+      DIALOG *D;DIT *T;T_ELMT *e;
+      int ret = 1;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      D = ( DIALOG * ) Tmp;
+      T = ( DIT * ) kgGetWidget ( Tmp , i ) ;
+      e = T->elmt;
+      MarkPos = kgGetInt ( MT , 0 ) ;
+      if ( MarkPos < 1 ) {
+          MarkPos = 1;
+          kgSetInt ( MT , 0 , MarkPos ) ;
+          kgUpdateWidget ( MT ) ;
       }
       kgSetAttnWidget ( Tmp , Tbl ) ;
-  return ret;
-}
-int  ScrollTablebutton6callback(int butno,int i,void *Tmp) {
+      return ret;
+  }
+  int ScrollTablebutton6callback ( int butno , int i , void *Tmp ) {
   /***********************************
     butno : selected item (1 to max_item)
     i :  Index of Widget  (0 to max_widgets-1)
     Tmp :  Pointer to DIALOG
    ***********************************/
-  DIALOG *D;DIN *B;
-  int n,ret =0;
-  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
-  D = (DIALOG *)Tmp;
-  B = (DIN *)kgGetWidget(Tmp,i);
-  n = B->nx*B->ny;
-  MarkPos=kgGetInt(MT,0);
-      if(MarkPos< 1) {
-        MarkPos =1;
-        kgSetInt(MT,0,MarkPos);
-        kgUpdateWidget(MT);
+      DIALOG *D;DIN *B;
+      int n , ret = 0;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      D = ( DIALOG * ) Tmp;
+      B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
+      n = B->nx*B->ny;
+      MarkPos = kgGetInt ( MT , 0 ) ;
+      if ( MarkPos < 1 ) {
+          MarkPos = 1;
+          kgSetInt ( MT , 0 , MarkPos ) ;
+          kgUpdateWidget ( MT ) ;
       }
-  kgUpdateWidget(MT);
-  GotoMark();
-  kgUpdateOn(Tmp);
-  switch(butno) {
-    case 1:
-      break;
-  }
+      kgUpdateWidget ( MT ) ;
+      GotoMark ( ) ;
+      kgUpdateOn ( Tmp ) ;
+      switch ( butno ) {
+          case 1:
+          break;
+      }
       kgSetAttnWidget ( Tmp , Tbl ) ;
-  return ret;
-}
-void  ScrollTablebutton6init(DIN *B,void *ptmp) {
- void **pt=(void **)ptmp; //pt[0] is arg
-}
+      return ret;
+  }
+  void ScrollTablebutton6init ( DIN *B , void *ptmp ) {
+      void **pt = ( void ** ) ptmp; //pt [ 0 ] is arg
+  }
   int ScrollTableinit ( void *Tmp ) {
   /***********************************
     Tmp :  Pointer to DIALOG
@@ -980,8 +980,8 @@ void  ScrollTablebutton6init(DIN *B,void *ptmp) {
               kgUpdateWidget ( Tbl ) ;
               kgUpdateOn ( Tbl->D ) ;
               MarkPos = StartLine+kgGetTableRow ( Tbl ) ;
-              kgSetInt(MT,0,MarkPos);
-              kgUpdateWidget(MT);
+              kgSetInt ( MT , 0 , MarkPos ) ;
+              kgUpdateWidget ( MT ) ;
               Dempty ( Slist ) ;
               Slist = Dreadfile ( SaveFile ) ;
               if ( ( Count = Dcount ( Slist ) ) == 0 ) {
@@ -1074,18 +1074,18 @@ void  ScrollTablebutton6init(DIN *B,void *ptmp) {
       return ret;
   }
   static int GetLength ( char *s1 , char *s2 ) {
-      int i = 0,k=0,l;
+      int i = 0 , k = 0 , l;
       while ( s1+i != s2 ) {
 #if 1
-        if( s1[i]=='\t') {
-           l = ((i)/8+1)*8;
-           k=l;
-        }
-        else k++;
+          if ( s1 [ i ] == '\t' ) {
+              l = ( ( i ) /8+1 ) *8;
+              k = l;
+          }
+          else k++;
 #else
-        k++;
+          k++;
 #endif
-        i++;
+          i++;
       }
       return k;
   }
@@ -1099,7 +1099,7 @@ void  ScrollTablebutton6init(DIN *B,void *ptmp) {
       int n , ret = 0;
       int k = 0 , loc , count;
       char *spt , *lptr , *ptmp;
-      int row , curpos , stchar , rowbk,rcurpos;
+      int row , curpos , stchar , rowbk , rcurpos;
       int Slbak , Elbak , curbk;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
       D = ( DIALOG * ) Tmp;
@@ -1115,7 +1115,7 @@ void  ScrollTablebutton6init(DIN *B,void *ptmp) {
       row = kgGetTableRow ( Tbl ) ;
       rowbk = row;
       curpos = kgGetTableCurpos ( Tbl ) ;
-      rcurpos=GetRealPos();
+      rcurpos = GetRealPos ( ) ;
       curbk = curpos;
       Slbak = StartLine;
       Elbak = EndLine;
@@ -1126,7 +1126,7 @@ void  ScrollTablebutton6init(DIN *B,void *ptmp) {
       if ( lptr == NULL ) return 0;
  //     printf("%s\n",lptr+stchar);
       if ( ( ptmp = ( char * ) strstr ( lptr+rcurpos+1 , spt ) ) != NULL ) {
-          loc = GetLength ( lptr , ptmp ) -GetLength ( lptr,lptr+rcurpos) ;
+          loc = GetLength ( lptr , ptmp ) -GetLength ( lptr , lptr+rcurpos ) ;
           kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc+curpos ) ;
           RETURN ( 0 ) ;
       }
@@ -1300,8 +1300,8 @@ i :  Index of Widget  (0 to max_widgets-1)
       int n , ret = 0 , pos;
       char Infile [ 300 ] ;
       char *fpt;
-      int row , k , count,spos,slold;
-      char *cpt,*npt;
+      int row , k , count , spos , slold;
+      char *cpt , *npt;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
       D = ( DIALOG * ) Tmp;
       B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
@@ -1313,69 +1313,13 @@ i :  Index of Widget  (0 to max_widgets-1)
           if ( kgFolderBrowser ( NULL , 100 , 100 , Infile , ( char * ) "*" ) ) {
               kgSkipEvents ( Tmp ) ;
               pos = kgGetTableRow ( Tbl ) +StartLine;
-#if 0
-              Dlink *Rlist = Dreadfile ( Infile ) ;
-              void *ptmp;
-              int count = Count;
-              if ( Rlist != NULL ) {
-                  ReadTbl ( ) ;
-                  row = kgGetTableRow ( Tbl ) ;
-                  Dposition ( Slist , StartLine+row ) ;
-                  Resetlink ( Rlist ) ;
-                  while ( ( ptmp = Getrecord ( Rlist ) ) != NULL ) Dadd ( Slist , ptmp ) ;
-                  Dfree ( Rlist ) ;
-                  if ( count < Nlines ) SetupTbl ( ) ;
-                  SetupVbar ( ) ;
-                  WriteTbl ( ) ;
-#if 0
-                  if ( Count <= Nlines ) kgSetTableCursorPos \
-                   ( Tbl , ( EndLine -1 ) *Tbl->nx+1 , 0 ) ;
-                  else kgSetTableCursorPos ( Tbl , row *Tbl->nx+1 , 0 ) ;
-#else
-                  kgSetTableCursorPos ( Tbl , row *Tbl->nx+1 , 0 ) ;
-#endif
-                  kgUpdateOn ( Tmp ) ;
-              }
-#else
               ReadInFile ( Infile ) ;
-#endif
               sprintf ( Msg , "Read in %s at %d" , Infile , pos ) ;
               Splash ( Msg ) ;
           }
           break;
           case 3:
           fpt = RunGetFileName ( NULL , NULL ) ;
-#if 0
-          if ( fpt != NULL ) {
-              Dlink *Wlist = Dopen ( ) ;
-              char *dpt , *spt;
-              int endpos = StartLine+kgGetTableRow ( Tbl ) ;
-              int k , s , e;
-//          printf("File : %s\n",fpt);
-              ReadTbl ( ) ;
-              if ( endpos >= MarkPos ) {
-                  s = MarkPos;
-                  e = endpos;
-              }
-              else {
-                  s = endpos;
-                  e = MarkPos;
-              }
-              Dposition ( Slist , s ) ;
-              for ( k = s;k <= e;k++ ) {
-                  spt = ( char * ) Getrecord ( Slist ) ;
-                  if ( spt == NULL ) break;
-                  dpt = ( char * ) malloc ( strlen ( spt ) +1 ) ;
-                  strcpy ( dpt , spt ) ;
-                  Dadd ( Wlist , dpt ) ;
-              }
-              Dwritefile ( Wlist , fpt ) ;
-              sprintf ( Msg , "Wrote(%d:%d) to  %s" , s , e , fpt ) ;
-              Splash ( Msg ) ;
-              free ( fpt ) ;
-              Dempty ( Wlist ) ;
-          }
-#else
           if ( WriteToFile ( fpt ) ) {
               if ( fpt != NULL ) {
                   sprintf ( Msg , "Wrote to  %s" , fpt ) ;
@@ -1383,20 +1327,13 @@ i :  Index of Widget  (0 to max_widgets-1)
                   free ( fpt ) ;
               }
           }
-#endif
           break;
           case 2:
           MarkPos = kgGetTableRow ( Tbl ) +StartLine;
-          kgSetInt(MT,0,MarkPos);
-          kgUpdateWidget(MT);
-          kgUpdateOn(Tbl->D);
+          kgSetInt ( MT , 0 , MarkPos ) ;
+          kgUpdateWidget ( MT ) ;
+          kgUpdateOn ( Tbl->D ) ;
 #if 0
-          if ( RunGetMarkPos ( Tbl->D , & MarkPos ) ) {
-              sprintf ( Msg , "Marked Line: %d" , MarkPos ) ;
-
-//        Splash ( Msg ) ;
-          }
-#else
 // sprintf ( Msg , "Marked Line: %d" , MarkPos ) ;
 // Splash ( Msg ) ;
 #endif
@@ -1415,35 +1352,24 @@ i :  Index of Widget  (0 to max_widgets-1)
           ReadInFile ( Bkup ) ;
           break;
           case 7:
-// Join code to be added
-//          GotoMark ( ) ;
           slold = StartLine;
-          if(StartLine+row >= Count) break;
-          Dposition(Slist,StartLine+row);
-          cpt = (char *)Getrecord(Slist);
-          strcpy(Buf,cpt);
-          k=0;while(Buf[k]!='\n')k++;Buf[k]='\0';
-          Dposition(Slist,StartLine+row+1);
-          cpt = (char *)Getrecord(Slist);
-          strcat(Buf,cpt);
+          if ( StartLine+row >= Count ) break;
+          Dposition ( Slist , StartLine+row ) ;
+          cpt = ( char * ) Getrecord ( Slist ) ;
+          strcpy ( Buf , cpt ) ;
+          k = 0;while ( Buf [ k ] != '\n' ) k++;Buf [ k ] = '\0';
+          Dposition ( Slist , StartLine+row+1 ) ;
+          cpt = ( char * ) Getrecord ( Slist ) ;
+          strcat ( Buf , cpt ) ;
           npt = ( char * ) malloc ( strlen ( Buf ) +1 ) ;
           strcpy ( npt , Buf ) ;
           spos = StartLine+row ;
-          Dreplace ( Slist , npt , spos-1) ;
+          Dreplace ( Slist , npt , spos-1 ) ;
           WriteTbl ( ) ;
-          DeleteLine(row+1);
-//          RemoveLine(row+1);
-//          kgUpdateWidget(Tbl);
-          if(StartLine < slold) row++;
-          kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , 0) ;
-          kgUpdateOn(Tmp);
-#if 0
-          ReadTbl();
-          Dposition(Slist,StartLine+kgGetTableRow(Tbl));
-          strcpy(Buf,(char *)Getrecord(Slist));
-          k=0;while(Buf[k]!='\n')k++;Buf[k]='\0';
-          kgSetPrimary(Tmp,(unsigned char *) Buf);
-#endif
+          DeleteLine ( row+1 ) ;
+          if ( StartLine < slold ) row++;
+          kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , 0 ) ;
+          kgUpdateOn ( Tmp ) ;
           break;
           case 8:
           kgSetWidgetVisibility ( Opt , 0 ) ;

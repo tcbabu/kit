@@ -10,9 +10,9 @@ void ModifyScrollTableGc(void *Tmp) {
 #endif
   kgDefineColor(49,50,55,50);
   gc->char_clr = 49;
-  kgDefineColor(44,221,221,221);
+  kgDefineColor(44,220,220,220);
   gc->fill_clr = 44;
-  kgDefineColor(44,221,221,221);
+  kgDefineColor(44,220,220,220);
   gc->bodr_clr = 44;
   kgDefineColor(6,0,255,255);
   gc->cur_clr = 6;
@@ -32,9 +32,9 @@ void ModifyScrollTableGc(void *Tmp) {
   gc->txt_char = 48;
   kgDefineColor(49,50,55,50);
   gc->txt_pchar = 49;
-  kgDefineColor(77,64,64,64);
+  kgDefineColor(77,39,44,39);
   gc->tabl_fill = 77;
-  kgDefineColor(78,142,142,142);
+  kgDefineColor(78,64,64,64);
   gc->tabl_line = 78;
   kgDefineColor(79,255,255,255);
   gc->tabl_char = 79;
