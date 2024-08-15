@@ -34,7 +34,7 @@ h     //code
 25 //Width 
 2 1  //Nx,Ny,
 1 //status
-"!w32!c38Cancel" //title 
+"!w32!c38Abort" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 

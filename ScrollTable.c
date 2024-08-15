@@ -56,12 +56,12 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn2=NULL; 
   butn2= (BUT_STR *)malloc(sizeof(BUT_STR)*2);
   butn2[0].sw=1;
-  strcpy(butn2[0].title,(char *)"!w32!c38Cancel");
+  strcpy(butn2[0].title,(char *)"!w32!c38Abort");
   butn2[0].xpmn=NULL;
   butn2[0].xpmp=NULL;
   butn2[0].xpmh=NULL;
   butn2[0].bkgr=-235255250;
-  butn2[0].butncode=-2302945;
+  butn2[0].butncode=31;
   butn2[1].sw=1;
   strcpy(butn2[1].title,(char *)"!w32!c38Done");
   butn2[1].xpmn=NULL;
