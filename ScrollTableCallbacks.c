@@ -29,6 +29,7 @@
   static int GetRealPos ( ) ;
   void * Runinitkit ( void *, void* ) ;
   static int SearchTbl();
+  static int Splash ( char *Msg );
   static Dlink *BLS=NULL;
   static Dlink *Blist=NULL;
 #define RETURN(n) {\
@@ -56,6 +57,7 @@ static int Checkbkup(Dlink *bk) {
      int ret =0;
      if(bk==NULL) return 0;
      ret = Dcomplist(Slist,bk,comparerec);
+     printf("Checkbkup : %d\n",ret);
      return ret;
 }
 static void *CopyRec(void *bf) {
@@ -69,7 +71,7 @@ static void Push(){
    Dlink *Bk=Dnewlist(Slist,CopyRec);
    Dpush(BLS,Bk);
    count = Dcount(BLS);
-//   printf("Pushed: count= %d\n",count);
+   printf("Pushed: count= %d\n",count);
    if(count> 10) {
       Dend(BLS);
       Bk = (Dlink *) Dpick(BLS);
@@ -80,10 +82,18 @@ static Dlink *Pop(){
   Dlink *bk = (Dlink *)Dpop(BLS);
   if(bk == NULL) return NULL;
   while (Checkbkup(bk)) {
-    Dempty(bk);
+    if(Dcount(BLS)== 0) {
+        Dpush(BLS,bk);
+        return NULL;
+    }
+    else Dempty(bk);
     bk = (Dlink *)Dpop(BLS);
-   if(bk == NULL) return NULL;
+    if(bk == NULL) return NULL;
   }
+    if(Dcount(BLS)== 0) {
+        Dpush(BLS,Dnewlist(bk,CopyRec));
+        return bk;
+    }
   return bk;
 }
   static int Splash ( char *Msg ) {
@@ -197,13 +207,15 @@ static Dlink *Pop(){
       int n = ( EndLine -StartLine +1 ) ;
       int i , j , k;
       char *cpt , *spt;
-      if(!Compare())Push();
       for ( i = 0;i < n;i++ ) {
           cpt = ( char * ) kgGetString ( Tbl , i*2+1 ) ;
           spt = ( char * ) malloc ( strlen ( cpt ) +3 ) ;
           k = 0;j = 0;
           while ( cpt [ k ] != '\0' ) {
-              if ( cpt [ k ] == 127 ) {k++;continue;}
+              if ( cpt [ k ] == 127 ) {
+                 printf("Got 127\n");
+                 k++;continue;
+              }
               spt [ j ] = cpt [ k ] ;
               k++;j++;
           }
@@ -1016,6 +1028,7 @@ static Dlink *Pop(){
               Vpos = 0;
               kgSetScrollLength ( V , Vsize ) ;
               kgSetScrollPos ( V , Vpos ) ;
+              kgSetScrollMovement(V,(double)Nlines/Count*100.0);
           }
           kgUpdateWidget ( V ) ;
           kgUpdateWidget ( Tbl ) ;
@@ -1048,6 +1061,9 @@ static Dlink *Pop(){
 //        printf("%s\n",flname);
           UpdateTbl();
           row = kgGetTableRow ( Tbl ) ;
+          MarkPos=EndLine;
+          kgSetInt(MT,0,MarkPos);
+          kgUpdateWidget(MT);
 #if 1
           if ( flname != NULL ) {
               int k;
@@ -1066,9 +1082,11 @@ static Dlink *Pop(){
               }
               kgUpdateWidget ( Tbl ) ;
               kgUpdateOn ( Tbl->D ) ;
+#if 0
               MarkPos = StartLine+kgGetTableRow ( Tbl ) ;
               kgSetInt ( MT , 0 , MarkPos ) ;
               kgUpdateWidget ( MT ) ;
+#endif
               if ( (Slist==NULL)||( Count = Dcount ( Slist ) ) == 0 ) {
                   if(Slist != NULL) Dempty ( Slist ) ;
 //                  Slist = Dreadfile ( flname ) ;

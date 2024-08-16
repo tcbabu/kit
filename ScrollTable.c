@@ -4,7 +4,7 @@
 int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   int GrpId=0,oitems=0,i,j;
   DIA *d=NULL,*dtmp;
-  T_ELMT *e0  ; 
+  T_ELMT *e0  ;
   e0 =(T_ELMT *)malloc(sizeof(T_ELMT)*48);
   e0[0].fmt = (char *)malloc(4);
   strcpy(e0[0].fmt,(char *)"%4s");
@@ -29,12 +29,12 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
        e0[(j)*2+i].img = NULL;
      }
    }
-  DIT T0 = { 
+  DIT T0 = {
     'T',
-    8,66,  
+    8,66,
     925,557,
-    20, 
-    2,24, 
+    20,
+    2,24,
     e0,
     0,1,
     NULL,ScrollTabletablebox1callback,0,0,16,10 /* args,Call back */
@@ -43,17 +43,17 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   T0.pt=NULL;
   T0.type = 0;
   T0.item = -1;
-  DIV v1 = { 
+  DIV v1 = {
     'v',
-    925,66,  
-    945,558,  
-    0,  
-    100.000000,0.000000,5.000000,  
+    925,66,
+    945,558,
+    0,
+    100.000000,0.000000,5.00000,
     NULL,ScrollTablevertscroll1callback /* *args, callback */
   };
   strcpy(v1.Wid,(char *)"VertScroll");
   v1.item = -1;
-  BUT_STR  *butn2=NULL; 
+  BUT_STR  *butn2=NULL;
   butn2= (BUT_STR *)malloc(sizeof(BUT_STR)*2);
   butn2[0].sw=1;
   strcpy(butn2[0].title,(char *)"!w32!c38Abort");
