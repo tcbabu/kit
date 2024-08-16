@@ -28,6 +28,7 @@
   static int GetLength ( char *s1 , char *s2 ) ;
   static int GetRealPos ( ) ;
   void * Runinitkit ( void *, void* ) ;
+  static int SearchTbl();
   static Dlink *BLS=NULL;
   static Dlink *Blist=NULL;
 #define RETURN(n) {\
@@ -170,6 +171,29 @@ static Dlink *Pop(){
       return 1;
   }
   static int ReadTbl ( void ) {
+      int n = ( EndLine -StartLine +1 ) ;
+      int i , j , k;
+      char *cpt , *spt;
+      if(!Compare())Push();
+      for ( i = 0;i < n;i++ ) {
+          cpt = ( char * ) kgGetString ( Tbl , i*2+1 ) ;
+          spt = ( char * ) malloc ( strlen ( cpt ) +3 ) ;
+          k = 0;j = 0;
+          while ( cpt [ k ] != '\0' ) {
+              if ( cpt [ k ] == 127 ) {k++;continue;}
+              spt [ j ] = cpt [ k ] ;
+              k++;j++;
+          }
+          spt [ j++ ] = '\n';
+          spt [ j ] = '\0';
+//          strcpy ( spt , cpt ) ;
+//          strcat ( spt , "\n" ) ;
+//       printf("%s",spt);
+          Dreplace ( Slist , spt , StartLine+i-1 ) ;
+      }
+      return 1;
+  }
+  static int UpdateTbl ( void ) {
       int n = ( EndLine -StartLine +1 ) ;
       int i , j , k;
       char *cpt , *spt;
@@ -998,6 +1022,7 @@ static Dlink *Pop(){
           kgSetTableCursor ( Tbl , 1 ) ;
           kgSetDefaultAttnWidget ( Tmp , Tbl ) ;
       }
+      Push();
       kgUpdateOn ( Tmp ) ;
       free ( Strs ) ;
       return ret;
@@ -1021,6 +1046,7 @@ static Dlink *Pop(){
           break;
           case 2:
 //        printf("%s\n",flname);
+          UpdateTbl();
           row = kgGetTableRow ( Tbl ) ;
 #if 1
           if ( flname != NULL ) {
@@ -1109,6 +1135,7 @@ static Dlink *Pop(){
       D = ( DIALOG * ) Tmp;
       T = ( DIT * ) kgGetWidget ( Tmp , i ) ;
       e = T->elmt;
+      SearchTbl();
       return ret;
   }
   int ScrollTabletextbox1callback_test ( int cellno , int i , void *Tmp ) {
@@ -1149,6 +1176,103 @@ static Dlink *Pop(){
           i++;
       }
       return k;
+  }
+ static int SearchTbl(){
+      int k = 0 , loc , count;
+      char *spt , *lptr , *ptmp;
+      int row , curpos , stchar , rowbk , rcurpos;
+      int Slbak , Elbak , curbk;
+      DIALOG *D = ( DIALOG * ) Tbl->D;;
+      void *Tmp =D;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      spt = ( char * ) kgGetString ( ST , 0 ) ;
+      k = 0;
+      while ( spt [ k ] == ' ' ) k++;
+      if ( spt [ k ] < ' ' ) return 0;
+//     printf("%s\n",spt+k);
+      ReadTbl ( ) ;
+      Count = Dcount ( Slist ) ;
+      row = kgGetTableRow ( Tbl ) ;
+      rowbk = row;
+      curpos = kgGetTableCurpos ( Tbl ) ;
+      rcurpos = GetRealPos ( ) ;
+      curbk = curpos;
+      Slbak = StartLine;
+      Elbak = EndLine;
+      stchar = kgGetTableStartChar ( Tbl ) ;
+      Dposition ( Slist , StartLine+row ) ;
+//      printf ( "Row: %d %d %d\n" , rowbk , StartLine , curpos ) ;
+      lptr = ( char * ) Getrecord ( Slist ) ;
+      if ( lptr == NULL ) return 0;
+ //     printf("%s\n",lptr+stchar);
+      if ( ( ptmp = ( char * ) strstr ( lptr+rcurpos+1 , spt ) ) != NULL ) {
+          loc = GetLength ( lptr , ptmp ) -GetLength ( lptr , lptr+rcurpos ) ;
+          kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc+curpos ) ;
+          RETURN ( 0 ) ;
+      }
+      count = 1;
+      if ( Count <= Nlines ) {
+          while ( ( lptr = ( char * ) Getrecord ( Slist ) ) != NULL ) {
+              if ( ( ptmp = ( char * ) strstr ( lptr , spt ) ) != NULL ) {
+                  loc = GetLength ( lptr , ptmp ) ;
+                  row += count;
+                  kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc ) ;
+                  RETURN ( 0 ) ;
+              }
+              count++;
+          }
+          row = rowbk;
+          Resetlink ( Slist ) ;
+          for ( k = 0;k <= rowbk;k++ ) {
+              lptr = ( char * ) Getrecord ( Slist ) ;
+              if ( lptr == NULL ) break;
+              if ( ( ptmp = ( char * ) strstr ( lptr , spt ) ) != NULL ) {
+                  loc = GetLength ( lptr , ptmp ) ;
+                  kgSetTableCursorPos ( Tbl , ( k ) *Tbl->nx+1 , loc ) ;
+                  RETURN ( 0 ) ;
+              }
+          }
+      }
+      else {
+          while ( ( lptr = ( char * ) Getrecord ( Slist ) ) != NULL ) {
+              if ( ( ptmp = ( char * ) strstr ( lptr , spt ) ) != NULL ) {
+                  loc = GetLength ( lptr , ptmp ) ;
+                  if ( EndLine+count <= Count ) {
+                      StartLine += count;
+                      EndLine += count;
+                  }
+                  else {
+                      int offset = EndLine+count - Count;
+                      EndLine = Count;
+                      StartLine = EndLine -Nlines+1;
+                      row+= offset;
+                  }
+                  WriteTbl ( ) ;
+                  kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc ) ;
+                  RETURN ( 0 ) ;
+              }
+              count++;
+          }
+          Resetlink ( Slist ) ;
+          count = 0;
+          for ( k = 0;k < Slbak;k+= Nlines ) {
+              for ( row = 0;row < Nlines;row++ ) {
+                  lptr = ( char * ) Getrecord ( Slist ) ;
+                  if ( lptr == NULL ) break;
+                  if ( ( ptmp = ( char * ) strstr ( lptr , spt ) ) != NULL ) {
+                      loc = GetLength ( lptr , ptmp ) ;
+                      StartLine = k+1;
+                      EndLine = k+Nlines;
+                      WriteTbl ( ) ;
+                      kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc ) ;
+                      RETURN ( 0 ) ;
+                  }
+              }
+          }
+      }
+      kgSetAttnWidget ( Tmp , Tbl ) ;
+      Splash ( ( char * ) "Could not find" ) ;
+      return 1;
   }
   int ScrollTablebutton3callback ( int butno , int i , void *Tmp ) {
   /***********************************
@@ -1478,7 +1602,8 @@ i :  Index of Widget  (0 to max_widgets-1)
           i++;
       };
       n = 1;
-      strcpy ( D->name , "Kit ver 1.0" ) ; /* Dialog name you may change */
+      sprintf(Msg,"Kit Ver 1.0: File: %s",flname);
+      strcpy ( D->name , Msg ) ; /* Dialog name you may change */
       DB = ( DIL * ) kgGetNamedWidget ( D , ( char * ) "SplButn" ) ;
       xl = DB->x2 -DB->x1;
       yl = DB->y2 -DB->y1;
