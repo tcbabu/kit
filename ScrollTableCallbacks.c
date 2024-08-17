@@ -13,6 +13,9 @@
   static DIT *ST;
   static DIT *RT;
   static DIT *MT;
+  static int NBK=15;
+  static int Tblrow;
+  static int DifPos=-1;
   static int StartLine = 0 , EndLine = 0 , Nlines , Count;
   static int AddMode = 0 , AddRow = -1;;
   static double Vsize , Vpos;
@@ -31,6 +34,7 @@
   static int SearchTbl();
   static int Splash ( char *Msg );
   static Dlink *BLS=NULL;
+  static Dlink *DLS=NULL;
   static Dlink *Blist=NULL;
 #define RETURN(n) {\
    Vpos = ( double ) ( StartLine-1 ) *100.0/Count;\
@@ -41,23 +45,69 @@
        kgSetAttnWidget ( Tmp , Tbl ) ;\
        return ( n ) ;\
    }
+static int PositionAt(int pos) {
+    StartLine = pos -Nlines/2;
+    if (StartLine < 1) StartLine=1;
+    EndLine = StartLine +Nlines -1;
+    if(EndLine > Count ){
+       EndLine=Count;
+       StartLine = EndLine -Nlines+1;
+       if(StartLine < 1) StartLine=1;
+    }
+    Tblrow = pos -StartLine;
+    return Tblrow;
+}
 static int comparerec(void *r1,void *r2) {
      if(strcmp((char *)r1,(char *)r2)==0 ) return 1;
-     else return 0;
+     else {
+      return 0;
+     }
 }
 static int Compare(void) {
-     int ret =0;
+     int ret =0,k;
+     char *r1,*r2;
      Dlink *bk = (Dlink *)Dpop(BLS);
      if(bk==NULL) return 0;
      ret = Dcomplist(Slist,bk,comparerec);
      Dpush(BLS,bk);
      return ret;
 }
+static int CheckLists(Dlink *bk) {
+     int ret =0,k;
+     char *r1,*r2;
+     DifPos=-1;
+     if(bk==NULL) return 0;
+     Resetlink(Slist);
+     Resetlink(bk);
+     k=0 ;
+     while ((r1=(char *)Getrecord(Slist)) != NULL) {
+        if( (r2= (char *)Getrecord(bk)) == NULL) {
+            DifPos=k+1;
+            return 0;
+        }
+        if( strcmp(r1,r2) != 0) {
+            DifPos =k+1;
+            return 0;
+        }
+        k++;
+     }
+     r2= (char *)Getrecord(bk);
+     if( r2 != NULL) {
+        DifPos=k;
+        return 0;
+     }
+     DifPos =-1;
+     return 1;
+}
 static int Checkbkup(Dlink *bk) {
      int ret =0;
      if(bk==NULL) return 0;
+#if 0
      ret = Dcomplist(Slist,bk,comparerec);
-     printf("Checkbkup : %d\n",ret);
+#else
+     ret = CheckLists(bk);
+#endif
+//     printf("Checkbkup : %d\n",DifPos);
      return ret;
 }
 static void *CopyRec(void *bf) {
@@ -68,32 +118,68 @@ static void *CopyRec(void *bf) {
 }
 static void Push(){
    int count;
+   int *dpt=NULL;
+   if(Compare())return;
    Dlink *Bk=Dnewlist(Slist,CopyRec);
    Dpush(BLS,Bk);
+   dpt =(int *)malloc(sizeof(int *)*5);
+   dpt[0]=1;
+   dpt[1]= StartLine;
+   dpt[2]= EndLine;
+   dpt[3]= kgGetTableRow(Tbl);
+   dpt[4]= MarkPos;
+//   printf ("Push: %d %d %d %d\n",StartLine,EndLine,dpt[3],MarkPos);
+   Dpush(DLS,dpt);
    count = Dcount(BLS);
-   printf("Pushed: count= %d\n",count);
-   if(count> 10) {
+//   printf("Pushed: count= %d\n",count);
+   if(count> NBK) {
       Dend(BLS);
       Bk = (Dlink *) Dpick(BLS);
       Dempty(Bk);
+      Dend(DLS);
+      Ddelete(DLS);
    }
 }
 static Dlink *Pop(){
   Dlink *bk = (Dlink *)Dpop(BLS);
+  int *dpt;
+  dpt = (int *) Dpop(DLS);
   if(bk == NULL) return NULL;
   while (Checkbkup(bk)) {
     if(Dcount(BLS)== 0) {
         Dpush(BLS,bk);
+        Dpush(DLS,dpt);
         return NULL;
     }
-    else Dempty(bk);
+    else {Dempty(bk); free(dpt);}
     bk = (Dlink *)Dpop(BLS);
+    dpt = (int *)Dpop(DLS);
     if(bk == NULL) return NULL;
   }
-    if(Dcount(BLS)== 0) {
+  if(Dcount(BLS)== 0) {
         Dpush(BLS,Dnewlist(bk,CopyRec));
+#if 0
+        StartLine = dpt[1];
+        EndLine   = dpt[2];
+        Tblrow    = dpt[3];
+        MarkPos   = dpt[4];
+        kgSetInt(MT,0,MarkPos);
+#endif
+        Count=Dcount(bk);
+        PositionAt(DifPos);
+        Dpush(DLS,dpt);
         return bk;
-    }
+  }
+#if 0
+        StartLine = dpt[1];
+        EndLine   = dpt[2];
+        Tblrow    = dpt[3];
+        MarkPos   = dpt[4];
+        kgSetInt(MT,0,MarkPos);
+#endif
+        Count=Dcount(bk);
+        PositionAt(DifPos);
+        free(dpt);
   return bk;
 }
   static int Splash ( char *Msg ) {
@@ -184,7 +270,7 @@ static Dlink *Pop(){
       int n = ( EndLine -StartLine +1 ) ;
       int i , j , k;
       char *cpt , *spt;
-      if(!Compare())Push();
+      Push();
       for ( i = 0;i < n;i++ ) {
           cpt = ( char * ) kgGetString ( Tbl , i*2+1 ) ;
           spt = ( char * ) malloc ( strlen ( cpt ) +3 ) ;
@@ -213,7 +299,7 @@ static Dlink *Pop(){
           k = 0;j = 0;
           while ( cpt [ k ] != '\0' ) {
               if ( cpt [ k ] == 127 ) {
-                 printf("Got 127\n");
+//                printf("Got 127\n");
                  k++;continue;
               }
               spt [ j ] = cpt [ k ] ;
@@ -415,6 +501,7 @@ static Dlink *Pop(){
                   if ( row < ( Tbl->ny-1 ) ) row++;
                   AddRow = row;
               }
+              ReadTbl();
               kgSetTableCursor ( Tbl , ( row ) *Tbl->nx+1 ) ;
 //        printf("Row: %d:%d  %d %d\n",row, cellno,Tbl->nx,Tbl->ny);
               kgUpdateOn ( Tbl->D ) ;
@@ -431,8 +518,8 @@ static Dlink *Pop(){
               kgSetString ( Tbl , cellno , Buf ) ;
               kgUpdateWidget ( Tbl ) ;
               kgUpdateOn ( Tbl->D ) ;
-              ReadTbl ( ) ;
               AddStringLine ( row ) ;
+              ReadTbl ( ) ;
               if ( row < ( Tbl->ny-1 ) ) row++;
               kgSetTableCursor ( Tbl , ( row ) *Tbl->nx+1 ) ;
 //      kgSetTableCursorPos ( Tbl , ( row) *Tbl->nx+1 , 0) ;
@@ -590,6 +677,7 @@ static Dlink *Pop(){
       switch ( butno ) {
           case 1:
           row = kgGetTableRow ( Tbl ) ;
+          ReadTbl();
           DeleteLine ( row ) ;
           Count = Dcount ( Slist ) ;
           if ( Count <= 0 ) {
@@ -611,6 +699,7 @@ static Dlink *Pop(){
 //      kgUpdateOn(Tmp);
           }
 #endif
+          ReadTbl();
           AddLine ( row ) ;
 #if 1
           if ( row < ( Tbl->ny-1 ) ) row++;
@@ -983,6 +1072,7 @@ static Dlink *Pop(){
       Slist = Dreadfile ( flname ) ;
       MakeFileNames ( ) ;
       BLS = Dopen();
+      DLS = Dopen();
       Strs = ( char ** ) Dlinktoarray ( Slist ) ;
       StartLine = EndLine = 1;
       E = Tbl->elmt;
@@ -1060,11 +1150,11 @@ static Dlink *Pop(){
           case 2:
 //        printf("%s\n",flname);
           UpdateTbl();
+#if 0
           row = kgGetTableRow ( Tbl ) ;
           MarkPos=EndLine;
           kgSetInt(MT,0,MarkPos);
           kgUpdateWidget(MT);
-#if 1
           if ( flname != NULL ) {
               int k;
               Dlink *bkup=NULL;
@@ -1120,8 +1210,26 @@ static Dlink *Pop(){
           }
           else printf ( "flname== NULL\n" ) ;
 #else
+              int k;
+              Dlink *bkup=NULL;
+              bkup  = Pop();
+              if(bkup == NULL) {
+              sprintf ( Msg , "Sorry!! UNDO not possible; You may ABORT if needed" ) ;
+              Splash ( Msg ) ;
+              break;
+              }
+              Dempty(Slist);
+              Slist = bkup;
+              for ( k = 0;k < Nlines;k++ ) {
+                  kgSetString ( Tbl , k*2 , ( char * ) "" ) ;
+                  kgSetString ( Tbl , k*2+1 , ( char * ) "" ) ;
+              }
+              kgUpdateWidget ( Tbl ) ;
           SetupVbar ( ) ;
           WriteTbl ( ) ;
+           if(Tblrow==0) row=0;
+           else row = Tblrow-1;
+              kgSetTableCursorPos ( Tbl , row*Tbl->nx+1 , 0 ) ;
           kgUpdateOn ( Tbl->D ) ;
 #endif
           break;
