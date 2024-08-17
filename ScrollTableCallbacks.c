@@ -45,6 +45,26 @@
        kgSetAttnWidget ( Tmp , Tbl ) ;\
        return ( n ) ;\
    }
+static int Strcmp(char *s1,char *s2) {
+   int k;
+   if((s1==NULL)&&(s2==NULL)) return 0;
+   if( (s1==NULL)||(s2==NULL)) return 1;
+   k=0;
+   while(s1[k] != '\0') {
+      if(s2[k]=='\0') {
+//        printf("%s %s\n",s1,s2);
+        return 1;
+      }
+      if(s1[k] != s2[k]){
+//           printf("1: %d %di :%d\n",s1[k],s2[k],k);
+//           printf("1: %s %s\n",s1,s2);
+           return 1;
+      }
+      k++;
+   }
+   if(s2[k]!='\0') return 1;
+   else return 0;
+}
 static int PositionAt(int pos) {
     StartLine = pos -Nlines/2;
     if (StartLine < 1) StartLine=1;
@@ -58,7 +78,7 @@ static int PositionAt(int pos) {
     return Tblrow;
 }
 static int comparerec(void *r1,void *r2) {
-     if(strcmp((char *)r1,(char *)r2)==0 ) return 1;
+     if(Strcmp((char *)r1,(char *)r2)==0 ) return 1;
      else {
       return 0;
      }
@@ -85,7 +105,7 @@ static int CheckLists(Dlink *bk) {
             DifPos=k+1;
             return 0;
         }
-        if( strcmp(r1,r2) != 0) {
+        if( Strcmp(r1,r2) != 0) {
             DifPos =k+1;
             return 0;
         }
