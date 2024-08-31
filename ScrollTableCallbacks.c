@@ -778,8 +778,8 @@ static Dlink *Pop(){
    ***********************************/
       DIALOG *D;DIN *B;
       int n , ret = 0;
-      int k = 0 , loc , count;
-      char *spt , *lptr , *ptmp , *npt;
+      int k = 0 , loc , count,rln;
+      char *spt , *lptr , *ptmp , *npt,*rpt;
       int row , curpos , stchar , rowbk , spos , rcurpos;
       int Slbak , Elbak , curbk;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
@@ -787,9 +787,19 @@ static Dlink *Pop(){
       B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
       n = B->nx*B->ny;
       spt = ( char * ) kgGetString ( ST , 0 ) ;
+      rpt = ( char * ) kgGetString ( RT , 0 ) ;
+      rln = strlen(rpt); 
       k = 0;
+#if 0
       while ( spt [ k ] == ' ' ) k++;
       if ( spt [ k ] < ' ' ) return ret;
+#else
+      while ( spt [ k ] >= ' ' ) k++;
+      if ( k==0 ) {
+//      Need to add code for insertion at curpos
+        return ret;
+      }
+#endif
 //      printf("%s\n",spt+k);
       ReadTbl ( ) ;
       Count = Dcount ( Slist ) ;
@@ -815,7 +825,7 @@ static Dlink *Pop(){
           spos = StartLine+row -1;
           Dreplace ( Slist , npt , spos ) ;
           WriteTbl ( ) ;
-          kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc+curpos ) ;
+          kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc+curpos+rln ) ;
           RETURN ( 0 ) ;
       }
       count = 1;
@@ -829,7 +839,7 @@ static Dlink *Pop(){
                   spos = StartLine+row -1;
                   Dreplace ( Slist , npt , spos ) ;
                   WriteTbl ( ) ;
-                  kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc ) ;
+                  kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc+rln ) ;
                   RETURN ( 0 ) ;
               }
               count++;
@@ -846,7 +856,7 @@ static Dlink *Pop(){
                   spos = StartLine+row -1;
                   Dreplace ( Slist , npt , spos ) ;
                   WriteTbl ( ) ;
-                  kgSetTableCursorPos ( Tbl , ( k ) *Tbl->nx+1 , loc ) ;
+                  kgSetTableCursorPos ( Tbl , ( k ) *Tbl->nx+1 , loc+rln ) ;
                   RETURN ( 0 ) ;
               }
           }
@@ -870,7 +880,7 @@ static Dlink *Pop(){
                   spos = StartLine+row -1;
                   Dreplace ( Slist , npt , spos ) ;
                   WriteTbl ( ) ;
-                  kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc ) ;
+                  kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc+rln ) ;
                   RETURN ( 0 ) ;
               }
               count++;
@@ -890,7 +900,7 @@ static Dlink *Pop(){
                       spos = StartLine+row -1;
                       Dreplace ( Slist , npt , spos ) ;
                       WriteTbl ( ) ;
-                      kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc ) ;
+                      kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc+rln ) ;
                       RETURN ( 0 ) ;
                   }
               }
@@ -1564,7 +1574,7 @@ static Dlink *Pop(){
               e = MarkPos;
           }
           sprintf ( Buf1 , "Copy lines %d to %d ?" , s , e ) ;
-          if ( ! kgQstMenu ( Tbl->D , 10 , 100 , Buf1 , 1 ) ) return 0;
+          if(s != e)if ( ! kgQstMenu ( Tbl->D , 10 , 100 , Buf1 , 1 ) ) return 0;
           Dposition ( Slist , s ) ;
           for ( k = s;k <= e;k++ ) {
               spt = ( char * ) Getrecord ( Slist ) ;
@@ -1596,7 +1606,7 @@ static Dlink *Pop(){
               e = MarkPos;
           }
           sprintf ( Buf1 , "Cut(&copy) lines %d to %d ?" , s , e ) ;
-          if ( ! kgQstMenu ( Tbl->D , 10 , 100 , Buf1 , 1 ) ) return 0;
+          if(s!=e) if ( ! kgQstMenu ( Tbl->D , 10 , 100 , Buf1 , 1 ) ) return 0;
           Dposition ( Slist , s ) ;
           for ( k = s;k <= e;k++ ) {
               spt = ( char * ) Dpick ( Slist ) ;
@@ -1750,6 +1760,8 @@ i :  Index of Widget  (0 to max_widgets-1)
       n = 1;
       sprintf(Msg,"Kit Ver 1.0: File: %s",flname);
       strcpy ( D->name , Msg ) ; /* Dialog name you may change */
+      Tbl = ( DIT * ) kgGetNamedWidget ( D , ( char * ) "ScrollTable" ) ;
+      Tbl->Font = 10;
       DB = ( DIL * ) kgGetNamedWidget ( D , ( char * ) "SplButn" ) ;
       xl = DB->x2 -DB->x1;
       yl = DB->y2 -DB->y1;

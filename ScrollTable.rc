@@ -64,23 +64,23 @@ n     //code
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--240245255 //back ground color
+-216216216 //back ground color
  //keyboard code
 1 //status
 "Add" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--240245255 //back ground color
+-216216216 //back ground color
  //keyboard code
 1 //status
 "Insert" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--240245255 //back ground color
+-216216216 //back ground color
  //keyboard code
-4 0.500000 0  //type,fac
+1 0.500000 0  //type,fac
 0 0 //hide
 "Button1"
 //Button Box
@@ -131,13 +131,13 @@ n     //code
 24 //Width 
 1 1  //Nx,Ny,
 1 //status
-"Search" //title 
+"!w34Search" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
 -240245255 //back ground color
  //keyboard code
-2 0.500000 0  //type,fac
+8 0.500000 0  //type,fac
 0 0 //hide
 "SearchButn"
 //Button Box
@@ -150,7 +150,7 @@ n     //code
 24 //Width 
 7 1  //Nx,Ny,
 1 //status
-"Read in" //title 
+"ReadIn" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
@@ -164,7 +164,7 @@ NULL // XPM
 -221221221 //back ground color
  //keyboard code
 1 //status
-"Write To" //title 
+"WriteTo" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
@@ -211,13 +211,13 @@ n     //code
 24 //Width 
 1 1  //Nx,Ny,
 1 //status
-"Replace" //title 
+"!w34Replace" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
 -240245255 //back ground color
  //keyboard code
-2 0.500000 0  //type,fac
+8 0.500000 0  //type,fac
 0 0 //hide
 "Replace"
 //Text Box
