@@ -795,10 +795,10 @@ static Dlink *Pop(){
       if ( spt [ k ] < ' ' ) return ret;
 #else
       while ( spt [ k ] >= ' ' ) k++;
-      if ( k==0 ) {
+//      if ( k==0 ) {
 //      Need to add code for insertion at curpos
-        return ret;
-      }
+//        return ret;
+//      }
 #endif
 //      printf("%s\n",spt+k);
       ReadTbl ( ) ;
@@ -817,6 +817,19 @@ static Dlink *Pop(){
       lptr = ( char * ) Getrecord ( Slist ) ;
       if ( lptr == NULL ) return 0;
  //     printf("%s\n",lptr+stchar);
+
+      if ( k==0 ) {
+//      code for insertion at curpos
+        ptmp = lptr+rcurpos;
+        loc = 0;
+          npt = ( char * ) malloc ( strlen ( ReplaceString ( lptr , ptmp ) ) +1 ) ;
+          strcpy ( npt , Buf ) ;
+          spos = StartLine+row -1;
+          Dreplace ( Slist , npt , spos ) ;
+          WriteTbl ( ) ;
+          kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc+curpos+rln ) ;
+          RETURN ( 0 ) ;
+      }
       if ( ( ptmp = ( char * ) strstr ( lptr+rcurpos , spt ) ) != NULL ) {
 //        loc = GetLength ( lptr+curpos , ptmp ) ;
           loc = GetLength ( lptr , ptmp ) -GetLength ( lptr , lptr+rcurpos ) ;
@@ -1167,7 +1180,7 @@ static Dlink *Pop(){
     Tmp :  Pointer to DIALOG
    ***********************************/
       DIALOG *D;DIN *B;
-      int n , ret = 0 , row;
+      int n , ret = 0 , row,curpos,rcurpos;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
       D = ( DIALOG * ) Tmp;
       B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
@@ -1179,6 +1192,9 @@ static Dlink *Pop(){
           break;
           case 2:
 //        printf("%s\n",flname);
+          row = kgGetTableRow ( Tbl ) ;          
+          curpos = kgGetTableCurpos ( Tbl ) ;
+          rcurpos = GetRealPos ( ) ;
           UpdateTbl();
 #if 0
           row = kgGetTableRow ( Tbl ) ;
@@ -1240,7 +1256,7 @@ static Dlink *Pop(){
           }
           else printf ( "flname== NULL\n" ) ;
 #else
-              int k;
+              int k,chng=0;
               Dlink *bkup=NULL;
               bkup  = Pop();
               if(bkup == NULL) {
@@ -1248,6 +1264,7 @@ static Dlink *Pop(){
               Splash ( Msg ) ;
               break;
               }
+              chng = Dcount(Slist)-Dcount(bkup);
               Dempty(Slist);
               Slist = bkup;
               for ( k = 0;k < Nlines;k++ ) {
@@ -1257,9 +1274,9 @@ static Dlink *Pop(){
               kgUpdateWidget ( Tbl ) ;
           SetupVbar ( ) ;
           WriteTbl ( ) ;
-           if(Tblrow==0) row=0;
-           else row = Tblrow-1;
-              kgSetTableCursorPos ( Tbl , row*Tbl->nx+1 , 0 ) ;
+           row = Tblrow;
+           if(chng)  row = Tblrow-1;
+           kgSetTableCursorPos ( Tbl , row*Tbl->nx+1 , 0 ) ;
           kgUpdateOn ( Tbl->D ) ;
 #endif
           break;
