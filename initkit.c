@@ -293,7 +293,7 @@
       strcpy ( b2.Wid , ( char * ) "initkitbrowse" ) ;
       b2.item = -1;
       DIM m3 = {
-      'm' , 89 , 246 , 338 , 270 , 0 , 0 };
+      'm' , 89 , 246 , 338 , 283 , 0 , 0 };
       strncpy ( m3.msg , ( char * ) "!w32!f23Select File" , 499 ) ;
       strcpy ( m3.Wid , ( char * ) "initkitWidget5" ) ;
       m3.item = -1;
