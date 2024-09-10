@@ -10,6 +10,7 @@
   static DIN *SB;
   static DIN *RB;
   static DIN *GB;
+  static DIN *PB;
   static DIT *ST;
   static DIT *RT;
   static DIT *MT;
@@ -944,6 +945,27 @@ static Dlink *Pop(){
       e = T->elmt;
       return ret;
   }
+int  ScrollTablebutton7callback(int butno,int i,void *Tmp) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIN *B; 
+  int n,ret =0; 
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+  D = (DIALOG *)Tmp;
+  B = (DIN *)kgGetWidget(Tmp,i);
+  n = B->nx*B->ny;
+  switch(butno) {
+    case 1: 
+      break;
+  }
+  return ret;
+}
+void  ScrollTablebutton7init(DIN *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+}
   static int MakeFileNames ( ) {
       char BaseName [ 200 ] ;
       kgExtractBaseName ( flname , BaseName ) ;
@@ -1039,8 +1061,10 @@ static Dlink *Pop(){
       kgAddtoGrp ( Tmp , Mid , ST ) ;
       MT = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "MarkText" ) ;
       GB = ( DIN * ) kgGetNamedWidget ( Tmp , ( char * ) "Go" ) ;
+      PB = ( DIN * ) kgGetNamedWidget ( Tmp , ( char * ) "Setup" ) ;
       kgAddtoGrp ( Tmp , Mid , MT ) ;
       kgAddtoGrp ( Tmp , Mid , GB ) ;
+      kgAddtoGrp ( Tmp , Mid , PB ) ;
       return 1;
   }
   int ScrollTabletextbox3callback ( int cellno , int i , void *Tmp ) {
@@ -1943,6 +1967,9 @@ i :  Index of Widget  (0 to max_widgets-1)
       yl = GB->y2 - GB->y1;
       GB->y1 = D->yl-36;
       GB->y2 = GB->y1+yl;
+      yl = PB->y2 - PB->y1;
+      PB->y1 = D->yl-36;
+      PB->y2 = PB->y1+yl;
       kgRedrawDialog ( D ) ;
  //     if(Tbl->ny !=  nyo) {
         SetupTbl();
