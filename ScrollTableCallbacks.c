@@ -1828,8 +1828,10 @@ i :  Index of Widget  (0 to max_widgets-1)
   /***********************************
     Tmp :  Pointer to DIALOG
    ***********************************/
-      int ret = 0 , k;
-      int xres , yres , dx , dy;
+      int ret = 0 , k,nyo;
+      static   char *vi=NULL,*vs=NULL;
+      static int nydef=-1;
+      int xres , yres , dx , dy,nymax,val;
       int xo , yo , xl , yl , Fz1 , Fz2i , nchr;
       static int Xl = -1 , Yl = -1 , Fz = -1 , By1;
       char Fmt [ 8 ] ;
@@ -1847,6 +1849,8 @@ i :  Index of Widget  (0 to max_widgets-1)
           By1 = B1->y1;
       }
   /* extra code */
+      if(nydef == -1 ) nydef= Tbl->ny;
+      nyo =Tbl->ny;
       D->xl = xres;
       D->yl = yres;
       xl = DB->x2 -DB->x1;
@@ -1865,20 +1869,67 @@ i :  Index of Widget  (0 to max_widgets-1)
       B1->x1 = xo;
       B1->x2 = xo+xl;
       Tbl->x2 = xres - 40;
-      Tbl->y2 = yres - 40;
-      Fz1 = ( Tbl->y2 - Tbl->y1-4 ) /48;
-      if ( Fz1 > 12 ) Fz1 = 10;
-      nchr = ( Tbl->x2 - Tbl->x1 ) /Fz1 -11;
+      Tbl->y2 = yres - 50;
+      Fz1 = ( Tbl->y2 - Tbl->y1-4 ) /(2*Tbl->ny);
+      if ( Fz1 > 12 ){
+         Fz1 = 10;
+         Tbl->ny = ( Tbl->y2 - Tbl->y1-4 )/(2*Fz1);
+      }
+      else if(Fz1 < 10) {
+         Tbl->ny = 24;
+         Fz1 =(float )( Tbl->y2 - Tbl->y1-4 )/(2*Tbl->ny )+0.2; 
+      }
+      nchr = ( Tbl->x2 - Tbl->x1) /Fz1 -11;
+      Tbl->x2 = (nchr+11)*Fz1+Tbl->x1;
+      Tbl->ny = (float)( Tbl->y2 - Tbl->y1-4 )/(2*Fz1)+0.5;
+      Tbl->y2 = Fz1*(2*Tbl->ny )+Tbl->y1+4;
       sprintf ( Fmt , "%%%ds" , nchr ) ;
       elmt = ( T_ELMT * ) Tbl->elmt;
-      for ( k = 0;k < Tbl->ny;k++ ) {
+      elmt = (T_ELMT *)realloc(elmt,Tbl->nx*Tbl->ny*sizeof(T_ELMT));
+      Tbl->elmt = elmt;
+      nymax = Tbl->ny;
+      if(nymax >nyo ) nymax = nyo;
+      for ( k = 0;k < nymax;k++ ) {
+          strcpy(elmt [ k*Tbl->nx ] .fmt , (char *)"%4s" ) ;
+          elmt [ k*Tbl->nx ] .sw=0;
+          elmt [ k*Tbl->nx ] .noecho=0;
+          elmt [ k*Tbl->nx ] .img = NULL;
           strcpy ( elmt [ k*Tbl->nx+1 ] .fmt , Fmt ) ;
+          elmt [ k*Tbl->nx+1 ] .sw=1;
+          elmt [ k*Tbl->nx+1] .noecho=0;
+          elmt [ k*Tbl->nx+1 ] .img = NULL;
       }
+      if(Tbl->ny > nyo) {
+         int j=0;
+         char *cpt=NULL;
+         vi =(char *)malloc(500*(Tbl->ny - nyo));
+         vs =(char *)malloc(500*(Tbl->ny - nyo));
+         for ( k = nyo;k < Tbl->ny;k++ ) {
+         elmt[k*Tbl->nx].fmt = (char *)malloc(10);
+         elmt[k*Tbl->nx+1].fmt = (char *)malloc(10);
+         strcpy(elmt [ k*Tbl->nx ] .fmt , (char *)"%4s" ) ;
+         elmt [ k*Tbl->nx ] .sw=0;
+         elmt [ k*Tbl->nx ] .noecho=0;
+         elmt [ k*Tbl->nx ] .img = NULL;
+         strcpy ( elmt [ k*Tbl->nx+1 ] .fmt , Fmt ) ;
+         elmt [ k*Tbl->nx+1 ] .sw=1;
+         elmt [ k*Tbl->nx+1] .noecho=0;
+         elmt [ k*Tbl->nx+1 ] .img = NULL;
+         elmt[k*Tbl->nx ].v=(void *)(vi+j*500);
+         elmt[k*Tbl->nx +1].v=(void *)(vs+j*500);
+         cpt= (char *) elmt[k*Tbl->nx ].v;
+         cpt[0]='\0';
+         cpt= (char *) elmt[k*Tbl->nx +1].v;
+         cpt[0]='\0';
+         j++;
+         }
+      }
+      Nlines= Tbl->ny;
       Tbl->FontSize = Fz1;
       Tbl->width = 20;
       xl = V->x2 - V->x1;
       yl = V->y2 - V->y1;
-      V->x1 = Tbl->x2+7;
+      V->x1 = Tbl->x2+10;
       V->x2 = V->x1 + xl;
       V->y2 = Tbl->y2;
       yl = MT->y2 -MT->y1;
@@ -1888,6 +1939,14 @@ i :  Index of Widget  (0 to max_widgets-1)
       GB->y1 = D->yl-36;
       GB->y2 = GB->y1+yl;
       kgRedrawDialog ( D ) ;
+      if(Tbl->ny !=  nyo) {
+        SetupTbl();
+        WriteTbl();
+      SetupVbar ( ) ;
+      kgUpdateWidget ( V ) ;
+      kgUpdateWidget (Tbl ) ;
+      kgUpdateOn(D);
+      }
       kgSetAttnWidget ( Tmp , Tbl ) ;
       return ret;
   }
