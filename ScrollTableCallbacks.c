@@ -23,7 +23,7 @@
   static int MarkPos = 1;
   static int ExpandTab = 0;
   static   char *vi=NULL,*vs=NULL;
-  static int Xl = -1 , Yl = -1 , Fz = -1 , By1;
+  static int Xl = -1 , Yl = -1 , Fz = -1 , By1,DefWidth;
   char *flname = NULL;
   static char Msg [ 200 ] ;
   static char Bkup [ 300 ] ;
@@ -1871,6 +1871,7 @@ i :  Index of Widget  (0 to max_widgets-1)
           Yl = D->yl;
           Fz = Tbl->FontSize;
           By1 = B1->y1;
+          DefWidth = Tbl->width;
       }
   /* extra code */
       if(nydef == -1 ) nydef= Tbl->ny;
@@ -1955,7 +1956,7 @@ i :  Index of Widget  (0 to max_widgets-1)
       }
       Nlines= Tbl->ny;
       Tbl->FontSize = Fz1;
-      Tbl->width = 20;
+      Tbl->width = DefWidth;;
       xl = V->x2 - V->x1;
       yl = V->y2 - V->y1;
       V->x1 = Tbl->x2+10;
