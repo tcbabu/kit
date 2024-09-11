@@ -20,6 +20,7 @@
   static int DifPos=-1;
   static int StartLine = 0 , EndLine = 0 , Nlines , Count;
   static int AddMode = 0 , AddRow = -1;;
+  static int B1x,B1y;
   static double Vsize , Vpos;
   static int MarkPos = 1;
   static int ExpandTab = 0;
@@ -747,6 +748,8 @@ static Dlink *Pop(){
       return ret;
   }
   void ScrollTablebutton1init ( DIN *B , void *pt ) {
+    B1x=B->x1;
+    B1y=B->y1;
   }
   static char * ReplaceString ( char *lptr , char *ptmp ) {
       int k , l1 , l2 , loc;
@@ -2001,7 +2004,8 @@ i :  Index of Widget  (0 to max_widgets-1)
       B1->y2 = B1->y1+yl;
       xo = D->xl-xl-10;
       B1->x1 = xo;
-      B1->x2 = xo+xl;
+      if(B1->x1 > B1x ) B1->x1=B1x;
+      B1->x2 = B1->x1+xl;
       Tbl->x2 = xres - 40;
       Tbl->y2 = yres - 50;
       Fz1 = Fz;

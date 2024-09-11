@@ -88,21 +88,21 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn3=NULL; 
   butn3= (BUT_STR *)malloc(sizeof(BUT_STR)*3);
   butn3[0].sw=1;
-  strcpy(butn3[0].title,(char *)"Delete");
+  strcpy(butn3[0].title,(char *)"!w34Delete");
   butn3[0].xpmn=NULL;
   butn3[0].xpmp=NULL;
   butn3[0].xpmh=NULL;
   butn3[0].bkgr=-240245255;
   butn3[0].butncode=31;
   butn3[1].sw=1;
-  strcpy(butn3[1].title,(char *)"Add");
+  strcpy(butn3[1].title,(char *)"!w34Add");
   butn3[1].xpmn=NULL;
   butn3[1].xpmp=NULL;
   butn3[1].xpmh=NULL;
   butn3[1].bkgr=-240245255;
   butn3[1].butncode=31;
   butn3[2].sw=1;
-  strcpy(butn3[2].title,(char *)"Insert");
+  strcpy(butn3[2].title,(char *)"!w34Insert");
   butn3[2].xpmn=NULL;
   butn3[2].xpmp=NULL;
   butn3[2].xpmh=NULL;
@@ -166,8 +166,8 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   e5[0].img=NULL;
   DIT t5 = { 
     't',
-    90,6,  
-    270,34,
+    124,6,  
+    299,34,
     20, 
     1,1, 
     e5,
@@ -181,7 +181,7 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn6=NULL; 
   butn6= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn6[0].sw=1;
-  strcpy(butn6[0].title,(char *)"Search");
+  strcpy(butn6[0].title,(char *)"!w34Search");
   butn6[0].xpmn=NULL;
   butn6[0].xpmp=NULL;
   butn6[0].xpmh=NULL;
@@ -189,8 +189,8 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   butn6[0].butncode=31;
   DIN b6 = { 
     'n',
-    13,6,  
-    90,36,
+    47,6,  
+    124,36,
     2,2,  
     72, 
     24, 
@@ -273,7 +273,7 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn8=NULL; 
   butn8= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn8[0].sw=1;
-  strcpy(butn8[0].title,(char *)"Replace");
+  strcpy(butn8[0].title,(char *)"!w34Replace");
   butn8[0].xpmn=NULL;
   butn8[0].xpmp=NULL;
   butn8[0].xpmh=NULL;
@@ -281,8 +281,8 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   butn8[0].butncode=-2302945;
   DIN b8 = { 
     'n',
-    270,6,  
-    344,36,
+    299,6,  
+    369,36,
     2,2,  
     64, 
     24, 
@@ -305,8 +305,8 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   e9[0].img=NULL;
   DIT t9 = { 
     't',
-    340,6,  
-    520,36,
+    370,6,  
+    545,36,
     20, 
     1,1, 
     e9,
@@ -378,7 +378,7 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   butn12[0].xpmn= kgGetProcessedImage("##/usr/share/icons/Kulina/cog-icon-2-48x48.png",24,0.8,0,0,0);
 #endif
   butn12[0].bkgr=-1;
-  butn12[0].butncode=31;
+  butn12[0].butncode=-2302945;
   DIN b12 = { 
     'n',
     196,557,  
@@ -721,7 +721,7 @@ int ScrollTable( void *parent,void **v,void *pt) {
   D.Bkpixmap = NULL;    /*  background image */
   D.Sticky = 0;    /*  1 for stickyness */
   D.Resize = 1;    /*  1 for Resize option */
-  D.MinWidth = 750;    /*   for Resize option */
+  D.MinWidth = 760;    /*   for Resize option */
   D.MinHeight = 400;    /*   for Resize option */
 #if 1 
   D.Callback = ScrollTableCallBack;    /*  default callback */
