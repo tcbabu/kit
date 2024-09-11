@@ -1,4 +1,5 @@
 #include <kulina.h>
+#include "simages.c"
   static DIT *Tbl;
   static T_ELMT *E;
   static Dlink *Slist;
@@ -24,6 +25,7 @@
   static int ExpandTab = 0;
   static   char *vi=NULL,*vs=NULL;
   static int Xl = -1 , Yl = -1 , Fz = -1 , By1,DefWidth;
+  static int nydef=-1;
   char *flname = NULL;
   static char Msg [ 200 ] ;
   static char Bkup [ 300 ] ;
@@ -34,6 +36,7 @@
   static int GetLength ( char *s1 , char *s2 ) ;
   static int GetRealPos ( ) ;
   void * Runinitkit ( void *, void* ) ;
+  void *RunSetup(void *parent ,void *args) ;
   static int SearchTbl();
   static int Splash ( char *Msg );
   static Dlink *BLS=NULL;
@@ -945,6 +948,93 @@ static Dlink *Pop(){
       e = T->elmt;
       return ret;
   }
+static int RedrawTable() {
+   int Fz1,nchr,nymax,nyo,k;
+   int xl,yl;
+   char Fmt[20];
+   DIALOG *D=(DIALOG *)Tbl->D;
+   T_ELMT *elmt;
+      nyo = Tbl->ny;
+      if(nydef == -1 ) nydef= Tbl->ny;
+      Fz1 = Tbl->FontSize;;
+      Tbl->ny = ( Tbl->y2 - Tbl->y1-4 ) /(2*Fz1);
+      Fz1 = ( Tbl->y2 - Tbl->y1-4 ) /(2*Tbl->ny);
+      nchr = ( Tbl->x2 - Tbl->x1) /Fz1 -11;
+      Tbl->x2 = (nchr+11)*Fz1+Tbl->x1;
+      Tbl->ny = (float)( Tbl->y2 - Tbl->y1-4 )/(2*Fz1)+0.5;
+      Tbl->y2 = Fz1*(2*Tbl->ny )+Tbl->y1+4;
+      sprintf ( Fmt , "%%%ds" , nchr ) ;
+      elmt = ( T_ELMT * ) Tbl->elmt;
+      if(Tbl->ny > nydef )elmt = (T_ELMT *)realloc(elmt,Tbl->nx*Tbl->ny*sizeof(T_ELMT));
+      Tbl->elmt = elmt;
+      nymax = Tbl->ny;
+      if(nymax >nyo ) nymax = nyo;
+      if(nymax < nydef ) nymax=nydef;
+      if(nymax >Tbl->ny) nymax = Tbl->ny; 
+      for ( k = 0;k < nymax;k++ ) {
+          strcpy(elmt [ k*Tbl->nx ] .fmt , (char *)"%4s" ) ;
+          elmt [ k*Tbl->nx ] .sw=0;
+          elmt [ k*Tbl->nx ] .noecho=0;
+          elmt [ k*Tbl->nx ] .img = NULL;
+          strcpy ( elmt [ k*Tbl->nx+1 ] .fmt , Fmt ) ;
+          elmt [ k*Tbl->nx+1 ] .sw=1;
+          elmt [ k*Tbl->nx+1] .noecho=0;
+          elmt [ k*Tbl->nx+1 ] .img = NULL;
+      }
+//      if((Tbl->ny>nydef)&&(Tbl->ny > nyo)) {
+      if((Tbl->ny>nydef)) {
+         int j=0;
+         char *cpt=NULL;
+         vi =(char *)realloc(vi,500*(Tbl->ny - nydef));
+         vs =(char *)realloc(vs,500*(Tbl->ny - nydef));
+         for ( k = nydef;k < Tbl->ny;k++ ) {
+         elmt[k*Tbl->nx].fmt = (char *)malloc(10);
+         elmt[k*Tbl->nx+1].fmt = (char *)malloc(10);
+         strcpy(elmt [ k*Tbl->nx ] .fmt , (char *)"%4s" ) ;
+         elmt [ k*Tbl->nx ] .sw=0;
+         elmt [ k*Tbl->nx ] .noecho=0;
+         elmt [ k*Tbl->nx ] .img = NULL;
+         strcpy ( elmt [ k*Tbl->nx+1 ] .fmt , Fmt ) ;
+         elmt [ k*Tbl->nx+1 ] .sw=1;
+         elmt [ k*Tbl->nx+1] .noecho=0;
+         elmt [ k*Tbl->nx+1 ] .img = NULL;
+         elmt[k*Tbl->nx ].v=(void *)(vi+j*500);
+         elmt[k*Tbl->nx +1].v=(void *)(vs+j*500);
+         cpt= (char *) elmt[k*Tbl->nx ].v;
+         cpt[0]='\0';
+         cpt= (char *) elmt[k*Tbl->nx +1].v;
+         cpt[0]='\0';
+         j++;
+         }
+      }
+      Nlines= Tbl->ny;
+      Tbl->FontSize = Fz1;
+      xl = V->x2 - V->x1;
+      yl = V->y2 - V->y1;
+      V->x1 = Tbl->x2+10;
+      V->x2 = V->x1 + xl;
+      V->y2 = Tbl->y2;
+      yl = MT->y2 -MT->y1;
+      MT->y1 = D->yl-35;
+      MT->y2 = MT->y1+yl;
+      yl = GB->y2 - GB->y1;
+      GB->y1 = D->yl-36;
+      GB->y2 = GB->y1+yl;
+      yl = PB->y2 - PB->y1;
+      PB->y1 = D->yl-36;
+      PB->y2 = PB->y1+yl;
+      kgRedrawDialog ( D ) ;
+ //     if(Tbl->ny !=  nyo) {
+        SetupTbl();
+        WriteTbl();
+      SetupVbar ( ) ;
+      kgUpdateWidget ( V ) ;
+      kgUpdateWidget (Tbl ) ;
+      kgUpdateOn(D);
+//      }
+      kgSetAttnWidget ( D , Tbl ) ;
+  return 1;
+}
 int  ScrollTablebutton7callback(int butno,int i,void *Tmp) {
   /*********************************** 
     butno : selected item (1 to max_item) 
@@ -954,9 +1044,26 @@ int  ScrollTablebutton7callback(int butno,int i,void *Tmp) {
   DIALOG *D;DIN *B; 
   int n,ret =0; 
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+  int *ipt;
+  Gclr *Gc;
   D = (DIALOG *)Tmp;
+  Gc = &(D->gc);
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
+  if((ipt=(int *)RunSetup(NULL,Tbl))!= NULL) {
+//    printf("Updating...\n");
+//    kgUpdateWidget(Tbl);
+//    kgUpdateOn(Tmp);
+      if(Tbl->width < 2*Tbl->FontSize)Tbl->width = 2*Tbl->FontSize;
+      DefWidth= Tbl->width;
+      Fz = Tbl->FontSize;
+      kgDefineColor(Gc->tabl_char,ipt[0],ipt[1],ipt[2]);
+      kgDefineColor(Gc->tabl_hchar,ipt[3],ipt[4],ipt[5]);
+      kgDefineColor(Gc->tabl_fill,ipt[6],ipt[7],ipt[8]);
+      kgDefineColor(Gc->tabl_line,ipt[9],ipt[10],ipt[11]);
+      free(ipt);
+      RedrawTable();
+  }
   switch(butno) {
     case 1: 
       break;
@@ -965,6 +1072,9 @@ int  ScrollTablebutton7callback(int butno,int i,void *Tmp) {
 }
 void  ScrollTablebutton7init(DIN *B,void *ptmp) {
  void **pt=(void **)ptmp; //pt[0] is arg 
+ BUT_STR *buts=(BUT_STR *)B->buts;
+ free(buts[0].xpmn);
+ buts[0].xpmn=(void *)&Setupimg_str;
 }
   static int MakeFileNames ( ) {
       char BaseName [ 200 ] ;
@@ -1855,7 +1965,6 @@ i :  Index of Widget  (0 to max_widgets-1)
     Tmp :  Pointer to DIALOG
    ***********************************/
       int ret = 0 , k,nyo;
-      static int nydef=-1;
       int xres , yres , dx , dy,nymax,val;
       int xo , yo , xl , yl , Fz1 , Fz2 , nchr;
       char Fmt [ 8 ] ;
