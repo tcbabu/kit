@@ -18,6 +18,7 @@
   static int NBK=15;
   static int Tblrow;
   static int DifPos=-1;
+  static int SerDir=1;
   static int StartLine = 0 , EndLine = 0 , Nlines , Count;
   static int AddMode = 0 , AddRow = -1;;
   static int B1x,B1y;
@@ -39,6 +40,7 @@
   void * Runinitkit ( void *, void* ) ;
   void *RunSetup(void *parent ,void *args) ;
   static int SearchTbl();
+  static int SearchTblRev();
   static int Splash ( char *Msg );
   static Dlink *BLS=NULL;
   static Dlink *DLS=NULL;
@@ -1054,9 +1056,6 @@ int  ScrollTablebutton7callback(int butno,int i,void *Tmp) {
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
   if((ipt=(int *)RunSetup(NULL,Tbl))!= NULL) {
-//    printf("Updating...\n");
-//    kgUpdateWidget(Tbl);
-//    kgUpdateOn(Tmp);
       if(Tbl->width < 2*Tbl->FontSize)Tbl->width = 2*Tbl->FontSize;
       DefWidth= Tbl->width;
       Fz = Tbl->FontSize;
@@ -1078,6 +1077,42 @@ void  ScrollTablebutton7init(DIN *B,void *ptmp) {
  BUT_STR *buts=(BUT_STR *)B->buts;
  free(buts[0].xpmn);
  buts[0].xpmn=(void *)&Setupimg_str;
+}
+int  ScrollTablebutton8callback(int butno,int i,void *Tmp) {
+  /*********************************** 
+    butno : selected item (1 to max_item) 
+    i :  Index of Widget  (0 to max_widgets-1) 
+    Tmp :  Pointer to DIALOG  
+   ***********************************/ 
+  DIALOG *D;DIN *B; 
+  int n,ret =0; 
+  DIP *P;
+  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
+  void *img;
+  D = (DIALOG *)Tmp;
+  B = (DIN *)kgGetWidget(Tmp,i);
+  BUT_STR *buts=(BUT_STR *)B->buts;
+  P = (DIP*)kgGetNamedWidget(D,(char *)"Arrow");
+  n = B->nx*B->ny;
+  img = buts[0].xpmn;
+  buts[0].xpmn = buts[0].xpmp;
+  buts[0].xpmp = img;
+  P->xpm = buts[0].xpmn ;
+  kgUpdateWidget(P);
+  kgUpdateOn(D);
+  SerDir = (SerDir+1)%2;
+  switch(butno) {
+    case 1: 
+      break;
+  }
+  return ret;
+}
+void  ScrollTablebutton8init(DIN *B,void *ptmp) {
+ void **pt=(void **)ptmp; //pt[0] is arg 
+ BUT_STR *buts=(BUT_STR *)B->buts;
+// if(buts[0].xpmn!= NULL) free(buts[0].xpmn);
+ buts[0].xpmp=(void *)kgUpdirImage(16,100,100,100);
+ buts[0].xpmn=(void *)kgDowndirImage(16,100,100,100);
 }
   static int MakeFileNames ( ) {
       char BaseName [ 200 ] ;
@@ -1246,10 +1281,18 @@ void  ScrollTablebutton7init(DIN *B,void *ptmp) {
       D = ( DIALOG * ) Tmp;
       char **Strs;
       char *cpt;
+      BUT_STR *buts;
+      DIN *AB;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
 //      flname = ( char * ) pt [ 0 ] ;
       Tbl = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "ScrollTable" ) ;
       V = ( DIV * ) kgGetNamedWidget ( D , ( char * ) "VertScroll" ) ;
+      DIP *P;
+      P = (DIP*)kgGetNamedWidget(D,(char *)"Arrow");
+      AB = (DIN*)kgGetNamedWidget(D,(char *)"Direction");
+      buts =(BUT_STR *) AB->buts;
+      P->xpm = buts[0].xpmn ;
+      kgUpdateWidget(P);
       SetupGrps ( ) ;
       Slist = Dreadfile ( flname ) ;
       MakeFileNames ( ) ;
@@ -1447,7 +1490,8 @@ void  ScrollTablebutton7init(DIN *B,void *ptmp) {
       D = ( DIALOG * ) Tmp;
       T = ( DIT * ) kgGetWidget ( Tmp , i ) ;
       e = T->elmt;
-      SearchTbl();
+      if(SerDir)SearchTbl();
+      else SearchTblRev();
       return ret;
   }
   int ScrollTabletextbox1callback_test ( int cellno , int i , void *Tmp ) {
@@ -1489,6 +1533,18 @@ void  ScrollTablebutton7init(DIN *B,void *ptmp) {
       }
       return k;
   }
+static char *SearchStr(char *str,char*ptn) {
+  char *ret=NULL;
+  char *ptmp;
+  ptmp = strstr(str,ptn);
+  if(ptmp != NULL) {
+    ret = ptmp;
+    while ((ptmp =strstr(ptmp+1,ptn))!= NULL) {
+       ret = ptmp;
+    }
+  }
+  return ret;
+}
  static int SearchTbl(){
       int k = 0 , loc , count;
       char *spt , *lptr , *ptmp;
@@ -1586,6 +1642,108 @@ void  ScrollTablebutton7init(DIN *B,void *ptmp) {
       Splash ( ( char * ) "Could not find" ) ;
       return 1;
   }
+ static int SearchTblRev(){
+      int k = 0 , loc , count;
+      char *spt , *lptr , *ptmp,chtmp;
+      int row , curpos , stchar , rowbk , rcurpos;
+      int Slbak , Elbak , curbk;
+      DIALOG *D = ( DIALOG * ) Tbl->D;;
+      void *Tmp =D;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      spt = ( char * ) kgGetString ( ST , 0 ) ;
+      k = 0;
+      while ( spt [ k ] == ' ' ) k++;
+      if ( spt [ k ] < ' ' ) return 0;
+//      printf("%s\n",spt+k);
+      ReadTbl ( ) ;
+      Count = Dcount ( Slist ) ;
+      row = kgGetTableRow ( Tbl ) ;
+      rowbk = row;
+      curpos = kgGetTableCurpos ( Tbl ) ;
+      rcurpos = GetRealPos ( ) ;
+      curbk = curpos;
+      Slbak = StartLine;
+      Elbak = EndLine;
+      stchar = kgGetTableStartChar ( Tbl ) ;
+      Dposition ( Slist , StartLine+row ) ;
+//      printf ( "Row: %d %d %d\n" , rowbk , StartLine , curpos ) ;
+      lptr = ( char * ) Getrecordrev ( Slist ) ;
+      if ( lptr == NULL ) return 0;
+#if 1
+ //     printf("%s\n",lptr+stchar);
+      chtmp = lptr[rcurpos];
+      lptr[rcurpos]='\0';
+      if ( ( ptmp = ( char * ) SearchStr ( lptr , spt ) ) != NULL ) {
+          lptr[rcurpos]= chtmp;
+          loc = GetLength ( lptr , ptmp )  ;
+          kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc ) ;
+          RETURN ( 0 ) ;
+      }
+      lptr[rcurpos]= chtmp;
+#endif
+      count = 1;
+      if ( Count <= Nlines ) {
+          while ( ( lptr = ( char * ) Getrecordrev ( Slist ) ) != NULL ) {
+              if ( ( ptmp = ( char * ) SearchStr ( lptr , spt ) ) != NULL ) {
+                  loc = GetLength ( lptr , ptmp ) ;
+                  row -= count;
+                  kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc ) ;
+                  RETURN ( 0 ) ;
+              }
+              count++;
+          }
+          row = rowbk;
+          Dend ( Slist ) ;
+          for ( k = Count;k > rowbk;k-- ) {
+              lptr = ( char * ) Getrecordrev ( Slist ) ;
+              if ( lptr == NULL ) break;
+              if ( ( ptmp = ( char * ) SearchStr ( lptr , spt ) ) != NULL ) {
+                  loc = GetLength ( lptr , ptmp ) ;
+                  kgSetTableCursorPos ( Tbl , ( k ) *Tbl->nx+1 , loc ) ;
+                  RETURN ( 0 ) ;
+              }
+          }
+      }
+      else {
+          while ( ( lptr = ( char * ) Getrecordrev ( Slist ) ) != NULL ) {
+              if ( ( ptmp = ( char * ) SearchStr ( lptr , spt ) ) != NULL ) {
+                  loc = GetLength ( lptr , ptmp ) ;
+                  if ( StartLine-count >= 1 ) {
+                      StartLine -= count;
+                      EndLine -= count;
+                  }
+                  else {
+                    row  = StartLine+row -count-1;
+                    StartLine =1;
+                    EndLine = Nlines;
+                  }
+                  WriteTbl ( ) ;
+                  kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc ) ;
+                  RETURN ( 0 ) ;
+              }
+              count++;
+          }
+          Dend ( Slist ) ;
+          count = 0;
+          for ( k = Count-1;k > Elbak;k-= Nlines ) {
+              for ( row =Nlines-1;row >=0;row-- ) {
+                  lptr = ( char * ) Getrecordrev ( Slist ) ;
+                  if ( lptr == NULL ) break;
+                  if ( ( ptmp = ( char * ) SearchStr ( lptr , spt ) ) != NULL ) {
+                      loc = GetLength ( lptr , ptmp ) ;
+                      EndLine = k+1;
+                      StartLine = EndLine-Nlines+1;;
+                      WriteTbl ( ) ;
+                      kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc ) ;
+                      RETURN ( 0 ) ;
+                  }
+              }
+          }
+      }
+      kgSetAttnWidget ( Tmp , Tbl ) ;
+      Splash ( ( char * ) "Could not find" ) ;
+      return 1;
+  }
   int ScrollTablebutton3callback ( int butno , int i , void *Tmp ) {
   /***********************************
     butno : selected item (1 to max_item)
@@ -1608,6 +1766,7 @@ void  ScrollTablebutton7init(DIN *B,void *ptmp) {
       if ( spt [ k ] < ' ' ) return ret;
 //     printf("%s\n",spt+k);
       ReadTbl ( ) ;
+      if(SerDir==0) return SearchTblRev();
       Count = Dcount ( Slist ) ;
       row = kgGetTableRow ( Tbl ) ;
       rowbk = row;

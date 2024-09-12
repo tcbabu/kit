@@ -19,6 +19,8 @@ int  ScrollTablebutton6callback(int butno,int i,void *Tmp) ;
 void  ScrollTablebutton6init(DIN *B,void *pt) ;
 int  ScrollTablebutton7callback(int butno,int i,void *Tmp) ;
 void  ScrollTablebutton7init(DIN *B,void *pt) ;
+int  ScrollTablebutton8callback(int butno,int i,void *Tmp) ;
+void  ScrollTablebutton8init(DIN *B,void *pt) ;
 int ScrollTableinit(void *Tmp) ;
 int ScrollTablecleanup(void *Tmp) ;
 int ModifyScrollTable(void *Tmp,int GrpId) ;
