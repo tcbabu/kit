@@ -32,7 +32,7 @@
   static char Msg [ 200 ] ;
   static char Bkup [ 300 ] ;
   static char SaveFile [ 300 ] ;
-  static char Buf [ 500 ] , Buf1 [ 500 ] ;
+  static char Buf [ 2000 ] , Buf1 [ 2000 ] ;
   void *RunGetFileName ( void *parent , void *args ) ;
   void *RunGetMarkPos ( void *parent , void *args ) ;
   void ModifyScrollTableGc(void *Tmp); 
@@ -221,8 +221,8 @@ static Dlink *Pop(){
       Count = Dcount ( Slist ) ;
       if ( Count > Nlines ) {
           kgSetWidgetVisibility ( V , 1 ) ;
-          Vsize = ( double ) Nlines/Count*100;
-          Vpos = ( double ) ( StartLine-1 ) /Count*100;
+          Vsize = ( double ) Nlines/Count*100.0;
+          Vpos = ( double ) ( StartLine-1 ) /Count*100.0;
           kgSetScrollLength ( V , Vsize ) ;
           kgSetScrollPos ( V , Vpos ) ;
       }
@@ -267,7 +267,7 @@ static Dlink *Pop(){
       int n = ( EndLine -StartLine +1 ) ;
       int i , j , k , l;
       char *cpt , *spt;
-      char Buf [ 500 ] ;
+      char Buf [ 2000 ] ;
       Resetlink ( Slist ) ;
       Dposition ( Slist , StartLine ) ;
       for ( i = 0;i < n;i++ ) {
@@ -660,6 +660,9 @@ static Dlink *Pop(){
       n = B->nx;
       switch ( butno ) {
           case 1:
+          if ( !kgCheckMenu ( D , 50 , 200 , ( char * ) "Want to !c03ABORT ?" , 0 ) ) {\
+             return 0;
+          }
           pt [ 1 ] = NULL;
           Dempty ( Slist ) ;
           Slist = Dreadfile ( SaveFile ) ;
@@ -1112,8 +1115,8 @@ static int RedrawTable() {
       if((Tbl->ny>nydef)) {
          int j=0;
          char *cpt=NULL;
-         vi =(char *)realloc(vi,500*(Tbl->ny - nydef));
-         vs =(char *)realloc(vs,500*(Tbl->ny - nydef));
+         vi =(char *)realloc(vi,2000*(Tbl->ny - nydef));
+         vs =(char *)realloc(vs,2000*(Tbl->ny - nydef));
          for ( k = nydef;k < Tbl->ny;k++ ) {
          elmt[k*Tbl->nx].fmt = (char *)malloc(10);
          elmt[k*Tbl->nx+1].fmt = (char *)malloc(10);
@@ -1125,8 +1128,8 @@ static int RedrawTable() {
          elmt [ k*Tbl->nx+1 ] .sw=1;
          elmt [ k*Tbl->nx+1] .noecho=0;
          elmt [ k*Tbl->nx+1 ] .img = NULL;
-         elmt[k*Tbl->nx ].v=(void *)(vi+j*500);
-         elmt[k*Tbl->nx +1].v=(void *)(vs+j*500);
+         elmt[k*Tbl->nx ].v=(void *)(vi+j*2000);
+         elmt[k*Tbl->nx +1].v=(void *)(vs+j*2000);
          cpt= (char *) elmt[k*Tbl->nx ].v;
          cpt[0]='\0';
          cpt= (char *) elmt[k*Tbl->nx +1].v;
@@ -1148,7 +1151,7 @@ static int RedrawTable() {
       GB->y1 = D->yl-36;
       GB->y2 = GB->y1+yl;
       yl = PB->y2 - PB->y1;
-      PB->y1 = D->yl-36;
+      PB->y1 = D->yl-34;
       PB->y2 = PB->y1+yl;
       kgRedrawDialog ( D ) ;
  //     if(Tbl->ny !=  nyo) {
@@ -1299,7 +1302,7 @@ void  ScrollTablebutton8init(DIN *B,void *ptmp) {
       Resetlink ( Slist ) ;
       if ( Count <= Nlines ) kgSetWidgetVisibility ( V , 0 ) ;
       else {
-          Vsize = ( double ) Nlines/Count*100;
+          Vsize = ( double ) Nlines/Count*100.0;
           Vpos = 0;
           kgSetScrollLength ( V , Vsize ) ;
           kgSetScrollPos ( V , Vpos ) ;
@@ -1488,7 +1491,7 @@ void  ScrollTablebutton8init(DIN *B,void *ptmp) {
           Resetlink ( Slist ) ;
           if ( Count <= Nlines ) kgSetWidgetVisibility ( V , 0 ) ;
           else {
-              Vsize = ( double ) Nlines/Count*100;
+              Vsize = ( double ) (Nlines)/Count*100.0;
               Vpos = 0;
               kgSetScrollLength ( V , Vsize ) ;
               kgSetScrollPos ( V , Vpos ) ;
@@ -2260,7 +2263,7 @@ i :  Index of Widget  (0 to max_widgets-1)
       GB->y1 = D->yl-36;
       GB->y2 = GB->y1+yl;
       yl = PB->y2 - PB->y1;
-      PB->y1 = D->yl-36;
+      PB->y1 = D->yl-34;
       PB->y2 = PB->y1+yl;
       return GrpId;
   }
@@ -2368,8 +2371,8 @@ i :  Index of Widget  (0 to max_widgets-1)
       if((Tbl->ny>nydef)) {
          int j=0;
          char *cpt=NULL;
-         vi =(char *)realloc(vi,500*(Tbl->ny - nydef));
-         vs =(char *)realloc(vs,500*(Tbl->ny - nydef));
+         vi =(char *)realloc(vi,2000*(Tbl->ny - nydef));
+         vs =(char *)realloc(vs,2000*(Tbl->ny - nydef));
          for ( k = nydef;k < Tbl->ny;k++ ) {
          elmt[k*Tbl->nx].fmt = (char *)malloc(10);
          elmt[k*Tbl->nx+1].fmt = (char *)malloc(10);
@@ -2381,8 +2384,8 @@ i :  Index of Widget  (0 to max_widgets-1)
          elmt [ k*Tbl->nx+1 ] .sw=1;
          elmt [ k*Tbl->nx+1] .noecho=0;
          elmt [ k*Tbl->nx+1 ] .img = NULL;
-         elmt[k*Tbl->nx ].v=(void *)(vi+j*500);
-         elmt[k*Tbl->nx +1].v=(void *)(vs+j*500);
+         elmt[k*Tbl->nx ].v=(void *)(vi+j*2000);
+         elmt[k*Tbl->nx +1].v=(void *)(vs+j*2000);
          cpt= (char *) elmt[k*Tbl->nx ].v;
          cpt[0]='\0';
          cpt= (char *) elmt[k*Tbl->nx +1].v;
@@ -2405,7 +2408,7 @@ i :  Index of Widget  (0 to max_widgets-1)
       GB->y1 = D->yl-36;
       GB->y2 = GB->y1+yl;
       yl = PB->y2 - PB->y1;
-      PB->y1 = D->yl-36;
+      PB->y1 = D->yl-34;
       PB->y2 = PB->y1+yl;
       kgRedrawDialog ( D ) ;
  //     if(Tbl->ny !=  nyo) {

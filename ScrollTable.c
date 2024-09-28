@@ -56,19 +56,19 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn2=NULL; 
   butn2= (BUT_STR *)malloc(sizeof(BUT_STR)*2);
   butn2[0].sw=1;
-  strcpy(butn2[0].title,(char *)"!w32!c38Abort");
+  strcpy(butn2[0].title,(char *)"!c31Abort");
   butn2[0].xpmn=NULL;
   butn2[0].xpmp=NULL;
   butn2[0].xpmh=NULL;
   butn2[0].bkgr=-235255250;
-  butn2[0].butncode=10;
+  butn2[0].butncode=31;
   butn2[1].sw=1;
-  strcpy(butn2[1].title,(char *)"!w32!c38Done");
+  strcpy(butn2[1].title,(char *)"!c38Done");
   butn2[1].xpmn=NULL;
   butn2[1].xpmp=NULL;
   butn2[1].xpmh=NULL;
   butn2[1].bkgr=-235255250;
-  butn2[1].butncode=10;
+  butn2[1].butncode=31;
   DIL h2 = { 
     'h',
     336,561,  
@@ -77,7 +77,7 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
     84, 
     25, 
     2,1, 
-    2,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    8,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn2, 
     ScrollTablesplbutton1callback, /*  Callbak */
@@ -88,26 +88,26 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn3=NULL; 
   butn3= (BUT_STR *)malloc(sizeof(BUT_STR)*3);
   butn3[0].sw=1;
-  strcpy(butn3[0].title,(char *)"!w34Delete");
+  strcpy(butn3[0].title,(char *)"Delete");
   butn3[0].xpmn=NULL;
   butn3[0].xpmp=NULL;
   butn3[0].xpmh=NULL;
   butn3[0].bkgr=-240245255;
-  butn3[0].butncode=31;
+  butn3[0].butncode=125;
   butn3[1].sw=1;
-  strcpy(butn3[1].title,(char *)"!w34Add");
+  strcpy(butn3[1].title,(char *)"Add");
   butn3[1].xpmn=NULL;
   butn3[1].xpmp=NULL;
   butn3[1].xpmh=NULL;
   butn3[1].bkgr=-240245255;
-  butn3[1].butncode=31;
+  butn3[1].butncode=125;
   butn3[2].sw=1;
-  strcpy(butn3[2].title,(char *)"!w34Insert");
+  strcpy(butn3[2].title,(char *)"Insert");
   butn3[2].xpmn=NULL;
   butn3[2].xpmp=NULL;
   butn3[2].xpmh=NULL;
   butn3[2].bkgr=-240245255;
-  butn3[2].butncode=31;
+  butn3[2].butncode=125;
   DIN b3 = { 
     'n',
     712,36,  
@@ -116,7 +116,7 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
     64, 
     24, 
     3,1, 
-    4,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    7,0.300000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn3, 
     ScrollTablebutton1callback, /*  Callbak */
@@ -132,14 +132,14 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   butn4[0].xpmp=NULL;
   butn4[0].xpmh=NULL;
   butn4[0].bkgr=-221221221;
-  butn4[0].butncode=31;
+  butn4[0].butncode=126;
   butn4[1].sw=1;
   strcpy(butn4[1].title,(char *)"Undo");
   butn4[1].xpmn=NULL;
   butn4[1].xpmp=NULL;
   butn4[1].xpmh=NULL;
   butn4[1].bkgr=-221221221;
-  butn4[1].butncode=31;
+  butn4[1].butncode=126;
   DIN b4 = { 
     'n',
     13,36,  
@@ -181,12 +181,12 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn6=NULL; 
   butn6= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn6[0].sw=1;
-  strcpy(butn6[0].title,(char *)"!w34Search");
+  strcpy(butn6[0].title,(char *)"Search");
   butn6[0].xpmn=NULL;
   butn6[0].xpmp=NULL;
   butn6[0].xpmh=NULL;
   butn6[0].bkgr=-240245255;
-  butn6[0].butncode=31;
+  butn6[0].butncode=-603980001;
   DIN b6 = { 
     'n',
     47,6,  
@@ -195,7 +195,7 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
     72, 
     24, 
     1,1, 
-    2,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    7,0.300000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn6, 
     ScrollTablebutton3callback, /*  Callbak */
@@ -211,42 +211,42 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   butn7[0].xpmp=NULL;
   butn7[0].xpmh=NULL;
   butn7[0].bkgr=-221221221;
-  butn7[0].butncode=-2302966;
+  butn7[0].butncode=-2302850;
   butn7[1].sw=1;
   strcpy(butn7[1].title,(char *)"Mark");
   butn7[1].xpmn=NULL;
   butn7[1].xpmp=NULL;
   butn7[1].xpmh=NULL;
   butn7[1].bkgr=-221221221;
-  butn7[1].butncode=-2302966;
+  butn7[1].butncode=-2302850;
   butn7[2].sw=1;
   strcpy(butn7[2].title,(char *)"Write To");
   butn7[2].xpmn=NULL;
   butn7[2].xpmp=NULL;
   butn7[2].xpmh=NULL;
   butn7[2].bkgr=-221221221;
-  butn7[2].butncode=-2302945;
+  butn7[2].butncode=-2302850;
   butn7[3].sw=1;
   strcpy(butn7[3].title,(char *)"Cut");
   butn7[3].xpmn=NULL;
   butn7[3].xpmp=NULL;
   butn7[3].xpmh=NULL;
   butn7[3].bkgr=-221221221;
-  butn7[3].butncode=-2302945;
+  butn7[3].butncode=-2302850;
   butn7[4].sw=1;
   strcpy(butn7[4].title,(char *)"Copy");
   butn7[4].xpmn=NULL;
   butn7[4].xpmp=NULL;
   butn7[4].xpmh=NULL;
   butn7[4].bkgr=-221221221;
-  butn7[4].butncode=-2302945;
+  butn7[4].butncode=-2302850;
   butn7[5].sw=1;
   strcpy(butn7[5].title,(char *)"Paste");
   butn7[5].xpmn=NULL;
   butn7[5].xpmp=NULL;
   butn7[5].xpmh=NULL;
   butn7[5].bkgr=-221221221;
-  butn7[5].butncode=-2302945;
+  butn7[5].butncode=-2302850;
   butn7[6].sw=1;
   strcpy(butn7[6].title,(char *)"Join");
   butn7[6].xpmn=NULL;
@@ -273,12 +273,12 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn8=NULL; 
   butn8= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn8[0].sw=1;
-  strcpy(butn8[0].title,(char *)"!w34Replace");
+  strcpy(butn8[0].title,(char *)"Replace");
   butn8[0].xpmn=NULL;
   butn8[0].xpmp=NULL;
   butn8[0].xpmh=NULL;
   butn8[0].bkgr=-240245255;
-  butn8[0].butncode=-2302966;
+  butn8[0].butncode=123;
   DIN b8 = { 
     'n',
     299,6,  
@@ -287,7 +287,7 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
     64, 
     24, 
     1,1, 
-    2,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    7,0.300000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn8, 
     ScrollTablebutton5callback, /*  Callbak */
@@ -319,8 +319,8 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   t9.item = -1;
   T_ELMT *e10  ; 
   e10 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e10[0].fmt = (char *)malloc(11);
-  strcpy(e10[0].fmt,(char *)"MarkPos%4d");
+  e10[0].fmt = (char *)malloc(15);
+  strcpy(e10[0].fmt,(char *)"!h34MarkPos%4d");
   e10[0].v=(void *)v[50];
   e10[0].sw=1;
   e10[0].noecho=0;
@@ -347,7 +347,7 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   butn11[0].xpmp=NULL;
   butn11[0].xpmh=NULL;
   butn11[0].bkgr=-235255250;
-  butn11[0].butncode=-2302966;
+  butn11[0].butncode=126;
   DIN b11 = { 
     'n',
     161,557,  
@@ -375,19 +375,19 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   butn12[0].xpmn= (char *)malloc(100); 
   strcpy(butn12[0].xpmn,(char *)"##/usr/share/icons/Kulina/cog-icon-2-48x48.png");
 #else
-  butn12[0].xpmn= kgGetProcessedImage("##/usr/share/icons/Kulina/cog-icon-2-48x48.png",24,0.8,0,0,0);
+  butn12[0].xpmn= kgGetProcessedImage("##/usr/share/icons/Kulina/cog-icon-2-48x48.png",20,0.8,0,0,0);
 #endif
   butn12[0].bkgr=-1;
-  butn12[0].butncode=-2302966;
+  butn12[0].butncode=126;
   DIN b12 = { 
     'n',
-    196,557,  
-    228,587,
+    196,560,  
+    223,587,
     2,2,  
-    24, 
-    24, 
+    20, 
+    20, 
     1,1, 
-    1,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
+    9,0.500000,0,0,0,1, /* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/
  
     butn12, 
     ScrollTablebutton7callback, /*  Callbak */
@@ -403,7 +403,7 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   butn13[0].xpmp=NULL;
   butn13[0].xpmh=NULL;
   butn13[0].bkgr=-1;
-  butn13[0].butncode=-2302966;
+  butn13[0].butncode=126;
   DIN b13 = { 
     'n',
     15,5,  
