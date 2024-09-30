@@ -1401,11 +1401,15 @@ void  ScrollTablebutton8init(DIN *B,void *ptmp) {
     DIALOG *D = (DIALOG *)Tmp;
     Gclr *Gc= &(D->gc);
     int r,g,b;
+    int Font;
     sprintf(Config,"%-s/.kit",getenv((char *)"HOME"));
     FILE *fp=fopen(Config,"r");
     if(fp != NULL) {
       fscanf(fp,"%s",FontName);
-      Tbl->Font = kgAddFixedFont(FontName);
+//      Tbl->Font = kgAddFixedFont(FontName);
+      Font = kgCheckFont(FontName); 
+      if(Font >= 0) Tbl->Font = Font;
+      else Tbl->Font = kgAddFont(FontName);
       fscanf(fp,"%d%d",&(Tbl->FontSize),&(Tbl->width));
       fscanf(fp,"%d%d%d",&r,&g,&b);
       kgDefineColor(Gc->tabl_char,r,g,b);
