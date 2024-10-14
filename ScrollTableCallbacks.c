@@ -485,6 +485,7 @@ static Dlink *Pop(){
       int count = Count , row;
       if ( Rlist != NULL ) {
           ReadTbl ( ) ;
+          Push();
           row = kgGetTableRow ( Tbl ) ;
           Dposition ( Slist , StartLine+row ) ;
           Resetlink ( Rlist ) ;
