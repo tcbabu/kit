@@ -480,6 +480,68 @@ static Dlink *Pop(){
       }
       return 1;
   }
+  static int ReadInLink ( Dlink *Rlist) {
+      void *ptmp;
+      int count = Count , row;
+      if ( Rlist != NULL ) {
+          ReadTbl ( ) ;
+          row = kgGetTableRow ( Tbl ) ;
+          Dposition ( Slist , StartLine+row ) ;
+          Resetlink ( Rlist ) ;
+          while ( ( ptmp = Getrecord ( Rlist ) ) != NULL ) Dadd ( Slist , ptmp ) ;
+          Dfree ( Rlist ) ;
+          if ( count < Nlines ) SetupTbl ( ) ;
+          SetupVbar ( ) ;
+          WriteTbl ( ) ;
+          kgSetTableCursorPos ( Tbl , row *Tbl->nx+1 , 0 ) ;
+          kgUpdateOn ( Tbl->D ) ;
+      }
+      return 1;
+  }
+  int ProcessClip(DIALOG *D) {
+    char *str,*pt,lchar,ch,*buf;;
+    int i,n,Okay =0,ln;
+    Dlink *L;
+    str = kgGetClipBoard(D);
+    if(str == NULL) str = kgGetPrimary(D);
+    else {
+      i=0;
+      while(str[i]!='\0') {
+        if(str[i]=='\n') {Okay =1;break;}
+        i++;
+      }
+      if(Okay == 0) {
+        free(str);
+        str= kgGetPrimary(D);
+      }
+    }
+    if(str==NULL) return 0;
+    ln = strlen(str);
+    lchar=str[ln];
+    i=0;
+    pt = str;
+    L = Dopen();
+    while( str[i] !='\0'){
+       if(str[i]=='\n') {
+         ch = str[i+1];
+         str[i+1]='\0';
+         buf = (char *)malloc(strlen(pt)+1);
+         strcpy(buf,pt);
+         Dadd(L,buf);
+         str[i+1]=ch;
+         pt = str+i+1;
+       }
+       i++;
+    }
+    if(lchar != '\n') {
+      buf = (char *)malloc(strlen(pt)+2);
+      strcpy(buf,pt);
+      strcat(buf,"\n");
+      Dadd(L,buf);
+    }
+    ReadInLink(L);
+    return 1;
+  }
   int ScrollTabletablebox1callback ( int cellno , int i , void *Tmp ) {
   /*************************************************
    cellno: current cell counted along column strting with 0
@@ -498,6 +560,11 @@ static Dlink *Pop(){
       D = ( DIALOG * ) Tmp;
       T = ( DIT * ) kgGetWidget ( Tmp , i ) ;
       e = T->elmt;
+      if( cellno == MULTILINE_CLIP ) {
+//         printf("Got MULTILINE  to proces CLIPBOARD\n");
+         ProcessClip(D);
+         return ret;
+      }
       if ( cellno == SCROLL_DOWN ) {
           ReadTbl ( ) ;
           if ( EndLine < ( Count ) ) {
@@ -2025,6 +2092,24 @@ static char *SearchStr(char *str,char* ptn) {
       }
       return 1;
   }
+  int WriteClipBoard(Dlink *Wlist) {
+    int len=0;
+    char *Buff,*pt;
+    if(Wlist== NULL ) return 0;
+    Resetlink(Wlist);
+    while( (pt=(char *)Getrecord(Wlist))!= NULL) {
+      len += (strlen(pt)+1);
+    }
+    Buff = (char *)malloc(len+1);
+    Buff[0]='\0';
+    Resetlink(Wlist);
+    while( (pt=(char *)Getrecord(Wlist))!= NULL) {
+      strcat(Buff,pt);
+    }
+    Resetlink(Wlist);
+    kgSetClipBoard(Tbl->D,Buff);
+    return len;    
+  }
   static int WriteToFile ( char *fpt ) {
       if ( fpt != NULL ) {
           Dlink *Wlist = Dopen ( ) ;
@@ -2051,6 +2136,7 @@ static char *SearchStr(char *str,char* ptn) {
               strcpy ( dpt , spt ) ;
               Dadd ( Wlist , dpt ) ;
           }
+          WriteClipBoard(Wlist);
           Dwritefile ( Wlist , fpt ) ;
           Dempty ( Wlist ) ;
       }
@@ -2081,6 +2167,7 @@ static char *SearchStr(char *str,char* ptn) {
               if ( spt == NULL ) break;
               Dadd ( Wlist , spt ) ;
           }
+          WriteClipBoard(Wlist);
           Dwritefile ( Wlist , fpt ) ;
           lines = Dcount ( Wlist ) ;
           Dempty ( Wlist ) ;
