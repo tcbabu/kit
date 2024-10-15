@@ -11,6 +11,8 @@ kit	: ScrollTable.o ScrollTableCallbacks.o \
 	 Setup.o SetupCallbacks.o \
  -I$(KULINA)/include $(KULINA)/lib/libkulina.a $(KULINA)/lib/libgm.a \
  -L/usr/X11R6/lib -lX11 -lXext -lm -lpthread -lz -lbz2 -lGL
+	 cp kit Kit/
+	 tar czf Kitbin.tgz Kit
 ScrollTable.o  	: ScrollTable.c GclrScrollTable.c
 	 $(CC) -c ScrollTable.c
 ScrollTableCallbacks.o 	: ScrollTableCallbacks.c
@@ -25,4 +27,3 @@ clean  	:
 	rm -f *.o kit
 install	: kit
 	cp kit /usr/bin/
-	 tar xzf fonts.tar -C /usr/share/fonts

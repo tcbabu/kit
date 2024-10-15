@@ -756,6 +756,7 @@ static Dlink *Pop(){
           }
           pt [ 1 ] = NULL;
           Dempty ( Slist ) ;
+#if 0
           Slist = Dreadfile ( SaveFile ) ;
           if ( Dcount ( Slist ) == 0 ) {
               Dempty ( Slist ) ;
@@ -773,6 +774,7 @@ static Dlink *Pop(){
               Dwritefile ( Slist , Buf ) ;
               Dempty ( Slist ) ;
           }
+#endif
           break;
           case 2:
           ReadTbl ( ) ;
@@ -1611,13 +1613,19 @@ void  ScrollTablebutton8init(DIN *B,void *ptmp) {
       DIALOG *D;DIN *B;
       int n , ret = 0 , row,curpos,rcurpos;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      char *fpt;
       D = ( DIALOG * ) Tmp;
       B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
       n = B->nx*B->ny;
       switch ( butno ) {
           case 1:
           ReadTbl ( ) ;
-          Dwritefile ( Slist , SaveFile ) ;
+          strcpy ( Buf , flname) ;
+          if ( ( fpt = RunGetFileName ( NULL , Buf ) ) == NULL ) break;
+          strcpy ( Buf , fpt ) ;
+          free ( fpt ) ;
+//        Dwritefile ( Slist , SaveFile ) ;
+          Dwritefile ( Slist , Buf ) ;
           break;
           case 2:
 //        printf("%s\n",flname);
@@ -2338,7 +2346,7 @@ i :  Index of Widget  (0 to max_widgets-1)
           i++;
       };
       n = 1;
-      sprintf(Msg,"Kit Ver 1.0: File: %s",flname);
+      sprintf(Msg,"Kit Ver 2.0: File: %s",flname);
       strcpy ( D->name , Msg ) ; /* Dialog name you may change */
       Tbl = ( DIT * ) kgGetNamedWidget ( D , ( char * ) "ScrollTable" ) ;
       Tbl->Font = 10;
