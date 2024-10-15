@@ -24,7 +24,7 @@
   static int B1x,B1y;
   static double Vsize , Vpos;
   static int MarkPos = 1;
-  static int ExpandTab = 0;
+  static int ExpandTab = 0,Tabp=8;
   static   char *vi=NULL,*vs=NULL;
   static int Xl = -1 , Yl = -1 , Fz = -1 , By1,DefWidth;
   static int nydef=-1;
@@ -267,7 +267,7 @@ static Dlink *Pop(){
       int n = ( EndLine -StartLine +1 ) ;
       int i , j , k , l;
       char *cpt , *spt;
-      char Buf [ 2000 ] ;
+      char Buf [ 5000 ] ;
       Resetlink ( Slist ) ;
       Dposition ( Slist , StartLine ) ;
       for ( i = 0;i < n;i++ ) {
@@ -282,12 +282,12 @@ static Dlink *Pop(){
               if ( cpt [ j ] != '\t' ) Buf [ k++ ] = cpt [ j ] ;
               else {
                   if ( ExpandTab ) {
-                      l = ( j/8+1 ) *8;
+                      l = ( k/Tabp+1 ) *Tabp;
                       while ( k < l ) Buf [ k++ ] = ' ';
                   }
                   else {
+                      l = ( k/Tabp+1 ) *Tabp;
                       Buf [ k++ ] = cpt [ j ] ;
-                      l = ( j/8+1 ) *8;
                       while ( k < l ) Buf [ k++ ] = 127;
                   }
               }
@@ -484,8 +484,6 @@ static Dlink *Pop(){
       void *ptmp;
       int count = Count , row;
       if ( Rlist != NULL ) {
-          ReadTbl ( ) ;
-          Push();
           row = kgGetTableRow ( Tbl ) ;
           Dposition ( Slist , StartLine+row ) ;
           Resetlink ( Rlist ) ;
@@ -561,9 +559,34 @@ static Dlink *Pop(){
       D = ( DIALOG * ) Tmp;
       T = ( DIT * ) kgGetWidget ( Tmp , i ) ;
       e = T->elmt;
-      if( cellno == MULTILINE_CLIP ) {
-//         printf("Got MULTILINE  to proces CLIPBOARD\n");
-         ProcessClip(D);
+      if( cellno == BUTTON2_PRESS) {
+         ReadTbl ( ) ;
+         Push();
+         ret = kgProcessClips(D,2);
+         if(ret == MULTILINE_CLIP ) {
+           ProcessClip(D);
+         }
+         return ret;
+      }
+      if( cellno == BUTTON3_PRESS) {
+         ReadTbl ( ) ;
+         Push();
+         ret = kgProcessClips(D,3);
+         if(ret == MULTILINE_CLIP ) {
+           ProcessClip(D);
+         }
+         return ret;
+      }
+      if( cellno == TAB_PRESS) {
+         ReadTbl ( ) ;
+         Push();
+         WriteTbl ( ) ;
+         return ret;
+      }
+      if( cellno == LINE_CHANGE) {
+         ReadTbl ( ) ;
+         Push();
+         WriteTbl ( ) ;
          return ret;
       }
       if ( cellno == SCROLL_DOWN ) {
