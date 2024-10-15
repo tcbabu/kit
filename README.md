@@ -1,6 +1,14 @@
 Kit is graphical Text Editor of Linux. It is developed using Kulina Graphics Library
 kglib. Hence to build from source you need to install kglib also.
 
+Updated Ver 2.0 as on 15th Oct 2024
+
+I thought I won't do anything more in 'kit', but this
+is Ver 2.0. I personally use 'kit' and observed that
+few modifications are required in Copy/Paste and 'undo'
+functionality. Also 'save' options is also changed.
+I think, 'kit' is good now and I am relieved.
+
 Update as on 13thSept 2024
 
 Hope this is the final development.
