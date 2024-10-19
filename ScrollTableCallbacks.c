@@ -319,7 +319,7 @@ static Dlink *Pop(){
 //          strcpy ( spt , cpt ) ;
 //          strcat ( spt , "\n" ) ;
 //       printf("%s",spt);
-          Dreplace ( Slist , spt , StartLine+i-1 ) ;
+         Dreplace ( Slist , spt , StartLine+i-1 ) ;
       }
       return 1;
   }
@@ -746,6 +746,7 @@ static Dlink *Pop(){
       int n , ret = 1;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
       char *cpt;
+      void *Busy=NULL;
       D = ( DIALOG * ) Tmp;
       B = ( DIL * ) kgGetWidget ( Tmp , i ) ;
       n = B->nx;
@@ -775,12 +776,16 @@ static Dlink *Pop(){
               Dempty ( Slist ) ;
           }
 #endif
+          kgDisableSelection(D);
           break;
           case 2:
+          Busy = kgOpenBusy(D,B->x1-100,B->y1);
           ReadTbl ( ) ;
           Dwritefile ( Slist , flname ) ;
           pt [ 1 ] = pt [ 0 ] ;
           Dempty ( Slist ) ;
+          kgDisableSelection(D);
+          kgCloseBusy(Busy);
           break;
       }
       remove ( Bkup ) ;
@@ -1168,12 +1173,25 @@ static int ReplaceTblRev() {
       return ret;
   }
 static int RedrawTable() {
-   int Fz1,Fz2,nchr,nymax,nyo,k;
-   int xl,yl;
+   int Fz1,Fz2,nchr,nymax,nyo,k,nxo;
+   int xl,yl,i,j;
    char Fmt[20];
    DIALOG *D=(DIALOG *)Tbl->D;
    T_ELMT *elmt;
+   elmt = ( T_ELMT * ) Tbl->elmt;
       nyo = Tbl->ny;
+      nxo = Tbl->nx;
+#if 1
+      for ( j = 0;j < nyo;j++ ) {
+        for(i=0;i<nxo;i++) {
+          k = j*nxo+i;
+          if(elmt [ k ] .img  !=NULL) {
+              kgFreeImage( elmt [ k ] .img);
+          }
+          elmt [ k ] .img  =NULL;
+        }
+      }
+#endif
       if(nydef == -1 ) nydef= Tbl->ny;
       Fz1 = Tbl->FontSize;;
       if(Tbl->width <2*Fz1)Tbl->width= 2*Fz1; 
@@ -1208,6 +1226,7 @@ static int RedrawTable() {
       if((Tbl->ny>nydef)) {
          int j=0;
          char *cpt=NULL;
+         printf("vi vs realloc\n");
          vi =(char *)realloc(vi,2000*(Tbl->ny - nydef));
          vs =(char *)realloc(vs,2000*(Tbl->ny - nydef));
          for ( k = nydef;k < Tbl->ny;k++ ) {
@@ -1600,6 +1619,7 @@ void  ScrollTablebutton8init(DIN *B,void *ptmp) {
           kgSetDefaultAttnWidget ( Tmp , Tbl ) ;
       }
       Push();
+      kgEnableSelection(Tmp);
       kgUpdateOn ( Tmp ) ;
       free ( Strs ) ;
       return ret;
@@ -2411,7 +2431,7 @@ i :  Index of Widget  (0 to max_widgets-1)
   /***********************************
     Tmp :  Pointer to DIALOG
    ***********************************/
-      int ret = 0 , k,nyo;
+      int ret = 0 , k,nyo,nxo,i,j;
       int xres , yres , dx , dy,nymax,val;
       int xo , yo , xl , yl , Fz1 , Fz2 , nchr;
       char Fmt [ 8 ] ;
@@ -2431,7 +2451,20 @@ i :  Index of Widget  (0 to max_widgets-1)
       }
   /* extra code */
       if(nydef == -1 ) nydef= Tbl->ny;
-      nyo =Tbl->ny;
+      elmt = ( T_ELMT * ) Tbl->elmt;
+      nyo = Tbl->ny;
+      nxo = Tbl->nx;
+#if 1
+      for ( j = 0;j < nyo;j++ ) {
+        for(i=0;i<nxo;i++) {
+          k = j*nxo+i;
+          if(elmt [ k ] .img  !=NULL) {
+              kgFreeImage( elmt [ k ] .img);
+          }
+          elmt [ k ] .img  =NULL;
+        }
+      }
+#endif
       D->xl = xres;
       D->yl = yres;
       xl = DB->x2 -DB->x1;

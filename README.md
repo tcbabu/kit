@@ -1,5 +1,16 @@
 Kit is graphical Text Editor of Linux. It is developed using Kulina Graphics Library
 kglib. Hence to build from source you need to install kglib also.
+As on 19thOct 2024
+There was some memory leak in the usage of IMAGEMAGIK,
+hope there was better documentation or good examples.
+Anyway tough to use the library, missing needed  explanations
+or examples. It is always a problem to use external packake.
+Ofcource GM was very useful. But mostly one need to use trail and
+error to understand the usage, ecspecially 'DestroyImage'.
+So not any change here, just a rebuild, so the tarball changes.
+Of one need to use the updated 'kglib' package.
+
+Again, get the updated 'kglib':
 
 Updated Ver 2.0 as on 15th Oct 2024
 
