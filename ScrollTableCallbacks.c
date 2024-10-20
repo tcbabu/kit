@@ -779,12 +779,12 @@ static Dlink *Pop(){
           kgDisableSelection(D);
           break;
           case 2:
+          kgDisableSelection(D);
           Busy = kgOpenBusy(D,B->x1-100,B->y1);
           ReadTbl ( ) ;
           Dwritefile ( Slist , flname ) ;
           pt [ 1 ] = pt [ 0 ] ;
           Dempty ( Slist ) ;
-          kgDisableSelection(D);
           kgCloseBusy(Busy);
           break;
       }
