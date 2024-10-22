@@ -497,13 +497,13 @@ static Dlink *Pop(){
       }
       return 1;
   }
-  int ProcessClip(DIALOG *D) {
-    char *str,*pt,lchar,ch,*buf;;
+  int ProcessClip(DIALOG *D,char *str) {
+    char *pt,lchar,ch,*buf;;
     int i,n,Okay =0,ln;
     Dlink *L;
-    str = kgGetClipBoard(D);
-    if(str == NULL) str = kgGetPrimary(D);
-    else {
+    if(str==NULL) return 0;
+#if 0 // Not needed
+    {
       i=0;
       while(str[i]!='\0') {
         if(str[i]=='\n') {Okay =1;break;}
@@ -514,7 +514,7 @@ static Dlink *Pop(){
         str= kgGetPrimary(D);
       }
     }
-    if(str==NULL) return 0;
+#endif
     ln = strlen(str);
     lchar=str[ln];
     i=0;
@@ -556,25 +556,22 @@ static Dlink *Pop(){
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
       int ret = 1;
       double pos;
+      char *str=NULL;
       D = ( DIALOG * ) Tmp;
       T = ( DIT * ) kgGetWidget ( Tmp , i ) ;
       e = T->elmt;
       if( cellno == BUTTON2_PRESS) {
          ReadTbl ( ) ;
          Push();
-         ret = kgProcessClips(D,2);
-         if(ret == MULTILINE_CLIP ) {
-           ProcessClip(D);
-         }
+         str  = (char *)kgProcessClips(D,2);
+         if(str != NULL)  ProcessClip(D,str);
          return ret;
       }
       if( cellno == BUTTON3_PRESS) {
          ReadTbl ( ) ;
          Push();
-         ret = kgProcessClips(D,3);
-         if(ret == MULTILINE_CLIP ) {
-           ProcessClip(D);
-         }
+         str = (char *)kgProcessClips(D,3);
+         if(str != NULL)  ProcessClip(D,str);
          return ret;
       }
       if( cellno == TAB_PRESS) {
@@ -1223,11 +1220,12 @@ static int RedrawTable() {
           elmt [ k*Tbl->nx+1 ] .img = NULL;
       }
 //      if((Tbl->ny>nydef)&&(Tbl->ny > nyo)) {
+//      printf( "Tbl->ny: %d nydef: %d\n",Tbl->ny,nydef);
       if((Tbl->ny>nydef)) {
          int j=0;
          char *cpt=NULL;
-         printf("vi vs realloc\n");
-         vi =(char *)realloc(vi,2000*(Tbl->ny - nydef));
+//         printf("vi vs realloc\n");
+         vi =(char *)realloc(vi,20*(Tbl->ny - nydef));
          vs =(char *)realloc(vs,2000*(Tbl->ny - nydef));
          for ( k = nydef;k < Tbl->ny;k++ ) {
          elmt[k*Tbl->nx].fmt = (char *)malloc(10);
@@ -1240,7 +1238,7 @@ static int RedrawTable() {
          elmt [ k*Tbl->nx+1 ] .sw=1;
          elmt [ k*Tbl->nx+1] .noecho=0;
          elmt [ k*Tbl->nx+1 ] .img = NULL;
-         elmt[k*Tbl->nx ].v=(void *)(vi+j*2000);
+         elmt[k*Tbl->nx ].v=(void *)(vi+j*20);
          elmt[k*Tbl->nx +1].v=(void *)(vs+j*2000);
          cpt= (char *) elmt[k*Tbl->nx ].v;
          cpt[0]='\0';
@@ -2160,6 +2158,8 @@ static char *SearchStr(char *str,char* ptn) {
     }
     Resetlink(Wlist);
     kgSetClipBoard(Tbl->D,Buff);
+//    kgSetPrimary(Tbl->D,Buff);
+    free(Buff);
     return len;    
   }
   static int WriteToFile ( char *fpt ) {
@@ -2527,7 +2527,7 @@ i :  Index of Widget  (0 to max_widgets-1)
       if((Tbl->ny>nydef)) {
          int j=0;
          char *cpt=NULL;
-         vi =(char *)realloc(vi,2000*(Tbl->ny - nydef));
+         vi =(char *)realloc(vi,20*(Tbl->ny - nydef));
          vs =(char *)realloc(vs,2000*(Tbl->ny - nydef));
          for ( k = nydef;k < Tbl->ny;k++ ) {
          elmt[k*Tbl->nx].fmt = (char *)malloc(10);
@@ -2540,7 +2540,7 @@ i :  Index of Widget  (0 to max_widgets-1)
          elmt [ k*Tbl->nx+1 ] .sw=1;
          elmt [ k*Tbl->nx+1] .noecho=0;
          elmt [ k*Tbl->nx+1 ] .img = NULL;
-         elmt[k*Tbl->nx ].v=(void *)(vi+j*2000);
+         elmt[k*Tbl->nx ].v=(void *)(vi+j*20);
          elmt[k*Tbl->nx +1].v=(void *)(vs+j*2000);
          cpt= (char *) elmt[k*Tbl->nx ].v;
          cpt[0]='\0';
