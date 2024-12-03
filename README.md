@@ -1,5 +1,24 @@
+
+Note:
+Kulina projects are X11 based and under Wayland it may have problems,
+not really the problem of Kulina but Wayland. One may try to use
+Xorg based sessions.
+
+Also there is an attempt to add DEBIAN-12 based binary, it should
+work on all latest distributions of Ubuntu, Fedora etc.
+
+These Debian binaries may be available on in SourceForge, so one should
+get it from Sourceforge, may not be Github.
+
+-----------------------------------------------
+
 Kit is graphical Text Editor of Linux. It is developed using Kulina Graphics Library
 kglib. Hence to build from source you need to install kglib also.
+25th Oct 2024
+Tried kit on a version of Ubuntu and Slackware
+Scrolling is very slow in Ubuntu(???) Not much problem
+in Slackware
+
 As on 19thOct 2024
 There was some memory leak in the usage of IMAGEMAGIK,
 hope there was better documentation or good examples.

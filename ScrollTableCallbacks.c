@@ -42,6 +42,7 @@
   void *RunSetup(void *parent ,void *args) ;
   static int SearchTbl();
   static int SearchTblRev();
+  static int WriteTblRow ( int row ) ;
   static char *SearchStr(char *str,char* ptn);
   static int Splash ( char *Msg );
   static Dlink *BLS=NULL;
@@ -147,10 +148,10 @@ static void *CopyRec(void *bf) {
    strcpy(d,s);
    return d;
 }
-static void Push(){
+static int Push(){
    int count;
    int *dpt=NULL;
-   if(Compare())return;
+   if(Compare())return 0;
    Dlink *Bk=Dnewlist(Slist,CopyRec);
    Dpush(BLS,Bk);
    dpt =(int *)malloc(sizeof(int *)*5);
@@ -170,6 +171,7 @@ static void Push(){
       Dend(DLS);
       Ddelete(DLS);
    }
+   return 1;
 }
 static Dlink *Pop(){
   Dlink *bk = (Dlink *)Dpop(BLS);
@@ -255,6 +257,7 @@ static Dlink *Pop(){
       char BUFF [ 10 ] ;
       sprintf ( BUFF , "%6d" , StartLine+row ) ;
       kgSetString ( Tbl , row*Tbl->nx , BUFF ) ;
+//      printf("%d : %s\n" , StartLine+row ,BUFF);
       return 1;
   }
   static int ClearLineNo ( int row ) {
@@ -298,6 +301,47 @@ static Dlink *Pop(){
           WriteLineNo ( i ) ;
       }
       kgUpdateWidget ( Tbl ) ;
+      return 1;
+  }
+  static int WriteTblRow ( int row ) {
+      int n = ( EndLine -StartLine +1 ) ;
+      int i , j , k , l;
+      char *cpt , *spt;
+      char Buf [ 5000 ] ;
+      Resetlink ( Slist ) ;
+      Dposition ( Slist , StartLine+row ) ;
+      i = row;
+      {
+          cpt = ( char * ) Getrecord ( Slist ) ;
+          if ( cpt == NULL ) {
+              fprintf ( stderr , "Cpt= NULL, Start: %d End:%d\n" , StartLine , EndLine ) ;
+              fflush ( stderr ) ;
+              return 0;
+          }
+          j = 0;k = 0;
+          while ( ( cpt [ j ] >= ' ' ) || ( cpt [ j ] == '\t' ) ) {
+              if ( cpt [ j ] != '\t' ) Buf [ k++ ] = cpt [ j ] ;
+              else {
+                  if ( ExpandTab ) {
+                      l = ( k/Tabp+1 ) *Tabp;
+                      while ( k < l ) Buf [ k++ ] = ' ';
+                  }
+                  else {
+                      l = ( k/Tabp+1 ) *Tabp;
+                      Buf [ k++ ] = cpt [ j ] ;
+                      while ( k < l ) Buf [ k++ ] = 127;
+                  }
+              }
+              j++;
+          }
+          Buf [ k ] = '\0';
+          kgSetString ( Tbl , i*2+1 , Buf ) ;
+          WriteLineNo ( i ) ;
+          kgPrintTableCell(Tbl,i*2);
+          kgPrintTableCell(Tbl,i*2+1);
+//          printf("%d : %s\n",i,Buf);
+      }
+     
       return 1;
   }
   static int ReadTbl ( void ) {
@@ -368,7 +412,7 @@ static Dlink *Pop(){
       }
       WriteTbl ( ) ;
       SetupVbar ( ) ;
-      kgUpdateWidget ( V ) ;
+//      kgUpdateWidget ( V ) ;
       return 1;
   }
   static int AddStringLine ( int row ) {
@@ -391,7 +435,7 @@ static Dlink *Pop(){
       }
       WriteTbl ( ) ;
       SetupVbar ( ) ;
-      kgUpdateWidget ( V ) ;
+//      kgUpdateWidget ( V ) ;
       return 1;
   }
   static int InsertLine ( int row ) {
@@ -410,7 +454,7 @@ static Dlink *Pop(){
       }
       WriteTbl ( ) ;
       SetupVbar ( ) ;
-      kgUpdateWidget ( V ) ;
+//      kgUpdateWidget ( V ) ;
       return 1;
   }
   static int DeleteLine ( int row ) {
@@ -446,7 +490,7 @@ static Dlink *Pop(){
       }
       WriteTbl ( ) ;
       SetupVbar ( ) ;
-      kgUpdateWidget ( V ) ;
+//      kgUpdateWidget ( V ) ;
       return 1;
   }
   static int RemoveLine ( int row ) {
@@ -576,22 +620,31 @@ static Dlink *Pop(){
       }
       if( cellno == TAB_PRESS) {
          ReadTbl ( ) ;
-         Push();
-         WriteTbl ( ) ;
+         if(Push())  WriteTbl ( ) ;
          return ret;
       }
       if( cellno == LINE_CHANGE) {
          ReadTbl ( ) ;
+         if(Push())  WriteTbl ( ) ;
+#if 0
          Push();
          WriteTbl ( ) ;
+#endif
          return ret;
       }
       if ( cellno == SCROLL_DOWN ) {
+//          kgUpdateOff(Tbl->D);
           ReadTbl ( ) ;
           if ( EndLine < ( Count ) ) {
               StartLine++;
               EndLine++;
+#if 1
+// Not useful
+              kgScrollDownTable(Tbl,Tbl->ny-1);
+              WriteTblRow(Tbl->ny-1);
+#else
               WriteTbl ( ) ;
+#endif
           }
           Vpos = ( double ) ( StartLine-1 ) *100.0/Count;
           kgSetScrollPos ( V , Vpos ) ;
@@ -605,7 +658,13 @@ static Dlink *Pop(){
           if ( StartLine > 1 ) {
               StartLine--;
               EndLine--;
+#if 1
+// Not useful
+              kgScrollUpTable(Tbl,Tbl->ny-1);
+              WriteTblRow(0);
+#else
               WriteTbl ( ) ;
+#endif
           }
           Vpos = ( double ) ( StartLine-1 ) *100.0/Count;
           kgSetScrollPos ( V , Vpos ) ;
@@ -1268,8 +1327,8 @@ static int RedrawTable() {
         SetupTbl();
         WriteTbl();
       SetupVbar ( ) ;
-      kgUpdateWidget ( V ) ;
-      kgUpdateWidget (Tbl ) ;
+//      kgUpdateWidget ( V ) ;
+//      kgUpdateWidget (Tbl ) ;
       kgUpdateOn(D);
 //      }
       kgSetAttnWidget ( D , Tbl ) ;
@@ -2571,8 +2630,8 @@ i :  Index of Widget  (0 to max_widgets-1)
         SetupTbl();
         WriteTbl();
       SetupVbar ( ) ;
-      kgUpdateWidget ( V ) ;
-      kgUpdateWidget (Tbl ) ;
+ //     kgUpdateWidget ( V ) ;
+//      kgUpdateWidget (Tbl ) ;
       kgUpdateOn(D);
 //      }
       kgSetAttnWidget ( Tmp , Tbl ) ;
