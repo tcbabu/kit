@@ -15,19 +15,19 @@
   static DIT *ST;
   static DIT *RT;
   static DIT *MT;
-  static int NBK=15;
+  static int NBK = 15;
   static int Tblrow;
-  static int DifPos=-1;
-  static int SerDir=1;
+  static int DifPos = -1;
+  static int SerDir = 1;
   static int StartLine = 0 , EndLine = 0 , Nlines , Count;
   static int AddMode = 0 , AddRow = -1;
-  static int B1x,B1y;
+  static int B1x , B1y;
   static double Vsize , Vpos;
   static int MarkPos = 1;
-  static int ExpandTab = 0,Tabp=8;
-  static   char *vi=NULL,*vs=NULL;
-  static int Xl = -1 , Yl = -1 , Fz = -1 , By1,DefWidth;
-  static int nydef=-1;
+  static int ExpandTab = 0 , Tabp = 8;
+  static char *vi = NULL , *vs = NULL;
+  static int Xl = -1 , Yl = -1 , Fz = -1 , By1 , DefWidth;
+  static int nydef = -1;
   char *flname = NULL;
   static char Msg [ 200 ] ;
   static char Bkup [ 300 ] ;
@@ -35,19 +35,19 @@
   static char Buf [ 2000 ] , Buf1 [ 2000 ] ;
   void *RunGetFileName ( void *parent , void *args ) ;
   void *RunGetMarkPos ( void *parent , void *args ) ;
-  void ModifyScrollTableGc(void *Tmp); 
+  void ModifyScrollTableGc ( void *Tmp ) ;
   static int GetLength ( char *s1 , char *s2 ) ;
   static int GetRealPos ( ) ;
   void * Runinitkit ( void *, void* ) ;
-  void *RunSetup(void *parent ,void *args) ;
-  static int SearchTbl();
-  static int SearchTblRev();
+  void *RunSetup ( void *parent , void *args ) ;
+  static int SearchTbl ( ) ;
+  static int SearchTblRev ( ) ;
   static int WriteTblRow ( int row ) ;
-  static char *SearchStr(char *str,char* ptn);
-  static int Splash ( char *Msg );
-  static Dlink *BLS=NULL;
-  static Dlink *DLS=NULL;
-  static Dlink *Blist=NULL;
+  static char *SearchStr ( char *str , char* ptn ) ;
+  static int Splash ( char *Msg ) ;
+  static Dlink *BLS = NULL;
+  static Dlink *DLS = NULL;
+  static Dlink *Blist = NULL;
 #define RETURN(n) {\
    Vpos = ( double ) ( StartLine-1 ) *100.0/Count;\
        ReadTbl ( ) ;\
@@ -57,164 +57,164 @@
        kgSetAttnWidget ( Tmp , Tbl ) ;\
        return ( n ) ;\
    }
-static int Strcmp(char *s1,char *s2) {
-   int k;
-   if((s1==NULL)&&(s2==NULL)) return 0;
-   if( (s1==NULL)||(s2==NULL)) return 1;
-   k=0;
-   while(s1[k] != '\0') {
-      if(s2[k]=='\0') {
+  static int Strcmp ( char *s1 , char *s2 ) {
+      int k;
+      if ( ( s1 == NULL ) && ( s2 == NULL ) ) return 0;
+      if ( ( s1 == NULL ) || ( s2 == NULL ) ) return 1;
+      k = 0;
+      while ( s1 [ k ] != '\0' ) {
+          if ( s2 [ k ] == '\0' ) {
 //        printf("%s %s\n",s1,s2);
-        return 1;
-      }
-      if(s1[k] != s2[k]){
+              return 1;
+          }
+          if ( s1 [ k ] != s2 [ k ] ) {
 //           printf("1: %d %di :%d\n",s1[k],s2[k],k);
 //           printf("1: %s %s\n",s1,s2);
-           return 1;
+              return 1;
+          }
+          k++;
       }
-      k++;
-   }
-   if(s2[k]!='\0') return 1;
-   else return 0;
-}
-static int PositionAt(int pos) {
-    StartLine = pos -Nlines/2;
-    if (StartLine < 1) StartLine=1;
-    EndLine = StartLine +Nlines -1;
-    if(EndLine > Count ){
-       EndLine=Count;
-       StartLine = EndLine -Nlines+1;
-       if(StartLine < 1) StartLine=1;
-    }
-    Tblrow = pos -StartLine;
-    return Tblrow;
-}
-static int comparerec(void *r1,void *r2) {
-     if(Strcmp((char *)r1,(char *)r2)==0 ) return 1;
-     else {
-      return 0;
-     }
-}
-static int Compare(void) {
-     int ret =0,k;
-     char *r1,*r2;
-     Dlink *bk = (Dlink *)Dpop(BLS);
-     if(bk==NULL) return 0;
-     ret = Dcomplist(Slist,bk,comparerec);
-     Dpush(BLS,bk);
-     return ret;
-}
-static int CheckLists(Dlink *bk) {
-     int ret =0,k;
-     char *r1,*r2;
-     DifPos=-1;
-     if(bk==NULL) return 0;
-     Resetlink(Slist);
-     Resetlink(bk);
-     k=0 ;
-     while ((r1=(char *)Getrecord(Slist)) != NULL) {
-        if( (r2= (char *)Getrecord(bk)) == NULL) {
-            DifPos=k+1;
-            return 0;
-        }
-        if( Strcmp(r1,r2) != 0) {
-            DifPos =k+1;
-            return 0;
-        }
-        k++;
-     }
-     r2= (char *)Getrecord(bk);
-     if( r2 != NULL) {
-        DifPos=k;
-        return 0;
-     }
-     DifPos =-1;
-     return 1;
-}
-static int Checkbkup(Dlink *bk) {
-     int ret =0;
-     if(bk==NULL) return 0;
+      if ( s2 [ k ] != '\0' ) return 1;
+      else return 0;
+  }
+  static int PositionAt ( int pos ) {
+      StartLine = pos -Nlines/2;
+      if ( StartLine < 1 ) StartLine = 1;
+      EndLine = StartLine +Nlines -1;
+      if ( EndLine > Count ) {
+          EndLine = Count;
+          StartLine = EndLine -Nlines+1;
+          if ( StartLine < 1 ) StartLine = 1;
+      }
+      Tblrow = pos -StartLine;
+      return Tblrow;
+  }
+  static int comparerec ( void *r1 , void *r2 ) {
+      if ( Strcmp ( ( char * ) r1 , ( char * ) r2 ) == 0 ) return 1;
+      else {
+          return 0;
+      }
+  }
+  static int Compare ( void ) {
+      int ret = 0 , k;
+      char *r1 , *r2;
+      Dlink *bk = ( Dlink * ) Dpop ( BLS ) ;
+      if ( bk == NULL ) return 0;
+      ret = Dcomplist ( Slist , bk , comparerec ) ;
+      Dpush ( BLS , bk ) ;
+      return ret;
+  }
+  static int CheckLists ( Dlink *bk ) {
+      int ret = 0 , k;
+      char *r1 , *r2;
+      DifPos = -1;
+      if ( bk == NULL ) return 0;
+      Resetlink ( Slist ) ;
+      Resetlink ( bk ) ;
+      k = 0 ;
+      while ( ( r1 = ( char * ) Getrecord ( Slist ) ) != NULL ) {
+          if ( ( r2 = ( char * ) Getrecord ( bk ) ) == NULL ) {
+              DifPos = k+1;
+              return 0;
+          }
+          if ( Strcmp ( r1 , r2 ) != 0 ) {
+              DifPos = k+1;
+              return 0;
+          }
+          k++;
+      }
+      r2 = ( char * ) Getrecord ( bk ) ;
+      if ( r2 != NULL ) {
+          DifPos = k;
+          return 0;
+      }
+      DifPos = -1;
+      return 1;
+  }
+  static int Checkbkup ( Dlink *bk ) {
+      int ret = 0;
+      if ( bk == NULL ) return 0;
 #if 0
-     ret = Dcomplist(Slist,bk,comparerec);
+      ret = Dcomplist ( Slist , bk , comparerec ) ;
 #else
-     ret = CheckLists(bk);
+      ret = CheckLists ( bk ) ;
 #endif
 //     printf("Checkbkup : %d\n",DifPos);
-     return ret;
-}
-static void *CopyRec(void *bf) {
-   char *s=(char *)bf,*d;
-   d = (char *) malloc(strlen(s)+1);
-   strcpy(d,s);
-   return d;
-}
-static int Push(){
-   int count;
-   int *dpt=NULL;
-   if(Compare())return 0;
-   Dlink *Bk=Dnewlist(Slist,CopyRec);
-   Dpush(BLS,Bk);
-   dpt =(int *)malloc(sizeof(int *)*5);
-   dpt[0]=1;
-   dpt[1]= StartLine;
-   dpt[2]= EndLine;
-   dpt[3]= kgGetTableRow(Tbl);
-   dpt[4]= MarkPos;
+      return ret;
+  }
+  static void *CopyRec ( void *bf ) {
+      char *s = ( char * ) bf , *d;
+      d = ( char * ) malloc ( strlen ( s ) +1 ) ;
+      strcpy ( d , s ) ;
+      return d;
+  }
+  static int Push ( ) {
+      int count;
+      int *dpt = NULL;
+      if ( Compare ( ) ) return 0;
+      Dlink *Bk = Dnewlist ( Slist , CopyRec ) ;
+      Dpush ( BLS , Bk ) ;
+      dpt = ( int * ) malloc ( sizeof ( int * ) *5 ) ;
+      dpt [ 0 ] = 1;
+      dpt [ 1 ] = StartLine;
+      dpt [ 2 ] = EndLine;
+      dpt [ 3 ] = kgGetTableRow ( Tbl ) ;
+      dpt [ 4 ] = MarkPos;
 //   printf ("Push: %d %d %d %d\n",StartLine,EndLine,dpt[3],MarkPos);
-   Dpush(DLS,dpt);
-   count = Dcount(BLS);
+      Dpush ( DLS , dpt ) ;
+      count = Dcount ( BLS ) ;
 //   printf("Pushed: count= %d\n",count);
-   if(count> NBK) {
-      Dend(BLS);
-      Bk = (Dlink *) Dpick(BLS);
-      Dempty(Bk);
-      Dend(DLS);
-      Ddelete(DLS);
-   }
-   return 1;
-}
-static Dlink *Pop(){
-  Dlink *bk = (Dlink *)Dpop(BLS);
-  int *dpt;
-  dpt = (int *) Dpop(DLS);
-  if(bk == NULL) return NULL;
-  while (Checkbkup(bk)) {
-    if(Dcount(BLS)== 0) {
-        Dpush(BLS,bk);
-        Dpush(DLS,dpt);
-        return NULL;
-    }
-    else {Dempty(bk); free(dpt);}
-    bk = (Dlink *)Dpop(BLS);
-    dpt = (int *)Dpop(DLS);
-    if(bk == NULL) return NULL;
+      if ( count > NBK ) {
+          Dend ( BLS ) ;
+          Bk = ( Dlink * ) Dpick ( BLS ) ;
+          Dempty ( Bk ) ;
+          Dend ( DLS ) ;
+          Ddelete ( DLS ) ;
+      }
+      return 1;
   }
-  if(Dcount(BLS)== 0) {
-        Dpush(BLS,Dnewlist(bk,CopyRec));
+  static Dlink *Pop ( ) {
+      Dlink *bk = ( Dlink * ) Dpop ( BLS ) ;
+      int *dpt;
+      dpt = ( int * ) Dpop ( DLS ) ;
+      if ( bk == NULL ) return NULL;
+      while ( Checkbkup ( bk ) ) {
+          if ( Dcount ( BLS ) == 0 ) {
+              Dpush ( BLS , bk ) ;
+              Dpush ( DLS , dpt ) ;
+              return NULL;
+          }
+          else {Dempty ( bk ) ; free ( dpt ) ;}
+          bk = ( Dlink * ) Dpop ( BLS ) ;
+          dpt = ( int * ) Dpop ( DLS ) ;
+          if ( bk == NULL ) return NULL;
+      }
+      if ( Dcount ( BLS ) == 0 ) {
+          Dpush ( BLS , Dnewlist ( bk , CopyRec ) ) ;
 #if 0
-        StartLine = dpt[1];
-        EndLine   = dpt[2];
-        Tblrow    = dpt[3];
-        MarkPos   = dpt[4];
-        kgSetInt(MT,0,MarkPos);
+          StartLine = dpt [ 1 ] ;
+          EndLine = dpt [ 2 ] ;
+          Tblrow = dpt [ 3 ] ;
+          MarkPos = dpt [ 4 ] ;
+          kgSetInt ( MT , 0 , MarkPos ) ;
 #endif
-        Count=Dcount(bk);
-        PositionAt(DifPos);
-        Dpush(DLS,dpt);
-        return bk;
+          Count = Dcount ( bk ) ;
+          PositionAt ( DifPos ) ;
+          Dpush ( DLS , dpt ) ;
+          return bk;
+      }
+#if 0
+      StartLine = dpt [ 1 ] ;
+      EndLine = dpt [ 2 ] ;
+      Tblrow = dpt [ 3 ] ;
+      MarkPos = dpt [ 4 ] ;
+      kgSetInt ( MT , 0 , MarkPos ) ;
+#endif
+      Count = Dcount ( bk ) ;
+      PositionAt ( DifPos ) ;
+      free ( dpt ) ;
+      return bk;
   }
-#if 0
-        StartLine = dpt[1];
-        EndLine   = dpt[2];
-        Tblrow    = dpt[3];
-        MarkPos   = dpt[4];
-        kgSetInt(MT,0,MarkPos);
-#endif
-        Count=Dcount(bk);
-        PositionAt(DifPos);
-        free(dpt);
-  return bk;
-}
   static int Splash ( char *Msg ) {
       kgSplashMessage ( Tbl->D , 50 , 100 , 400 , 25 , Msg , 23 , 0 , 15 ) ;
       return 1;
@@ -244,8 +244,8 @@ static Dlink *Pop(){
           for ( k = EndLine;k < Nlines;k++ ) kgSetOffTableCell ( Tbl , k*2+1 ) ;
       }
       else {
-          if(EndLine==Count) {
-             StartLine=EndLine-Nlines+1;
+          if ( EndLine == Count ) {
+              StartLine = EndLine-Nlines+1;
           }
           EndLine = StartLine+Nlines-1;
           for ( k = 0;k < Nlines;k++ ) kgSetOnTableCell ( Tbl , k*2+1 ) ;
@@ -337,18 +337,17 @@ static Dlink *Pop(){
           Buf [ k ] = '\0';
           kgSetString ( Tbl , i*2+1 , Buf ) ;
           WriteLineNo ( i ) ;
-          kgPrintTableCell(Tbl,i*2);
-          kgPrintTableCell(Tbl,i*2+1);
+          kgPrintTableCell ( Tbl , i*2 ) ;
+          kgPrintTableCell ( Tbl , i*2+1 ) ;
 //          printf("%d : %s\n",i,Buf);
       }
-     
       return 1;
   }
   static int ReadTbl ( void ) {
       int n = ( EndLine -StartLine +1 ) ;
       int i , j , k;
       char *cpt , *spt;
-      Push();
+      Push ( ) ;
       for ( i = 0;i < n;i++ ) {
           cpt = ( char * ) kgGetString ( Tbl , i*2+1 ) ;
           spt = ( char * ) malloc ( strlen ( cpt ) +3 ) ;
@@ -363,7 +362,7 @@ static Dlink *Pop(){
 //          strcpy ( spt , cpt ) ;
 //          strcat ( spt , "\n" ) ;
 //       printf("%s",spt);
-         Dreplace ( Slist , spt , StartLine+i-1 ) ;
+          Dreplace ( Slist , spt , StartLine+i-1 ) ;
       }
       return 1;
   }
@@ -378,7 +377,7 @@ static Dlink *Pop(){
           while ( cpt [ k ] != '\0' ) {
               if ( cpt [ k ] == 127 ) {
 //                printf("Got 127\n");
-                 k++;continue;
+                  k++;continue;
               }
               spt [ j ] = cpt [ k ] ;
               k++;j++;
@@ -524,7 +523,7 @@ static Dlink *Pop(){
       }
       return 1;
   }
-  static int ReadInLink ( Dlink *Rlist) {
+  static int ReadInLink ( Dlink *Rlist ) {
       void *ptmp;
       int count = Count , row;
       if ( Rlist != NULL ) {
@@ -541,49 +540,49 @@ static Dlink *Pop(){
       }
       return 1;
   }
-  int ProcessClip(DIALOG *D,char *str) {
-    char *pt,lchar,ch,*buf;;
-    int i,n,Okay =0,ln;
-    Dlink *L;
-    if(str==NULL) return 0;
+  int ProcessClip ( DIALOG *D , char *str ) {
+      char *pt , lchar , ch , *buf;;
+      int i , n , Okay = 0 , ln;
+      Dlink *L;
+      if ( str == NULL ) return 0;
 #if 0 // Not needed
-    {
-      i=0;
-      while(str[i]!='\0') {
-        if(str[i]=='\n') {Okay =1;break;}
-        i++;
+      {
+          i = 0;
+          while ( str [ i ] != '\0' ) {
+              if ( str [ i ] == '\n' ) {Okay = 1;break;}
+              i++;
+          }
+          if ( Okay == 0 ) {
+              free ( str ) ;
+              str = kgGetPrimary ( D ) ;
+          }
       }
-      if(Okay == 0) {
-        free(str);
-        str= kgGetPrimary(D);
-      }
-    }
 #endif
-    ln = strlen(str);
-    lchar=str[ln];
-    i=0;
-    pt = str;
-    L = Dopen();
-    while( str[i] !='\0'){
-       if(str[i]=='\n') {
-         ch = str[i+1];
-         str[i+1]='\0';
-         buf = (char *)malloc(strlen(pt)+1);
-         strcpy(buf,pt);
-         Dadd(L,buf);
-         str[i+1]=ch;
-         pt = str+i+1;
-       }
-       i++;
-    }
-    if(lchar != '\n') {
-      buf = (char *)malloc(strlen(pt)+2);
-      strcpy(buf,pt);
-      strcat(buf,"\n");
-      Dadd(L,buf);
-    }
-    ReadInLink(L);
-    return 1;
+      ln = strlen ( str ) ;
+      lchar = str [ ln ] ;
+      i = 0;
+      pt = str;
+      L = Dopen ( ) ;
+      while ( str [ i ] != '\0' ) {
+          if ( str [ i ] == '\n' ) {
+              ch = str [ i+1 ] ;
+              str [ i+1 ] = '\0';
+              buf = ( char * ) malloc ( strlen ( pt ) +1 ) ;
+              strcpy ( buf , pt ) ;
+              Dadd ( L , buf ) ;
+              str [ i+1 ] = ch;
+              pt = str+i+1;
+          }
+          i++;
+      }
+      if ( lchar != '\n' ) {
+          buf = ( char * ) malloc ( strlen ( pt ) +2 ) ;
+          strcpy ( buf , pt ) ;
+          strcat ( buf , "\n" ) ;
+          Dadd ( L , buf ) ;
+      }
+      ReadInLink ( L ) ;
+      return 1;
   }
   int ScrollTabletablebox1callback ( int cellno , int i , void *Tmp ) {
   /*************************************************
@@ -600,37 +599,37 @@ static Dlink *Pop(){
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
       int ret = 1;
       double pos;
-      char *str=NULL;
+      char *str = NULL;
       D = ( DIALOG * ) Tmp;
       T = ( DIT * ) kgGetWidget ( Tmp , i ) ;
       e = T->elmt;
-      if( cellno == BUTTON2_PRESS) {
-         ReadTbl ( ) ;
-         Push();
-         str  = (char *)kgProcessClips(D,2);
-         if(str != NULL)  ProcessClip(D,str);
-         return ret;
+      if ( cellno == BUTTON2_PRESS ) {
+          ReadTbl ( ) ;
+          Push ( ) ;
+          str = ( char * ) kgProcessClips ( D , 2 ) ;
+          if ( str != NULL ) ProcessClip ( D , str ) ;
+          return ret;
       }
-      if( cellno == BUTTON3_PRESS) {
-         ReadTbl ( ) ;
-         Push();
-         str = (char *)kgProcessClips(D,3);
-         if(str != NULL)  ProcessClip(D,str);
-         return ret;
+      if ( cellno == BUTTON3_PRESS ) {
+          ReadTbl ( ) ;
+          Push ( ) ;
+          str = ( char * ) kgProcessClips ( D , 3 ) ;
+          if ( str != NULL ) ProcessClip ( D , str ) ;
+          return ret;
       }
-      if( cellno == TAB_PRESS) {
-         ReadTbl ( ) ;
-         if(Push())  WriteTbl ( ) ;
-         return ret;
+      if ( cellno == TAB_PRESS ) {
+          ReadTbl ( ) ;
+          if ( Push ( ) ) WriteTbl ( ) ;
+          return ret;
       }
-      if( cellno == LINE_CHANGE) {
-         ReadTbl ( ) ;
-         if(Push())  WriteTbl ( ) ;
+      if ( cellno == LINE_CHANGE ) {
+          ReadTbl ( ) ;
+          if ( Push ( ) ) WriteTbl ( ) ;
 #if 0
-         Push();
-         WriteTbl ( ) ;
+          Push ( ) ;
+          WriteTbl ( ) ;
 #endif
-         return ret;
+          return ret;
       }
       if ( cellno == SCROLL_DOWN ) {
 //          kgUpdateOff(Tbl->D);
@@ -640,8 +639,8 @@ static Dlink *Pop(){
               EndLine++;
 #if 1
 // Not useful
-              kgScrollDownTable(Tbl,Tbl->ny-1);
-              WriteTblRow(Tbl->ny-1);
+              kgScrollDownTable ( Tbl , Tbl->ny-1 ) ;
+              WriteTblRow ( Tbl->ny-1 ) ;
 #else
               WriteTbl ( ) ;
 #endif
@@ -660,8 +659,8 @@ static Dlink *Pop(){
               EndLine--;
 #if 1
 // Not useful
-              kgScrollUpTable(Tbl,Tbl->ny-1);
-              WriteTblRow(0);
+              kgScrollUpTable ( Tbl , Tbl->ny-1 ) ;
+              WriteTblRow ( 0 ) ;
 #else
               WriteTbl ( ) ;
 #endif
@@ -682,7 +681,7 @@ static Dlink *Pop(){
                   if ( row < ( Tbl->ny-1 ) ) row++;
                   AddRow = row;
               }
-              ReadTbl();
+              ReadTbl ( ) ;
               kgSetTableCursor ( Tbl , ( row ) *Tbl->nx+1 ) ;
 //        printf("Row: %d:%d  %d %d\n",row, cellno,Tbl->nx,Tbl->ny);
               kgUpdateOn ( Tbl->D ) ;
@@ -802,14 +801,15 @@ static Dlink *Pop(){
       int n , ret = 1;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
       char *cpt;
-      void *Busy=NULL;
+      void *Busy = NULL;
       D = ( DIALOG * ) Tmp;
       B = ( DIL * ) kgGetWidget ( Tmp , i ) ;
       n = B->nx;
       switch ( butno ) {
           case 1:
-          if ( !kgCheckMenu ( D , 50 , 200 , ( char * ) "Want to !c03ABORT ?" , 0 ) ) {\
-             return 0;
+          if ( ! kgCheckMenu ( D , 50 , 200 , ( char * ) "Want to !c03ABORT ?" , \
+               0 ) ) {\
+              return 0;
           }
           pt [ 1 ] = NULL;
           Dempty ( Slist ) ;
@@ -819,8 +819,8 @@ static Dlink *Pop(){
               Dempty ( Slist ) ;
               break;
           }
-          if ( kgCheckMenu ( D , 10 , 100 , ( char * ) "Want to keep Saved File ?" , 1 ) ) \
-          {
+          if ( kgCheckMenu ( D , 10 , 100 , ( char * ) "Want to keep Saved File ?" , \
+               1 ) ) {
               char *fpt;
               strcpy ( Buf , flname ) ;
               if ( ( fpt = RunGetFileName ( NULL , Buf ) ) == NULL ) break;
@@ -832,16 +832,16 @@ static Dlink *Pop(){
               Dempty ( Slist ) ;
           }
 #endif
-          kgDisableSelection(D);
+          kgDisableSelection ( D ) ;
           break;
           case 2:
-          kgDisableSelection(D);
-          Busy = kgOpenBusy(D,B->x1-100,B->y1);
+          kgDisableSelection ( D ) ;
+          Busy = kgOpenBusy ( D , B->x1-100 , B->y1 ) ;
           ReadTbl ( ) ;
           Dwritefile ( Slist , flname ) ;
           pt [ 1 ] = pt [ 0 ] ;
           Dempty ( Slist ) ;
-          kgCloseBusy(Busy);
+          kgCloseBusy ( Busy ) ;
           break;
       }
       remove ( Bkup ) ;
@@ -868,7 +868,7 @@ static Dlink *Pop(){
       switch ( butno ) {
           case 1:
           row = kgGetTableRow ( Tbl ) ;
-          ReadTbl();
+          ReadTbl ( ) ;
           DeleteLine ( row ) ;
           Count = Dcount ( Slist ) ;
           if ( Count <= 0 ) {
@@ -890,7 +890,7 @@ static Dlink *Pop(){
 //      kgUpdateOn(Tmp);
           }
 #endif
-          ReadTbl();
+          ReadTbl ( ) ;
           AddLine ( row ) ;
 #if 1
           if ( row < ( Tbl->ny-1 ) ) row++;
@@ -912,8 +912,8 @@ static Dlink *Pop(){
       return ret;
   }
   void ScrollTablebutton1init ( DIN *B , void *pt ) {
-    B1x=B->x1;
-    B1y=B->y1;
+      B1x = B->x1;
+      B1y = B->y1;
   }
   static char * ReplaceString ( char *lptr , char *ptmp ) {
       int k , l1 , l2 , loc;
@@ -943,17 +943,17 @@ static Dlink *Pop(){
       }
       return k;
   }
-static int ReplaceTblRev() {
-      void *Tmp=(void *)Tbl->D;
+  static int ReplaceTblRev ( ) {
+      void *Tmp = ( void * ) Tbl->D;
       int n , ret = 0;
-      int k = 0 , loc , count,rln;
-      char *spt , *lptr , *ptmp , *npt,*rpt,chtmp;
+      int k = 0 , loc , count , rln;
+      char *spt , *lptr , *ptmp , *npt , *rpt , chtmp;
       int row , curpos , stchar , rowbk , spos , rcurpos;
       int Slbak , Elbak , curbk;
       spt = ( char * ) kgGetString ( ST , 0 ) ;
       rpt = ( char * ) kgGetString ( RT , 0 ) ;
-      rln = strlen(rpt); 
-      printf(" ReplaceTblRev()\n");
+      rln = strlen ( rpt ) ;
+      printf ( " ReplaceTblRev()\n" ) ;
       ReadTbl ( ) ;
       Count = Dcount ( Slist ) ;
       row = kgGetTableRow ( Tbl ) ;
@@ -968,12 +968,11 @@ static int ReplaceTblRev() {
       spos = StartLine+row -1;
       lptr = ( char * ) Getrecordrev ( Slist ) ;
       if ( lptr == NULL ) return 0;
-
-      chtmp = lptr[rcurpos];
-      lptr[rcurpos]='\0';
+      chtmp = lptr [ rcurpos ] ;
+      lptr [ rcurpos ] = '\0';
       if ( ( ptmp = ( char * ) SearchStr ( lptr , spt ) ) != NULL ) {
-          lptr[rcurpos]= chtmp;
-          loc = GetLength ( lptr , ptmp )  ;
+          lptr [ rcurpos ] = chtmp;
+          loc = GetLength ( lptr , ptmp ) ;
           npt = ( char * ) malloc ( strlen ( ReplaceString ( lptr , ptmp ) ) +1 ) ;
           strcpy ( npt , Buf ) ;
           spos = StartLine+row -1;
@@ -982,7 +981,7 @@ static int ReplaceTblRev() {
           kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc ) ;
           RETURN ( 0 ) ;
       }
-      lptr[rcurpos]= chtmp;
+      lptr [ rcurpos ] = chtmp;
       count = 1;
       if ( Count <= Nlines ) {
           while ( ( lptr = ( char * ) Getrecordrev ( Slist ) ) != NULL ) {
@@ -991,7 +990,7 @@ static int ReplaceTblRev() {
                   row -= count;
                   npt = ( char * ) malloc ( strlen ( ReplaceString ( lptr , ptmp ) ) +1 ) ;
                   strcpy ( npt , Buf ) ;
-                  spos = StartLine+row-1; 
+                  spos = StartLine+row-1;
 //                  Resetlink(Slist);
                   Dreplace ( Slist , npt , spos ) ;
                   WriteTbl ( ) ;
@@ -1026,9 +1025,9 @@ static int ReplaceTblRev() {
                       EndLine -= count;
                   }
                   else {
-                    row  = StartLine+row -count-1;
-                    StartLine =1;
-                    EndLine = Nlines;
+                      row = StartLine+row -count-1;
+                      StartLine = 1;
+                      EndLine = Nlines;
                   }
                   npt = ( char * ) malloc ( strlen ( ReplaceString ( lptr , ptmp ) ) +1 ) ;
                   strcpy ( npt , Buf ) ;
@@ -1043,7 +1042,7 @@ static int ReplaceTblRev() {
           Dend ( Slist ) ;
           count = 0;
           for ( k = Count-1;k > Elbak;k-= Nlines ) {
-              for ( row =Nlines-1;row >=0;row-- ) {
+              for ( row = Nlines-1;row >= 0;row-- ) {
                   lptr = ( char * ) Getrecordrev ( Slist ) ;
                   if ( lptr == NULL ) break;
                   if ( ( ptmp = ( char * ) SearchStr ( lptr , spt ) ) != NULL ) {
@@ -1065,7 +1064,7 @@ static int ReplaceTblRev() {
       Splash ( ( char * ) "Could not find" ) ;
       ReadTbl ( ) ;
       return ret;
-}
+  }
   int ScrollTablebutton5callback ( int butno , int i , void *Tmp ) {
   /***********************************
     butno : selected item (1 to max_item)
@@ -1074,8 +1073,8 @@ static int ReplaceTblRev() {
    ***********************************/
       DIALOG *D;DIN *B;
       int n , ret = 0;
-      int k = 0 , loc , count,rln;
-      char *spt , *lptr , *ptmp , *npt,*rpt;
+      int k = 0 , loc , count , rln;
+      char *spt , *lptr , *ptmp , *npt , *rpt;
       int row , curpos , stchar , rowbk , spos , rcurpos;
       int Slbak , Elbak , curbk;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
@@ -1084,7 +1083,7 @@ static int ReplaceTblRev() {
       n = B->nx*B->ny;
       spt = ( char * ) kgGetString ( ST , 0 ) ;
       rpt = ( char * ) kgGetString ( RT , 0 ) ;
-      rln = strlen(rpt); 
+      rln = strlen ( rpt ) ;
       k = 0;
       while ( spt [ k ] >= ' ' ) k++;
       ReadTbl ( ) ;
@@ -1102,11 +1101,10 @@ static int ReplaceTblRev() {
 //      printf ( "Row: %d %d %d\n" , rowbk , StartLine , curpos ) ;
       lptr = ( char * ) Getrecord ( Slist ) ;
       if ( lptr == NULL ) return 0;
-
-      if ( k==0 ) {
+      if ( k == 0 ) {
 //      code for insertion at curpos
-        ptmp = lptr+rcurpos;
-        loc = 0;
+          ptmp = lptr+rcurpos;
+          loc = 0;
           npt = ( char * ) malloc ( strlen ( ReplaceString ( lptr , ptmp ) ) +1 ) ;
           strcpy ( npt , Buf ) ;
           spos = StartLine+row -1;
@@ -1115,7 +1113,7 @@ static int ReplaceTblRev() {
           kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc+curpos+rln ) ;
           RETURN ( 0 ) ;
       }
-      if(SerDir==0) return ReplaceTblRev();
+      if ( SerDir == 0 ) return ReplaceTblRev ( ) ;
       if ( ( ptmp = ( char * ) strstr ( lptr+rcurpos , spt ) ) != NULL ) {
           loc = GetLength ( lptr , ptmp ) -GetLength ( lptr , lptr+rcurpos ) ;
           npt = ( char * ) malloc ( strlen ( ReplaceString ( lptr , ptmp ) ) +1 ) ;
@@ -1148,7 +1146,7 @@ static int ReplaceTblRev() {
               lptr = ( char * ) Getrecord ( Slist ) ;
               if ( lptr == NULL ) break;
               if ( ( ptmp = ( char * ) strstr ( lptr , spt ) ) != NULL ) {
-                  row=k;
+                  row = k;
                   loc = GetLength ( lptr , ptmp ) ;
                   npt = ( char * ) malloc ( strlen ( ReplaceString ( lptr , ptmp ) ) +1 ) ;
                   strcpy ( npt , Buf ) ;
@@ -1228,85 +1226,86 @@ static int ReplaceTblRev() {
       e = T->elmt;
       return ret;
   }
-static int RedrawTable() {
-   int Fz1,Fz2,nchr,nymax,nyo,k,nxo;
-   int xl,yl,i,j;
-   char Fmt[20];
-   DIALOG *D=(DIALOG *)Tbl->D;
-   T_ELMT *elmt;
-   elmt = ( T_ELMT * ) Tbl->elmt;
+  static int RedrawTable ( ) {
+      int Fz1 , Fz2 , nchr , nymax , nyo , k , nxo;
+      int xl , yl , i , j;
+      char Fmt [ 20 ] ;
+      DIALOG *D = ( DIALOG * ) Tbl->D;
+      T_ELMT *elmt;
+      elmt = ( T_ELMT * ) Tbl->elmt;
       nyo = Tbl->ny;
       nxo = Tbl->nx;
 #if 1
       for ( j = 0;j < nyo;j++ ) {
-        for(i=0;i<nxo;i++) {
-          k = j*nxo+i;
-          if(elmt [ k ] .img  !=NULL) {
-              kgFreeImage( elmt [ k ] .img);
+          for ( i = 0;i < nxo;i++ ) {
+              k = j*nxo+i;
+              if ( elmt [ k ] .img != NULL ) {
+                  kgFreeImage ( elmt [ k ] .img ) ;
+              }
+              elmt [ k ] .img = NULL;
           }
-          elmt [ k ] .img  =NULL;
-        }
       }
 #endif
-      if(nydef == -1 ) nydef= Tbl->ny;
+      if ( nydef == -1 ) nydef = Tbl->ny;
       Fz1 = Tbl->FontSize;;
-      if(Tbl->width <2*Fz1)Tbl->width= 2*Fz1; 
-      DefWidth =  Tbl->width;
+      if ( Tbl->width < 2*Fz1 ) Tbl->width = 2*Fz1;
+      DefWidth = Tbl->width;
 //      Tbl->ny = ( Tbl->y2 - Tbl->y1-4 ) /(2*Fz1);
-      Tbl->ny = ( Tbl->y2 - Tbl->y1-4 ) /(Tbl->width);
-      Fz2 = ( Tbl->y2 - Tbl->y1-4 ) /(2*Tbl->ny);
-      if(Fz1> Fz2) Fz1=Fz2;
-      nchr = ( Tbl->x2 - Tbl->x1) /Fz1 -11;
-      Tbl->x2 = (nchr+11)*Fz1+Tbl->x1;
-      Tbl->ny = (float)( Tbl->y2 - Tbl->y1-4 )/(Tbl->width)+0.5;
-      Tbl->y2 = Tbl->width*(Tbl->ny )+Tbl->y1+4;
+      Tbl->ny = ( Tbl->y2 - Tbl->y1-4 ) / ( Tbl->width ) ;
+      Fz2 = ( Tbl->y2 - Tbl->y1-4 ) / ( 2*Tbl->ny ) ;
+      if ( Fz1 > Fz2 ) Fz1 = Fz2;
+      nchr = ( Tbl->x2 - Tbl->x1 ) /Fz1 -11;
+      Tbl->x2 = ( nchr+11 ) *Fz1+Tbl->x1;
+      Tbl->ny = ( float ) ( Tbl->y2 - Tbl->y1-4 ) / ( Tbl->width ) +0.5;
+      Tbl->y2 = Tbl->width* ( Tbl->ny ) +Tbl->y1+4;
       sprintf ( Fmt , "%%%ds" , nchr ) ;
       elmt = ( T_ELMT * ) Tbl->elmt;
-      if(Tbl->ny > nydef )elmt = (T_ELMT *)realloc(elmt,Tbl->nx*Tbl->ny*sizeof(T_ELMT));
+      if ( Tbl->ny > nydef ) elmt = ( T_ELMT * ) realloc  \
+          ( elmt , Tbl->nx*Tbl->ny*sizeof ( T_ELMT ) ) ;
       Tbl->elmt = elmt;
       nymax = Tbl->ny;
-      if(nymax >nyo ) nymax = nyo;
-      if(nymax < nydef ) nymax=nydef;
-      if(nymax >Tbl->ny) nymax = Tbl->ny; 
+      if ( nymax > nyo ) nymax = nyo;
+      if ( nymax < nydef ) nymax = nydef;
+      if ( nymax > Tbl->ny ) nymax = Tbl->ny;
       for ( k = 0;k < nymax;k++ ) {
-          strcpy(elmt [ k*Tbl->nx ] .fmt , (char *)"%4s" ) ;
-          elmt [ k*Tbl->nx ] .sw=0;
-          elmt [ k*Tbl->nx ] .noecho=0;
+          strcpy ( elmt [ k*Tbl->nx ] .fmt , ( char * ) "%4s" ) ;
+          elmt [ k*Tbl->nx ] .sw = 0;
+          elmt [ k*Tbl->nx ] .noecho = 0;
           elmt [ k*Tbl->nx ] .img = NULL;
           strcpy ( elmt [ k*Tbl->nx+1 ] .fmt , Fmt ) ;
-          elmt [ k*Tbl->nx+1 ] .sw=1;
-          elmt [ k*Tbl->nx+1] .noecho=0;
+          elmt [ k*Tbl->nx+1 ] .sw = 1;
+          elmt [ k*Tbl->nx+1 ] .noecho = 0;
           elmt [ k*Tbl->nx+1 ] .img = NULL;
       }
 //      if((Tbl->ny>nydef)&&(Tbl->ny > nyo)) {
 //      printf( "Tbl->ny: %d nydef: %d\n",Tbl->ny,nydef);
-      if((Tbl->ny>nydef)) {
-         int j=0;
-         char *cpt=NULL;
+      if ( ( Tbl->ny > nydef ) ) {
+          int j = 0;
+          char *cpt = NULL;
 //         printf("vi vs realloc\n");
-         vi =(char *)realloc(vi,20*(Tbl->ny - nydef));
-         vs =(char *)realloc(vs,2000*(Tbl->ny - nydef));
-         for ( k = nydef;k < Tbl->ny;k++ ) {
-         elmt[k*Tbl->nx].fmt = (char *)malloc(10);
-         elmt[k*Tbl->nx+1].fmt = (char *)malloc(10);
-         strcpy(elmt [ k*Tbl->nx ] .fmt , (char *)"%4s" ) ;
-         elmt [ k*Tbl->nx ] .sw=0;
-         elmt [ k*Tbl->nx ] .noecho=0;
-         elmt [ k*Tbl->nx ] .img = NULL;
-         strcpy ( elmt [ k*Tbl->nx+1 ] .fmt , Fmt ) ;
-         elmt [ k*Tbl->nx+1 ] .sw=1;
-         elmt [ k*Tbl->nx+1] .noecho=0;
-         elmt [ k*Tbl->nx+1 ] .img = NULL;
-         elmt[k*Tbl->nx ].v=(void *)(vi+j*20);
-         elmt[k*Tbl->nx +1].v=(void *)(vs+j*2000);
-         cpt= (char *) elmt[k*Tbl->nx ].v;
-         cpt[0]='\0';
-         cpt= (char *) elmt[k*Tbl->nx +1].v;
-         cpt[0]='\0';
-         j++;
-         }
+          vi = ( char * ) realloc ( vi , 20* ( Tbl->ny - nydef ) ) ;
+          vs = ( char * ) realloc ( vs , 2000* ( Tbl->ny - nydef ) ) ;
+          for ( k = nydef;k < Tbl->ny;k++ ) {
+              elmt [ k*Tbl->nx ] .fmt = ( char * ) malloc ( 10 ) ;
+              elmt [ k*Tbl->nx+1 ] .fmt = ( char * ) malloc ( 10 ) ;
+              strcpy ( elmt [ k*Tbl->nx ] .fmt , ( char * ) "%4s" ) ;
+              elmt [ k*Tbl->nx ] .sw = 0;
+              elmt [ k*Tbl->nx ] .noecho = 0;
+              elmt [ k*Tbl->nx ] .img = NULL;
+              strcpy ( elmt [ k*Tbl->nx+1 ] .fmt , Fmt ) ;
+              elmt [ k*Tbl->nx+1 ] .sw = 1;
+              elmt [ k*Tbl->nx+1 ] .noecho = 0;
+              elmt [ k*Tbl->nx+1 ] .img = NULL;
+              elmt [ k*Tbl->nx ] .v = ( void * ) ( vi+j*20 ) ;
+              elmt [ k*Tbl->nx +1 ] .v = ( void * ) ( vs+j*2000 ) ;
+              cpt = ( char * ) elmt [ k*Tbl->nx ] .v;
+              cpt [ 0 ] = '\0';
+              cpt = ( char * ) elmt [ k*Tbl->nx +1 ] .v;
+              cpt [ 0 ] = '\0';
+              j++;
+          }
       }
-      Nlines= Tbl->ny;
+      Nlines = Tbl->ny;
       Tbl->FontSize = Fz1;
       xl = V->x2 - V->x1;
       yl = V->y2 - V->y1;
@@ -1324,90 +1323,90 @@ static int RedrawTable() {
       PB->y2 = PB->y1+yl;
       kgRedrawDialog ( D ) ;
  //     if(Tbl->ny !=  nyo) {
-        SetupTbl();
-        WriteTbl();
+      SetupTbl ( ) ;
+      WriteTbl ( ) ;
       SetupVbar ( ) ;
 //      kgUpdateWidget ( V ) ;
 //      kgUpdateWidget (Tbl ) ;
-      kgUpdateOn(D);
+      kgUpdateOn ( D ) ;
 //      }
       kgSetAttnWidget ( D , Tbl ) ;
-  return 1;
-}
-int  ScrollTablebutton7callback(int butno,int i,void *Tmp) {
+      return 1;
+  }
+  int ScrollTablebutton7callback ( int butno , int i , void *Tmp ) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
-  DIALOG *D;DIN *B; 
-  int n,ret =0; 
-  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
-  int *ipt;
-  Gclr *Gc;
-  D = (DIALOG *)Tmp;
-  Gc = &(D->gc);
-  B = (DIN *)kgGetWidget(Tmp,i);
-  n = B->nx*B->ny;
-  if((ipt=(int *)RunSetup(NULL,Tbl))!= NULL) {
-      if(Tbl->width < 2*Tbl->FontSize)Tbl->width = 2*Tbl->FontSize;
-      DefWidth= Tbl->width;
-      Fz = Tbl->FontSize;
-      kgDefineColor(Gc->tabl_char,ipt[0],ipt[1],ipt[2]);
-      kgDefineColor(Gc->tabl_hchar,ipt[3],ipt[4],ipt[5]);
-      kgDefineColor(Gc->tabl_fill,ipt[6],ipt[7],ipt[8]);
-      kgDefineColor(Gc->tabl_line,ipt[9],ipt[10],ipt[11]);
-      free(ipt);
-      RedrawTable();
+      DIALOG *D;DIN *B;
+      int n , ret = 0;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      int *ipt;
+      Gclr *Gc;
+      D = ( DIALOG * ) Tmp;
+      Gc = & ( D->gc ) ;
+      B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
+      n = B->nx*B->ny;
+      if ( ( ipt = ( int * ) RunSetup ( NULL , Tbl ) ) != NULL ) {
+          if ( Tbl->width < 2*Tbl->FontSize ) Tbl->width = 2*Tbl->FontSize;
+          DefWidth = Tbl->width;
+          Fz = Tbl->FontSize;
+          kgDefineColor ( Gc->tabl_char , ipt [ 0 ] , ipt [ 1 ] , ipt [ 2 ] ) ;
+          kgDefineColor ( Gc->tabl_hchar , ipt [ 3 ] , ipt [ 4 ] , ipt [ 5 ] ) ;
+          kgDefineColor ( Gc->tabl_fill , ipt [ 6 ] , ipt [ 7 ] , ipt [ 8 ] ) ;
+          kgDefineColor ( Gc->tabl_line , ipt [ 9 ] , ipt [ 10 ] , ipt [ 11 ] ) ;
+          free ( ipt ) ;
+          RedrawTable ( ) ;
+      }
+      switch ( butno ) {
+          case 1:
+          break;
+      }
+      return ret;
   }
-  switch(butno) {
-    case 1: 
-      break;
+  void ScrollTablebutton7init ( DIN *B , void *ptmp ) {
+      void **pt = ( void ** ) ptmp; //pt [ 0 ] is arg 
+      BUT_STR *buts = ( BUT_STR * ) B->buts;
+      free ( buts [ 0 ] .xpmn ) ;
+      buts [ 0 ] .xpmn = ( void * ) & Setupimg_str;
   }
-  return ret;
-}
-void  ScrollTablebutton7init(DIN *B,void *ptmp) {
- void **pt=(void **)ptmp; //pt[0] is arg 
- BUT_STR *buts=(BUT_STR *)B->buts;
- free(buts[0].xpmn);
- buts[0].xpmn=(void *)&Setupimg_str;
-}
-int  ScrollTablebutton8callback(int butno,int i,void *Tmp) {
+  int ScrollTablebutton8callback ( int butno , int i , void *Tmp ) {
   /*********************************** 
     butno : selected item (1 to max_item) 
     i :  Index of Widget  (0 to max_widgets-1) 
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
-  DIALOG *D;DIN *B; 
-  int n,ret =0; 
-  DIP *P;
-  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
-  void *img;
-  D = (DIALOG *)Tmp;
-  B = (DIN *)kgGetWidget(Tmp,i);
-  BUT_STR *buts=(BUT_STR *)B->buts;
-  P = (DIP*)kgGetNamedWidget(D,(char *)"Arrow");
-  n = B->nx*B->ny;
-  img = buts[0].xpmn;
-  buts[0].xpmn = buts[0].xpmp;
-  buts[0].xpmp = img;
-  P->xpm = buts[0].xpmn ;
-  kgUpdateWidget(P);
-  kgUpdateOn(D);
-  SerDir = (SerDir+1)%2;
-  switch(butno) {
-    case 1: 
-      break;
+      DIALOG *D;DIN *B;
+      int n , ret = 0;
+      DIP *P;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      void *img;
+      D = ( DIALOG * ) Tmp;
+      B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
+      BUT_STR *buts = ( BUT_STR * ) B->buts;
+      P = ( DIP* ) kgGetNamedWidget ( D , ( char * ) "Arrow" ) ;
+      n = B->nx*B->ny;
+      img = buts [ 0 ] .xpmn;
+      buts [ 0 ] .xpmn = buts [ 0 ] .xpmp;
+      buts [ 0 ] .xpmp = img;
+      P->xpm = buts [ 0 ] .xpmn ;
+      kgUpdateWidget ( P ) ;
+      kgUpdateOn ( D ) ;
+      SerDir = ( SerDir+1 ) %2;
+      switch ( butno ) {
+          case 1:
+          break;
+      }
+      return ret;
   }
-  return ret;
-}
-void  ScrollTablebutton8init(DIN *B,void *ptmp) {
- void **pt=(void **)ptmp; //pt[0] is arg 
- BUT_STR *buts=(BUT_STR *)B->buts;
+  void ScrollTablebutton8init ( DIN *B , void *ptmp ) {
+      void **pt = ( void ** ) ptmp; //pt [ 0 ] is arg 
+      BUT_STR *buts = ( BUT_STR * ) B->buts;
 // if(buts[0].xpmn!= NULL) free(buts[0].xpmn);
- buts[0].xpmp=(void *)kgUpdirImage(16,100,100,100);
- buts[0].xpmn=(void *)kgDowndirImage(16,100,100,100);
-}
+      buts [ 0 ] .xpmp = ( void * ) kgUpdirImage ( 16 , 100 , 100 , 100 ) ;
+      buts [ 0 ] .xpmn = ( void * ) kgDowndirImage ( 16 , 100 , 100 , 100 ) ;
+  }
   static int MakeFileNames ( ) {
       char BaseName [ 200 ] ;
       kgExtractBaseName ( flname , BaseName ) ;
@@ -1436,10 +1435,13 @@ void  ScrollTablebutton8init(DIN *B,void *ptmp) {
       E = Tbl->elmt;
       nlines = Tbl->ny;
       Nlines = Tbl->ny;
+#if 0
       if ( ( Strs == NULL ) || ( Strs [ 0 ] == NULL ) ) {
-          cpt = ( char * ) malloc ( 2 ) ;
-          strcpy ( cpt , "\n" ) ;
+          cpt = ( char * ) malloc ( 3 ) ;
+          strcpy ( cpt , " \n" ) ;
           Dadd ( Slist , cpt ) ;
+          if ( Strs == NULL ) Strs = ( char ** ) Dlinktoarray ( Slist ) ;
+          else Strs [ 0 ] = cpt;
           kgSetString ( Tbl , 1 , cpt ) ;
 //          kgSetInt ( Tbl , 0 , 1 ) ;
           WriteLineNo ( 0 ) ;
@@ -1450,7 +1452,17 @@ void  ScrollTablebutton8init(DIN *B,void *ptmp) {
           AddMode = 1;
           AddRow = 0;
       }
-      else {
+#else
+      if ( ( Strs == NULL ) || ( Strs [ 0 ] == NULL ) ) {
+          printf ( "File not existing...\n" ) ;
+          cpt = ( char * ) malloc ( 2 ) ;
+          strcpy ( cpt , "\n" ) ;
+          Dinsert ( Slist , cpt ) ;
+          if ( Strs != NULL ) free ( Strs ) ;
+          Strs = ( char ** ) Dlinktoarray ( Slist ) ;
+      }
+      {
+#endif
           k = 0;
           StartLine = 1;
           while ( Strs [ k ] != NULL ) {
@@ -1564,34 +1576,34 @@ void  ScrollTablebutton8init(DIN *B,void *ptmp) {
   void ScrollTablebutton6init ( DIN *B , void *ptmp ) {
       void **pt = ( void ** ) ptmp; //pt [ 0 ] is arg
   }
-  static int LoadConfig(void *Tmp){
-    char Config[300];
-    char FontName[300];
-    DIALOG *D = (DIALOG *)Tmp;
-    Gclr *Gc= &(D->gc);
-    int r,g,b;
-    int Font;
-    sprintf(Config,"%-s/.kit",getenv((char *)"HOME"));
-    FILE *fp=fopen(Config,"r");
-    if(fp != NULL) {
-      fscanf(fp,"%s",FontName);
+  static int LoadConfig ( void *Tmp ) {
+      char Config [ 300 ] ;
+      char FontName [ 300 ] ;
+      DIALOG *D = ( DIALOG * ) Tmp;
+      Gclr *Gc = & ( D->gc ) ;
+      int r , g , b;
+      int Font;
+      sprintf ( Config , "%-s/.kit" , getenv ( ( char * ) "HOME" ) ) ;
+      FILE *fp = fopen ( Config , "r" ) ;
+      if ( fp != NULL ) {
+          fscanf ( fp , "%s" , FontName ) ;
 //      Tbl->Font = kgAddFixedFont(FontName);
-      Font = kgCheckFont(FontName); 
-      if(Font >= 0) Tbl->Font = Font;
-      else Tbl->Font = kgAddFont(FontName);
-      fscanf(fp,"%d%d",&(Tbl->FontSize),&(Tbl->width));
-      fscanf(fp,"%d%d%d",&r,&g,&b);
-      kgDefineColor(Gc->tabl_char,r,g,b);
-      fscanf(fp,"%d%d%d",&r,&g,&b);
-      kgDefineColor(Gc->tabl_hchar,r,g,b);
-      fscanf(fp,"%d%d%d",&r,&g,&b);
-      kgDefineColor(Gc->tabl_fill,r,g,b);;
-      fscanf(fp,"%d%d%d",&r,&g,&b);
-      kgDefineColor(Gc->tabl_line,r,g,b);
-      fclose(fp);
-      RedrawTable();
-    }
-    return 1;
+          Font = kgCheckFont ( FontName ) ;
+          if ( Font >= 0 ) Tbl->Font = Font;
+          else Tbl->Font = kgAddFont ( FontName ) ;
+          fscanf ( fp , "%d%d" , & ( Tbl->FontSize ) , & ( Tbl->width ) ) ;
+          fscanf ( fp , "%d%d%d" , & r , & g , & b ) ;
+          kgDefineColor ( Gc->tabl_char , r , g , b ) ;
+          fscanf ( fp , "%d%d%d" , & r , & g , & b ) ;
+          kgDefineColor ( Gc->tabl_hchar , r , g , b ) ;
+          fscanf ( fp , "%d%d%d" , & r , & g , & b ) ;
+          kgDefineColor ( Gc->tabl_fill , r , g , b ) ;;
+          fscanf ( fp , "%d%d%d" , & r , & g , & b ) ;
+          kgDefineColor ( Gc->tabl_line , r , g , b ) ;
+          fclose ( fp ) ;
+          RedrawTable ( ) ;
+      }
+      return 1;
   }
   int ScrollTableinit ( void *Tmp ) {
   /***********************************
@@ -1611,72 +1623,63 @@ void  ScrollTablebutton8init(DIN *B,void *ptmp) {
       Tbl = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "ScrollTable" ) ;
       V = ( DIV * ) kgGetNamedWidget ( D , ( char * ) "VertScroll" ) ;
       DIP *P;
-      P = (DIP*)kgGetNamedWidget(D,(char *)"Arrow");
-      AB = (DIN*)kgGetNamedWidget(D,(char *)"Direction");
-      buts =(BUT_STR *) AB->buts;
-      P->xpm = buts[0].xpmn ;
-      kgUpdateWidget(P);
+      P = ( DIP* ) kgGetNamedWidget ( D , ( char * ) "Arrow" ) ;
+      AB = ( DIN* ) kgGetNamedWidget ( D , ( char * ) "Direction" ) ;
+      buts = ( BUT_STR * ) AB->buts;
+      P->xpm = buts [ 0 ] .xpmn ;
+      kgUpdateWidget ( P ) ;
       SetupGrps ( ) ;
       Slist = Dreadfile ( flname ) ;
       MakeFileNames ( ) ;
-      BLS = Dopen();
-      DLS = Dopen();
+      BLS = Dopen ( ) ;
+      DLS = Dopen ( ) ;
       Strs = ( char ** ) Dlinktoarray ( Slist ) ;
       StartLine = EndLine = 1;
       E = Tbl->elmt;
       nlines = Tbl->ny;
       Nlines = Tbl->ny;
-      LoadConfig(Tmp);
-      kgUpdateWidget(Tbl);
+      LoadConfig ( Tmp ) ;
+      kgUpdateWidget ( Tbl ) ;
       if ( flname != NULL ) {
           if ( ( Strs == NULL ) || ( Strs [ 0 ] == NULL ) ) {
               cpt = ( char * ) malloc ( 2 ) ;
               strcpy ( cpt , "\n" ) ;
               Dadd ( Slist , cpt ) ;
-              kgSetString ( Tbl , 1 , cpt ) ;
-//          kgSetInt ( Tbl , 0 , 1 ) ;
-              WriteLineNo ( 0 ) ;
-              kgSetOnTableCell ( Tbl , 1 ) ;
-              for ( k = 1;k < nlines; k++ ) {
-                  kgSetOffTableCell ( Tbl , k*2+1 ) ;
-              }
-              AddMode = 1;
-              AddRow = 0;
+              if ( Strs != NULL ) free ( Strs ) ;
+              Strs = ( char ** ) Dlinktoarray ( Slist ) ;
           }
-          else {
-              k = 0;
-              StartLine = 1;
-              while ( Strs [ k ] != NULL ) {
-                  if ( k < nlines ) {
-                      kgSetOnTableCell ( Tbl , k*2+1 ) ;
-                  }
-                  k++;
-              }
-              if ( k < nlines ) EndLine = k;
-              else EndLine = nlines;
-              while ( k < nlines ) {
-                  kgSetOffTableCell ( Tbl , k*2+1 ) ;
-                  k++;
-              }
-              WriteTbl ( ) ;
-          }
-          Count = Dcount ( Slist ) ;
-          Resetlink ( Slist ) ;
-          if ( Count <= Nlines ) kgSetWidgetVisibility ( V , 0 ) ;
-          else {
-              Vsize = ( double ) (Nlines)/Count*100.0;
-              Vpos = 0;
-              kgSetScrollLength ( V , Vsize ) ;
-              kgSetScrollPos ( V , Vpos ) ;
-              kgSetScrollMovement(V,(double)Nlines/Count*100.0);
-          }
-          kgUpdateWidget ( V ) ;
-          kgUpdateWidget ( Tbl ) ;
-          kgSetTableCursor ( Tbl , 1 ) ;
-          kgSetDefaultAttnWidget ( Tmp , Tbl ) ;
       }
-      Push();
-      kgEnableSelection(Tmp);
+      k = 0;
+      StartLine = 1;
+      while ( Strs [ k ] != NULL ) {
+          if ( k < nlines ) {
+              kgSetOnTableCell ( Tbl , k*2+1 ) ;
+          }
+          k++;
+      }
+      if ( k < nlines ) EndLine = k;
+      else EndLine = nlines;
+      while ( k < nlines ) {
+          kgSetOffTableCell ( Tbl , k*2+1 ) ;
+          k++;
+      }
+      WriteTbl ( ) ;
+      Count = Dcount ( Slist ) ;
+      Resetlink ( Slist ) ;
+      if ( Count <= Nlines ) kgSetWidgetVisibility ( V , 0 ) ;
+      else {
+          Vsize = ( double ) ( Nlines ) /Count*100.0;
+          Vpos = 0;
+          kgSetScrollLength ( V , Vsize ) ;
+          kgSetScrollPos ( V , Vpos ) ;
+          kgSetScrollMovement ( V , ( double ) Nlines/Count*100.0 ) ;
+      }
+      kgUpdateWidget ( V ) ;
+      kgUpdateWidget ( Tbl ) ;
+      kgSetTableCursor ( Tbl , 1 ) ;
+      kgSetDefaultAttnWidget ( Tmp , Tbl ) ;
+      Push ( ) ;
+      kgEnableSelection ( Tmp ) ;
       kgUpdateOn ( Tmp ) ;
       free ( Strs ) ;
       return ret;
@@ -1688,7 +1691,7 @@ void  ScrollTablebutton8init(DIN *B,void *ptmp) {
     Tmp :  Pointer to DIALOG
    ***********************************/
       DIALOG *D;DIN *B;
-      int n , ret = 0 , row,curpos,rcurpos;
+      int n , ret = 0 , row , curpos , rcurpos;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
       char *fpt;
       D = ( DIALOG * ) Tmp;
@@ -1697,7 +1700,7 @@ void  ScrollTablebutton8init(DIN *B,void *ptmp) {
       switch ( butno ) {
           case 1:
           ReadTbl ( ) ;
-          strcpy ( Buf , flname) ;
+          strcpy ( Buf , flname ) ;
           if ( ( fpt = RunGetFileName ( NULL , Buf ) ) == NULL ) break;
           strcpy ( Buf , fpt ) ;
           free ( fpt ) ;
@@ -1706,25 +1709,25 @@ void  ScrollTablebutton8init(DIN *B,void *ptmp) {
           break;
           case 2:
 //        printf("%s\n",flname);
-          row = kgGetTableRow ( Tbl ) ;          
+          row = kgGetTableRow ( Tbl ) ;
           curpos = kgGetTableCurpos ( Tbl ) ;
           rcurpos = GetRealPos ( ) ;
-          UpdateTbl();
+          UpdateTbl ( ) ;
 #if 0
           row = kgGetTableRow ( Tbl ) ;
-          MarkPos=EndLine;
-          kgSetInt(MT,0,MarkPos);
-          kgUpdateWidget(MT);
+          MarkPos = EndLine;
+          kgSetInt ( MT , 0 , MarkPos ) ;
+          kgUpdateWidget ( MT ) ;
           if ( flname != NULL ) {
               int k;
-              Dlink *bkup=NULL;
-              bkup  = Pop();
-              if(bkup == NULL) {
-              sprintf ( Msg , "Sorry!! UNDO not possible; You may ABORT if needed" ) ;
-              Splash ( Msg ) ;
-              break;
+              Dlink *bkup = NULL;
+              bkup = Pop ( ) ;
+              if ( bkup == NULL ) {
+                  sprintf ( Msg , "Sorry!! UNDO not possible; You may ABORT if needed" ) ;
+                  Splash ( Msg ) ;
+                  break;
               }
-              Dempty(Slist);
+              Dempty ( Slist ) ;
               Slist = bkup;
               for ( k = 0;k < Nlines;k++ ) {
                   kgSetString ( Tbl , k*2 , ( char * ) "" ) ;
@@ -1737,11 +1740,11 @@ void  ScrollTablebutton8init(DIN *B,void *ptmp) {
               kgSetInt ( MT , 0 , MarkPos ) ;
               kgUpdateWidget ( MT ) ;
 #endif
-              if ( (Slist==NULL)||( Count = Dcount ( Slist ) ) == 0 ) {
-                  if(Slist != NULL) Dempty ( Slist ) ;
+              if ( ( Slist == NULL ) || ( Count = Dcount ( Slist ) ) == 0 ) {
+                  if ( Slist != NULL ) Dempty ( Slist ) ;
 //                  Slist = Dreadfile ( flname ) ;
-                    Slist = Dreadfile(SaveFile);
-                    if(Dcount(Slist)==0) Slist = Dreadfile ( flname ) ;
+                  Slist = Dreadfile ( SaveFile ) ;
+                  if ( Dcount ( Slist ) == 0 ) Slist = Dreadfile ( flname ) ;
               }
               Count = Dcount ( Slist ) ;
               if ( ( EndLine - StartLine +1 ) < Count ) {
@@ -1770,27 +1773,27 @@ void  ScrollTablebutton8init(DIN *B,void *ptmp) {
           }
           else printf ( "flname== NULL\n" ) ;
 #else
-              int k,chng=0;
-              Dlink *bkup=NULL;
-              bkup  = Pop();
-              if(bkup == NULL) {
+          int k , chng = 0;
+          Dlink *bkup = NULL;
+          bkup = Pop ( ) ;
+          if ( bkup == NULL ) {
               sprintf ( Msg , "Sorry!! UNDO not possible; You may ABORT if needed" ) ;
               Splash ( Msg ) ;
               break;
-              }
-              chng = Dcount(Slist)-Dcount(bkup);
-              Dempty(Slist);
-              Slist = bkup;
-              for ( k = 0;k < Nlines;k++ ) {
-                  kgSetString ( Tbl , k*2 , ( char * ) "" ) ;
-                  kgSetString ( Tbl , k*2+1 , ( char * ) "" ) ;
-              }
-              kgUpdateWidget ( Tbl ) ;
+          }
+          chng = Dcount ( Slist ) -Dcount ( bkup ) ;
+          Dempty ( Slist ) ;
+          Slist = bkup;
+          for ( k = 0;k < Nlines;k++ ) {
+              kgSetString ( Tbl , k*2 , ( char * ) "" ) ;
+              kgSetString ( Tbl , k*2+1 , ( char * ) "" ) ;
+          }
+          kgUpdateWidget ( Tbl ) ;
           SetupVbar ( ) ;
           WriteTbl ( ) ;
-           row = Tblrow;
-           if(chng)  row = Tblrow-1;
-           kgSetTableCursorPos ( Tbl , row*Tbl->nx+1 , 0 ) ;
+          row = Tblrow;
+          if ( chng ) row = Tblrow-1;
+          kgSetTableCursorPos ( Tbl , row*Tbl->nx+1 , 0 ) ;
           kgUpdateOn ( Tbl->D ) ;
 #endif
           break;
@@ -1822,8 +1825,8 @@ void  ScrollTablebutton8init(DIN *B,void *ptmp) {
       D = ( DIALOG * ) Tmp;
       T = ( DIT * ) kgGetWidget ( Tmp , i ) ;
       e = T->elmt;
-      if(SerDir)SearchTbl();
-      else SearchTblRev();
+      if ( SerDir ) SearchTbl ( ) ;
+      else SearchTblRev ( ) ;
       return ret;
   }
   int ScrollTabletextbox1callback_test ( int cellno , int i , void *Tmp ) {
@@ -1865,25 +1868,25 @@ void  ScrollTablebutton8init(DIN *B,void *ptmp) {
       }
       return k;
   }
-static char *SearchStr(char *str,char* ptn) {
-  char *ret=NULL;
-  char *ptmp;
-  ptmp = strstr(str,ptn);
-  if(ptmp != NULL) {
-    ret = ptmp;
-    while ((ptmp =strstr(ptmp+1,ptn))!= NULL) {
-       ret = ptmp;
-    }
+  static char *SearchStr ( char *str , char* ptn ) {
+      char *ret = NULL;
+      char *ptmp;
+      ptmp = strstr ( str , ptn ) ;
+      if ( ptmp != NULL ) {
+          ret = ptmp;
+          while ( ( ptmp = strstr ( ptmp+1 , ptn ) ) != NULL ) {
+              ret = ptmp;
+          }
+      }
+      return ret;
   }
-  return ret;
-}
- static int SearchTbl(){
+  static int SearchTbl ( ) {
       int k = 0 , loc , count;
       char *spt , *lptr , *ptmp;
       int row , curpos , stchar , rowbk , rcurpos;
       int Slbak , Elbak , curbk;
       DIALOG *D = ( DIALOG * ) Tbl->D;;
-      void *Tmp =D;
+      void *Tmp = D;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
       spt = ( char * ) kgGetString ( ST , 0 ) ;
       k = 0;
@@ -1974,13 +1977,13 @@ static char *SearchStr(char *str,char* ptn) {
       Splash ( ( char * ) "Could not find" ) ;
       return 1;
   }
- static int SearchTblRev(){
+  static int SearchTblRev ( ) {
       int k = 0 , loc , count;
-      char *spt , *lptr , *ptmp,chtmp;
+      char *spt , *lptr , *ptmp , chtmp;
       int row , curpos , stchar , rowbk , rcurpos;
       int Slbak , Elbak , curbk;
       DIALOG *D = ( DIALOG * ) Tbl->D;;
-      void *Tmp =D;
+      void *Tmp = D;
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
       spt = ( char * ) kgGetString ( ST , 0 ) ;
       k = 0;
@@ -2001,15 +2004,15 @@ static char *SearchStr(char *str,char* ptn) {
 //      printf ( "Row: %d %d %d\n" , rowbk , StartLine , curpos ) ;
       lptr = ( char * ) Getrecordrev ( Slist ) ;
       if ( lptr == NULL ) return 0;
-      chtmp = lptr[rcurpos];
-      lptr[rcurpos]='\0';
+      chtmp = lptr [ rcurpos ] ;
+      lptr [ rcurpos ] = '\0';
       if ( ( ptmp = ( char * ) SearchStr ( lptr , spt ) ) != NULL ) {
-          lptr[rcurpos]= chtmp;
-          loc = GetLength ( lptr , ptmp )  ;
+          lptr [ rcurpos ] = chtmp;
+          loc = GetLength ( lptr , ptmp ) ;
           kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc ) ;
           RETURN ( 0 ) ;
       }
-      lptr[rcurpos]= chtmp;
+      lptr [ rcurpos ] = chtmp;
       count = 1;
       if ( Count <= Nlines ) {
           while ( ( lptr = ( char * ) Getrecordrev ( Slist ) ) != NULL ) {
@@ -2042,9 +2045,9 @@ static char *SearchStr(char *str,char* ptn) {
                       EndLine -= count;
                   }
                   else {
-                    row  = StartLine+row -count-1;
-                    StartLine =1;
-                    EndLine = Nlines;
+                      row = StartLine+row -count-1;
+                      StartLine = 1;
+                      EndLine = Nlines;
                   }
                   WriteTbl ( ) ;
                   kgSetTableCursorPos ( Tbl , ( row ) *Tbl->nx+1 , loc ) ;
@@ -2055,7 +2058,7 @@ static char *SearchStr(char *str,char* ptn) {
           Dend ( Slist ) ;
           count = 0;
           for ( k = Count-1;k > Elbak;k-= Nlines ) {
-              for ( row =Nlines-1;row >=0;row-- ) {
+              for ( row = Nlines-1;row >= 0;row-- ) {
                   lptr = ( char * ) Getrecordrev ( Slist ) ;
                   if ( lptr == NULL ) break;
                   if ( ( ptmp = ( char * ) SearchStr ( lptr , spt ) ) != NULL ) {
@@ -2095,7 +2098,7 @@ static char *SearchStr(char *str,char* ptn) {
       if ( spt [ k ] < ' ' ) return ret;
 //     printf("%s\n",spt+k);
       ReadTbl ( ) ;
-      if(SerDir==0) return SearchTblRev();
+      if ( SerDir == 0 ) return SearchTblRev ( ) ;
       Count = Dcount ( Slist ) ;
       row = kgGetTableRow ( Tbl ) ;
       rowbk = row;
@@ -2201,25 +2204,25 @@ static char *SearchStr(char *str,char* ptn) {
       }
       return 1;
   }
-  int WriteClipBoard(Dlink *Wlist) {
-    int len=0;
-    char *Buff,*pt;
-    if(Wlist== NULL ) return 0;
-    Resetlink(Wlist);
-    while( (pt=(char *)Getrecord(Wlist))!= NULL) {
-      len += (strlen(pt)+1);
-    }
-    Buff = (char *)malloc(len+1);
-    Buff[0]='\0';
-    Resetlink(Wlist);
-    while( (pt=(char *)Getrecord(Wlist))!= NULL) {
-      strcat(Buff,pt);
-    }
-    Resetlink(Wlist);
-    kgSetClipBoard(Tbl->D,Buff);
+  int WriteClipBoard ( Dlink *Wlist ) {
+      int len = 0;
+      char *Buff , *pt;
+      if ( Wlist == NULL ) return 0;
+      Resetlink ( Wlist ) ;
+      while ( ( pt = ( char * ) Getrecord ( Wlist ) ) != NULL ) {
+          len += ( strlen ( pt ) +1 ) ;
+      }
+      Buff = ( char * ) malloc ( len+1 ) ;
+      Buff [ 0 ] = '\0';
+      Resetlink ( Wlist ) ;
+      while ( ( pt = ( char * ) Getrecord ( Wlist ) ) != NULL ) {
+          strcat ( Buff , pt ) ;
+      }
+      Resetlink ( Wlist ) ;
+      kgSetClipBoard ( Tbl->D , Buff ) ;
 //    kgSetPrimary(Tbl->D,Buff);
-    free(Buff);
-    return len;    
+      free ( Buff ) ;
+      return len;
   }
   static int WriteToFile ( char *fpt ) {
       if ( fpt != NULL ) {
@@ -2238,7 +2241,7 @@ static char *SearchStr(char *str,char* ptn) {
               e = MarkPos;
           }
           sprintf ( Buf1 , "Copy lines %d to %d ?" , s , e ) ;
-          if(s != e)if ( ! kgQstMenu ( Tbl->D , 10 , 100 , Buf1 , 1 ) ) return 0;
+          if ( s != e ) if ( ! kgQstMenu ( Tbl->D , 10 , 100 , Buf1 , 1 ) ) return 0;
           Dposition ( Slist , s ) ;
           for ( k = s;k <= e;k++ ) {
               spt = ( char * ) Getrecord ( Slist ) ;
@@ -2247,7 +2250,7 @@ static char *SearchStr(char *str,char* ptn) {
               strcpy ( dpt , spt ) ;
               Dadd ( Wlist , dpt ) ;
           }
-          WriteClipBoard(Wlist);
+          WriteClipBoard ( Wlist ) ;
           Dwritefile ( Wlist , fpt ) ;
           Dempty ( Wlist ) ;
       }
@@ -2271,14 +2274,14 @@ static char *SearchStr(char *str,char* ptn) {
               e = MarkPos;
           }
           sprintf ( Buf1 , "Cut(&copy) lines %d to %d ?" , s , e ) ;
-          if(s!=e) if ( ! kgQstMenu ( Tbl->D , 10 , 100 , Buf1 , 1 ) ) return 0;
+          if ( s != e ) if ( ! kgQstMenu ( Tbl->D , 10 , 100 , Buf1 , 1 ) ) return 0;
           Dposition ( Slist , s ) ;
           for ( k = s;k <= e;k++ ) {
               spt = ( char * ) Dpick ( Slist ) ;
               if ( spt == NULL ) break;
               Dadd ( Wlist , spt ) ;
           }
-          WriteClipBoard(Wlist);
+          WriteClipBoard ( Wlist ) ;
           Dwritefile ( Wlist , fpt ) ;
           lines = Dcount ( Wlist ) ;
           Dempty ( Wlist ) ;
@@ -2414,7 +2417,6 @@ i :  Index of Widget  (0 to max_widgets-1)
       int i , n;
       int xo , yo , xl , yl;
       int xres , yres;
-      
       d = D->d;
       D->NoTabProcess = 1;
       if ( pt [ 0 ] == NULL ) {
@@ -2425,7 +2427,7 @@ i :  Index of Widget  (0 to max_widgets-1)
           i++;
       };
       n = 1;
-      sprintf(Msg,"Kit Ver 2.0: File: %s",flname);
+      sprintf ( Msg , "Kit Ver 2.0: File: %s" , flname ) ;
       strcpy ( D->name , Msg ) ; /* Dialog name you may change */
       Tbl = ( DIT * ) kgGetNamedWidget ( D , ( char * ) "ScrollTable" ) ;
       Tbl->Font = 10;
@@ -2490,8 +2492,8 @@ i :  Index of Widget  (0 to max_widgets-1)
   /***********************************
     Tmp :  Pointer to DIALOG
    ***********************************/
-      int ret = 0 , k,nyo,nxo,i,j;
-      int xres , yres , dx , dy,nymax,val;
+      int ret = 0 , k , nyo , nxo , i , j;
+      int xres , yres , dx , dy , nymax , val;
       int xo , yo , xl , yl , Fz1 , Fz2 , nchr;
       char Fmt [ 8 ] ;
       DIALOG *D;
@@ -2509,19 +2511,19 @@ i :  Index of Widget  (0 to max_widgets-1)
           DefWidth = Tbl->width;
       }
   /* extra code */
-      if(nydef == -1 ) nydef= Tbl->ny;
+      if ( nydef == -1 ) nydef = Tbl->ny;
       elmt = ( T_ELMT * ) Tbl->elmt;
       nyo = Tbl->ny;
       nxo = Tbl->nx;
 #if 1
       for ( j = 0;j < nyo;j++ ) {
-        for(i=0;i<nxo;i++) {
-          k = j*nxo+i;
-          if(elmt [ k ] .img  !=NULL) {
-              kgFreeImage( elmt [ k ] .img);
+          for ( i = 0;i < nxo;i++ ) {
+              k = j*nxo+i;
+              if ( elmt [ k ] .img != NULL ) {
+                  kgFreeImage ( elmt [ k ] .img ) ;
+              }
+              elmt [ k ] .img = NULL;
           }
-          elmt [ k ] .img  =NULL;
-        }
       }
 #endif
       D->xl = xres;
@@ -2540,75 +2542,76 @@ i :  Index of Widget  (0 to max_widgets-1)
       B1->y2 = B1->y1+yl;
       xo = D->xl-xl-10;
       B1->x1 = xo;
-      if(B1->x1 > B1x ) B1->x1=B1x;
+      if ( B1->x1 > B1x ) B1->x1 = B1x;
       B1->x2 = B1->x1+xl;
       Tbl->x2 = xres - 40;
       Tbl->y2 = yres - 50;
       Fz1 = Fz;
-      if(Tbl->width <2*Fz1)Tbl->width= 2*Fz1; 
+      if ( Tbl->width < 2*Fz1 ) Tbl->width = 2*Fz1;
 //      Tbl->ny = ( Tbl->y2 - Tbl->y1-4 ) /(2*Fz1);
-      Tbl->ny = ( Tbl->y2 - Tbl->y1-4 ) /(Tbl->width);
-      Fz2 = ( Tbl->y2 - Tbl->y1-4 ) /(2*Tbl->ny);
-      if(Fz1> Fz2) Fz1=Fz2;
+      Tbl->ny = ( Tbl->y2 - Tbl->y1-4 ) / ( Tbl->width ) ;
+      Fz2 = ( Tbl->y2 - Tbl->y1-4 ) / ( 2*Tbl->ny ) ;
+      if ( Fz1 > Fz2 ) Fz1 = Fz2;
 #if 0
-      if ( Fz1 > 12 ){
-         Fz1 = 10;
-         Tbl->ny = ( Tbl->y2 - Tbl->y1-4 )/(2*Fz1);
+      if ( Fz1 > 12 ) {
+          Fz1 = 10;
+          Tbl->ny = ( Tbl->y2 - Tbl->y1-4 ) / ( 2*Fz1 ) ;
       }
-      else if(Fz1 < 10) {
-         Tbl->ny = 24;
-         Fz1 =(float )( Tbl->y2 - Tbl->y1-4 )/(2*Tbl->ny )+0.2; 
+      else if ( Fz1 < 10 ) {
+          Tbl->ny = 24;
+          Fz1 = ( float ) ( Tbl->y2 - Tbl->y1-4 ) / ( 2*Tbl->ny ) +0.2;
       }
 #endif
-      nchr = ( Tbl->x2 - Tbl->x1) /Fz1 -11;
-      Tbl->x2 = (nchr+11)*Fz1+Tbl->x1;
-      Tbl->ny = (float)( Tbl->y2 - Tbl->y1-4 )/(Tbl->width)+0.5;
-      Tbl->y2 = Tbl->width*(Tbl->ny )+Tbl->y1+4;
+      nchr = ( Tbl->x2 - Tbl->x1 ) /Fz1 -11;
+      Tbl->x2 = ( nchr+11 ) *Fz1+Tbl->x1;
+      Tbl->ny = ( float ) ( Tbl->y2 - Tbl->y1-4 ) / ( Tbl->width ) +0.5;
+      Tbl->y2 = Tbl->width* ( Tbl->ny ) +Tbl->y1+4;
       sprintf ( Fmt , "%%%ds" , nchr ) ;
       elmt = ( T_ELMT * ) Tbl->elmt;
-      if(Tbl->ny > nydef )elmt = (T_ELMT *)realloc(elmt,Tbl->nx*Tbl->ny*sizeof(T_ELMT));
+      if ( Tbl->ny > nydef ) elmt = ( T_ELMT * ) realloc  \
+          ( elmt , Tbl->nx*Tbl->ny*sizeof ( T_ELMT ) ) ;
       Tbl->elmt = elmt;
       nymax = Tbl->ny;
-      if(nymax >nyo ) nymax = nyo;
-      if(nymax < nydef ) nymax=nydef;
-      if(nymax >Tbl->ny) nymax = Tbl->ny; 
+      if ( nymax > nyo ) nymax = nyo;
+      if ( nymax < nydef ) nymax = nydef;
+      if ( nymax > Tbl->ny ) nymax = Tbl->ny;
       for ( k = 0;k < nymax;k++ ) {
-          strcpy(elmt [ k*Tbl->nx ] .fmt , (char *)"%4s" ) ;
-          elmt [ k*Tbl->nx ] .sw=0;
-          elmt [ k*Tbl->nx ] .noecho=0;
+          strcpy ( elmt [ k*Tbl->nx ] .fmt , ( char * ) "%4s" ) ;
+          elmt [ k*Tbl->nx ] .sw = 0;
+          elmt [ k*Tbl->nx ] .noecho = 0;
           elmt [ k*Tbl->nx ] .img = NULL;
           strcpy ( elmt [ k*Tbl->nx+1 ] .fmt , Fmt ) ;
-          elmt [ k*Tbl->nx+1 ] .sw=1;
-          elmt [ k*Tbl->nx+1] .noecho=0;
+          elmt [ k*Tbl->nx+1 ] .sw = 1;
+          elmt [ k*Tbl->nx+1 ] .noecho = 0;
           elmt [ k*Tbl->nx+1 ] .img = NULL;
       }
 //      if((Tbl->ny>nydef)&&(Tbl->ny > nyo)) {
-      if((Tbl->ny>nydef)) {
-         int j=0;
-         char *cpt=NULL;
-         vi =(char *)realloc(vi,20*(Tbl->ny - nydef));
-         vs =(char *)realloc(vs,2000*(Tbl->ny - nydef));
-         for ( k = nydef;k < Tbl->ny;k++ ) {
-         elmt[k*Tbl->nx].fmt = (char *)malloc(10);
-         elmt[k*Tbl->nx+1].fmt = (char *)malloc(10);
-         strcpy(elmt [ k*Tbl->nx ] .fmt , (char *)"%4s" ) ;
-         elmt [ k*Tbl->nx ] .sw=0;
-         elmt [ k*Tbl->nx ] .noecho=0;
-         elmt [ k*Tbl->nx ] .img = NULL;
-         strcpy ( elmt [ k*Tbl->nx+1 ] .fmt , Fmt ) ;
-         elmt [ k*Tbl->nx+1 ] .sw=1;
-         elmt [ k*Tbl->nx+1] .noecho=0;
-         elmt [ k*Tbl->nx+1 ] .img = NULL;
-         elmt[k*Tbl->nx ].v=(void *)(vi+j*20);
-         elmt[k*Tbl->nx +1].v=(void *)(vs+j*2000);
-         cpt= (char *) elmt[k*Tbl->nx ].v;
-         cpt[0]='\0';
-         cpt= (char *) elmt[k*Tbl->nx +1].v;
-         cpt[0]='\0';
-         j++;
-         }
+      if ( ( Tbl->ny > nydef ) ) {
+          int j = 0;
+          char *cpt = NULL;
+          vi = ( char * ) realloc ( vi , 20* ( Tbl->ny - nydef ) ) ;
+          vs = ( char * ) realloc ( vs , 2000* ( Tbl->ny - nydef ) ) ;
+          for ( k = nydef;k < Tbl->ny;k++ ) {
+              elmt [ k*Tbl->nx ] .fmt = ( char * ) malloc ( 10 ) ;
+              elmt [ k*Tbl->nx+1 ] .fmt = ( char * ) malloc ( 10 ) ;
+              strcpy ( elmt [ k*Tbl->nx ] .fmt , ( char * ) "%4s" ) ;
+              elmt [ k*Tbl->nx ] .sw = 0;
+              elmt [ k*Tbl->nx ] .noecho = 0;
+              elmt [ k*Tbl->nx ] .img = NULL;
+              strcpy ( elmt [ k*Tbl->nx+1 ] .fmt , Fmt ) ;
+              elmt [ k*Tbl->nx+1 ] .sw = 1;
+              elmt [ k*Tbl->nx+1 ] .noecho = 0;
+              elmt [ k*Tbl->nx+1 ] .img = NULL;
+              elmt [ k*Tbl->nx ] .v = ( void * ) ( vi+j*20 ) ;
+              elmt [ k*Tbl->nx +1 ] .v = ( void * ) ( vs+j*2000 ) ;
+              cpt = ( char * ) elmt [ k*Tbl->nx ] .v;
+              cpt [ 0 ] = '\0';
+              cpt = ( char * ) elmt [ k*Tbl->nx +1 ] .v;
+              cpt [ 0 ] = '\0';
+              j++;
+          }
       }
-      Nlines= Tbl->ny;
+      Nlines = Tbl->ny;
       Tbl->FontSize = Fz1;
 //      Tbl->width = DefWidth;;
       xl = V->x2 - V->x1;
@@ -2627,12 +2630,12 @@ i :  Index of Widget  (0 to max_widgets-1)
       PB->y2 = PB->y1+yl;
       kgRedrawDialog ( D ) ;
  //     if(Tbl->ny !=  nyo) {
-        SetupTbl();
-        WriteTbl();
+      SetupTbl ( ) ;
+      WriteTbl ( ) ;
       SetupVbar ( ) ;
  //     kgUpdateWidget ( V ) ;
 //      kgUpdateWidget (Tbl ) ;
-      kgUpdateOn(D);
+      kgUpdateOn ( D ) ;
 //      }
       kgSetAttnWidget ( Tmp , Tbl ) ;
       return ret;
