@@ -465,6 +465,8 @@
       Count = Dcount ( Slist ) ;
       if ( EndLine > Count ) {
           EndLine = Count;
+          row++;
+          if(row >= Nlines ) row= Nlines-1;
       }
       if ( Count == 0 ) {
           StartLine = 1;
@@ -490,7 +492,7 @@
       WriteTbl ( ) ;
       SetupVbar ( ) ;
 //      kgUpdateWidget ( V ) ;
-      return 1;
+      return row;
   }
   static int RemoveLine ( int row ) {
       char *buf;
@@ -869,7 +871,7 @@
           case 1:
           row = kgGetTableRow ( Tbl ) ;
           ReadTbl ( ) ;
-          DeleteLine ( row ) ;
+          row = DeleteLine ( row ) ;
           Count = Dcount ( Slist ) ;
           if ( Count <= 0 ) {
               buf = ( char * ) malloc ( 2 ) ;
