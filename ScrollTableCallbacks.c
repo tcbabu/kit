@@ -880,6 +880,7 @@
           }
           if ( row >= Count ) row = Count-1;
           kgSetTableCursor ( Tbl , ( row ) *Tbl->nx+1 ) ;
+          kgSkipEvents ( Tbl->D ) ;
           kgUpdateOn ( Tmp ) ;
           break;
           case 2:
