@@ -465,7 +465,7 @@
       Count = Dcount ( Slist ) ;
       if ( EndLine > Count ) {
           EndLine = Count;
-          row++;
+          if(Count > Nlines) row++;
           if(row >= Nlines ) row= Nlines-1;
       }
       if ( Count == 0 ) {
@@ -878,7 +878,7 @@
               strcpy ( buf , "\n" ) ;
               Count = 1;
           }
-          if ( row >= Count ) row = Count-1;
+          if ( (row >= Count)  ) row = Count-1;
           kgSetTableCursor ( Tbl , ( row ) *Tbl->nx+1 ) ;
           kgSkipEvents ( Tbl->D ) ;
           kgUpdateOn ( Tmp ) ;
