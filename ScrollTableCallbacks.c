@@ -303,6 +303,7 @@ int LocPop() {
       char Buf [ 5000 ] ;
       Resetlink ( Slist ) ;
       Dposition ( Slist , StartLine ) ;
+      printf("Inside WriteTbl: %d %d\n",StartLine,EndLine);
       for ( i = 0;i < n;i++ ) {
           cpt = ( char * ) Getrecord ( Slist ) ;
           if ( cpt == NULL ) {
@@ -441,7 +442,7 @@ int LocPop() {
       }
       WriteTbl ( ) ;
       SetupVbar ( ) ;
-//      kgUpdateWidget ( V ) ;
+      kgUpdateWidget ( V ) ;
       return 1;
   }
   static int AddStringLine ( int row ) {
@@ -1789,6 +1790,7 @@ int LocPop() {
           UpdateTbl ( ) ;
 #if 1  //TCB
           row = kgGetTableRow ( Tbl ) ;
+  printf("  : %d %d %d\n",StartLine,EndLine,row);
 //          MarkPos = EndLine;
 //          kgSetInt ( MT , 0 , MarkPos ) ;
 //          kgUpdateWidget ( MT ) ;
@@ -1805,27 +1807,33 @@ int LocPop() {
               Slist = bkup;
               LocPop();
               row = TblRow;
+  printf("2  : %d %d %d\n",StartLine,EndLine,row);
               for ( k = 0;k < Nlines;k++ ) {
                   kgSetString ( Tbl , k*2 , ( char * ) "" ) ;
                   kgSetString ( Tbl , k*2+1 , ( char * ) "" ) ;
               }
               kgUpdateWidget ( Tbl ) ;
+  printf("3  : %d %d %d\n",StartLine,EndLine,row);
 //              kgUpdateOn ( Tbl->D ) ;
 #if 0
               MarkPos = StartLine+kgGetTableRow ( Tbl ) ;
 #endif
               kgSetInt ( MT , 0 , MarkPos ) ;
               kgUpdateWidget ( MT ) ;
+  printf("4  : %d %d %d\n",StartLine,EndLine,row);
               if ( ( Slist == NULL ) || ( Count = Dcount ( Slist ) ) == 0 ) {
                   if ( Slist != NULL ) Dempty ( Slist ) ;
 //                  Slist = Dreadfile ( flname ) ;
                   Slist = Dreadfile ( SaveFile ) ;
                   if ( Dcount ( Slist ) == 0 ) Slist = Dreadfile ( flname ) ;
               }
+  printf("4  : %d %d %d\n",StartLine,EndLine,row);
               Count = Dcount ( Slist ) ;
-              if ( ( EndLine - StartLine +1 ) < Count ) {
+            
+              if ( ( EndLine - StartLine  )>  Count ) {
                   EndLine = Count;
               }
+  printf("4  : %d %d %d\n",StartLine,EndLine,row);
               if ( EndLine >= Count ) {
                   EndLine = Count;
                   StartLine = EndLine-Nlines+1;
@@ -1840,6 +1848,7 @@ int LocPop() {
                       kgSetOffTableCell ( Tbl , k*2+1 ) ;
                   }
               }
+  printf("5  : %d %d %d\n",StartLine,EndLine,row);
               WriteTbl ( ) ;
 //              GotoLastPos ( ) ;
 //              if ( ( Count >= Nlines ) && ( StartLine > 1 ) ) row = Nlines-1;
