@@ -1159,6 +1159,7 @@ int LocPop() {
       k = 0;
       while ( spt [ k ] >= ' ' ) k++;
       ReadTbl ( ) ;
+      LocPush();
       Count = Dcount ( Slist ) ;
       row = kgGetTableRow ( Tbl ) ;
       rowbk = row;
