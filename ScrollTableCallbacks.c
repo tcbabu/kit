@@ -20,10 +20,11 @@
   static int DifPos = -1;
   static int SerDir = 1;
   static int StartLine = 0 , EndLine = 0 , Nlines , Count;
+  static int TblRow;
   static int AddMode = 0 , AddRow = -1;
   static int B1x , B1y;
   static double Vsize , Vpos;
-  static int MarkPos = 1;
+  static int MarkPos = 1,LastPos=1;
   static int ExpandTab = 0 , Tabp = 8;
   static char *vi = NULL , *vs = NULL;
   static int Xl = -1 , Yl = -1 , Fz = -1 , By1 , DefWidth;
@@ -48,6 +49,40 @@
   static Dlink *BLS = NULL;
   static Dlink *DLS = NULL;
   static Dlink *Blist = NULL;
+  static Dlink *Llist=NULL;
+typedef struct  _posvec {
+     int Loc;
+     int Start;
+     int End;
+} POSVEC;
+static POSVEC *lpt;
+int LocPush() {  
+  POSVEC *pt;
+  pt=(POSVEC *)malloc(sizeof(POSVEC));
+  if(Llist == NULL) Llist=Dopen();
+  pt->Loc = kgGetTableRow ( Tbl ) ;
+  pt->Start = StartLine;
+  pt->End  = EndLine;
+  Dpush(Llist,pt);
+  return 1;
+}
+int LocPop() {
+  POSVEC *pt;
+  if(Llist == NULL) LocPush();
+  pt = Dpop(Llist);
+  if(pt == NULL) {
+     pt=(POSVEC *)malloc(sizeof(POSVEC));
+     pt->Loc = kgGetTableRow ( Tbl ) ;
+     pt->Start = StartLine;
+     pt->End   = EndLine;
+  }
+  TblRow = pt->Loc ;
+  StartLine = pt->Start;
+  EndLine  = pt->End;;
+  //printf("Pop: %d %d %d\n",StartLine,EndLine,TblRow);
+  free(pt);
+  return 1;
+}
 #define RETURN(n) {\
    Vpos = ( double ) ( StartLine-1 ) *100.0/Count;\
        ReadTbl ( ) ;\
@@ -176,6 +211,7 @@
   static Dlink *Pop ( ) {
       Dlink *bk = ( Dlink * ) Dpop ( BLS ) ;
       int *dpt;
+      POSVEC *lpt;
       dpt = ( int * ) Dpop ( DLS ) ;
       if ( bk == NULL ) return NULL;
       while ( Checkbkup ( bk ) ) {
@@ -192,24 +228,18 @@
       if ( Dcount ( BLS ) == 0 ) {
           Dpush ( BLS , Dnewlist ( bk , CopyRec ) ) ;
 #if 0
-          StartLine = dpt [ 1 ] ;
-          EndLine = dpt [ 2 ] ;
-          Tblrow = dpt [ 3 ] ;
           MarkPos = dpt [ 4 ] ;
           kgSetInt ( MT , 0 , MarkPos ) ;
+          kgUpdateWidget(MT);
 #endif
           Count = Dcount ( bk ) ;
+          if(MarkPos > Count ) MarkPos=Count;
+          kgSetInt ( MT , 0 , MarkPos ) ;
+          kgUpdateWidget(MT);
           PositionAt ( DifPos ) ;
           Dpush ( DLS , dpt ) ;
           return bk;
       }
-#if 0
-      StartLine = dpt [ 1 ] ;
-      EndLine = dpt [ 2 ] ;
-      Tblrow = dpt [ 3 ] ;
-      MarkPos = dpt [ 4 ] ;
-      kgSetInt ( MT , 0 , MarkPos ) ;
-#endif
       Count = Dcount ( bk ) ;
       PositionAt ( DifPos ) ;
       free ( dpt ) ;
@@ -411,7 +441,7 @@
       }
       WriteTbl ( ) ;
       SetupVbar ( ) ;
-//      kgUpdateWidget ( V ) ;
+      kgUpdateWidget ( V ) ;
       return 1;
   }
   static int AddStringLine ( int row ) {
@@ -491,6 +521,11 @@
       }
       WriteTbl ( ) ;
       SetupVbar ( ) ;
+      if(MarkPos>Count) {
+          MarkPos = Count;
+          kgSetInt ( MT , 0 , MarkPos ) ;
+          kgUpdateWidget ( MT ) ;
+      }
 //      kgUpdateWidget ( V ) ;
       return row;
   }
@@ -780,6 +815,41 @@
       kgUpdateOn ( Tbl->D ) ;
       return 1;
   }
+  static int GotoLastPos ( ) {
+      if ( MarkPos < 1 ) {
+          MarkPos = 1;
+          kgSetInt ( MT , 0 , MarkPos ) ;
+          kgUpdateWidget ( MT ) ;
+      }
+      int pos = LastPos-StartLine;
+      ReadTbl ( ) ;
+      Count = Dcount ( Slist ) ;
+      if ( MarkPos > Count ) MarkPos = Count;
+      if ( LastPos> Count ) LastPos= Count;
+#if 1
+      if ( ( pos > 0 ) && ( pos < Nlines ) ) {
+          WriteTbl ( ) ;
+          kgSetTableCursor ( Tbl , ( pos ) *Tbl->nx+1 ) ;
+          kgSetAttnWidget ( Tbl->D , Tbl ) ;
+          SetupVbar ( ) ;
+          kgUpdateOn ( Tbl->D ) ;
+          return 1;
+      }
+#endif
+      EndLine = LastPos;
+      StartLine = EndLine -Nlines +1;
+      if ( StartLine < 1 ) {
+          StartLine = 1;
+          EndLine = Nlines;
+          if ( EndLine > Count ) EndLine = Count;
+      }
+      WriteTbl ( ) ;
+      kgSetTableCursor ( Tbl , ( pos ) *Tbl->nx+1 ) ;
+      kgSetAttnWidget ( Tbl->D , Tbl ) ;
+      SetupVbar ( ) ;
+      kgUpdateOn ( Tbl->D ) ;
+      return 1;
+  }
   int ScrollTablehorizscroll1callback ( double val , int i , void *Tmp ) {
   /***********************************
     val : current value
@@ -867,6 +937,7 @@
       D = ( DIALOG * ) Tmp;
       B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
       n = B->nx*B->ny;
+      LocPush();
       switch ( butno ) {
           case 1:
           row = kgGetTableRow ( Tbl ) ;
@@ -956,7 +1027,7 @@
       spt = ( char * ) kgGetString ( ST , 0 ) ;
       rpt = ( char * ) kgGetString ( RT , 0 ) ;
       rln = strlen ( rpt ) ;
-      printf ( " ReplaceTblRev()\n" ) ;
+//      printf ( " ReplaceTblRev()\n" ) ;
       ReadTbl ( ) ;
       Count = Dcount ( Slist ) ;
       row = kgGetTableRow ( Tbl ) ;
@@ -1716,11 +1787,11 @@
           curpos = kgGetTableCurpos ( Tbl ) ;
           rcurpos = GetRealPos ( ) ;
           UpdateTbl ( ) ;
-#if 0
+#if 1  //TCB
           row = kgGetTableRow ( Tbl ) ;
-          MarkPos = EndLine;
-          kgSetInt ( MT , 0 , MarkPos ) ;
-          kgUpdateWidget ( MT ) ;
+//          MarkPos = EndLine;
+//          kgSetInt ( MT , 0 , MarkPos ) ;
+//          kgUpdateWidget ( MT ) ;
           if ( flname != NULL ) {
               int k;
               Dlink *bkup = NULL;
@@ -1732,17 +1803,19 @@
               }
               Dempty ( Slist ) ;
               Slist = bkup;
+              LocPop();
+              row = TblRow;
               for ( k = 0;k < Nlines;k++ ) {
                   kgSetString ( Tbl , k*2 , ( char * ) "" ) ;
                   kgSetString ( Tbl , k*2+1 , ( char * ) "" ) ;
               }
               kgUpdateWidget ( Tbl ) ;
-              kgUpdateOn ( Tbl->D ) ;
+//              kgUpdateOn ( Tbl->D ) ;
 #if 0
               MarkPos = StartLine+kgGetTableRow ( Tbl ) ;
+#endif
               kgSetInt ( MT , 0 , MarkPos ) ;
               kgUpdateWidget ( MT ) ;
-#endif
               if ( ( Slist == NULL ) || ( Count = Dcount ( Slist ) ) == 0 ) {
                   if ( Slist != NULL ) Dempty ( Slist ) ;
 //                  Slist = Dreadfile ( flname ) ;
@@ -1750,7 +1823,8 @@
                   if ( Dcount ( Slist ) == 0 ) Slist = Dreadfile ( flname ) ;
               }
               Count = Dcount ( Slist ) ;
-              if ( ( EndLine - StartLine +1 ) < Count ) {
+            
+              if ( ( EndLine - StartLine  )>  Count ) {
                   EndLine = Count;
               }
               if ( EndLine >= Count ) {
@@ -1768,10 +1842,10 @@
                   }
               }
               WriteTbl ( ) ;
-              GotoMark ( ) ;
-              if ( ( Count >= Nlines ) && ( StartLine > 1 ) ) row = Nlines-1;
+//              GotoLastPos ( ) ;
+//              if ( ( Count >= Nlines ) && ( StartLine > 1 ) ) row = Nlines-1;
               kgSetTableCursorPos ( Tbl , row*Tbl->nx+1 , 0 ) ;
-              SetupVbar ( ) ;
+//TCB              SetupVbar ( ) ;
               kgUpdateOn ( Tbl->D ) ;
           }
           else printf ( "flname== NULL\n" ) ;
@@ -2326,6 +2400,8 @@ i :  Index of Widget  (0 to max_widgets-1)
           if ( kgFolderBrowser ( NULL , 100 , 100 , Infile , ( char * ) "*" ) ) {
               kgSkipEvents ( Tmp ) ;
               pos = kgGetTableRow ( Tbl ) +StartLine;
+              LastPos= pos ;
+              LocPush();
               ReadInFile ( Infile ) ;
               sprintf ( Msg , "Read in %s at %d" , Infile , pos ) ;
               Splash ( Msg ) ;
@@ -2352,6 +2428,8 @@ i :  Index of Widget  (0 to max_widgets-1)
 #endif
           break;
           case 4:
+              LastPos= MarkPos ;
+              LocPush();
           if ( CutToFile ( Bkup ) ) {
               SetupVbar ( ) ;
               GotoMark ( ) ;
@@ -2362,9 +2440,13 @@ i :  Index of Widget  (0 to max_widgets-1)
           WriteToFile ( Bkup ) ;
           break;
           case 6:
+              LastPos= pos ;
+              LocPush();
           ReadInFile ( Bkup ) ;
           break;
           case 7:
+              LastPos= pos ;
+          LocPush();
           slold = StartLine;
           if ( StartLine+row >= Count ) break;
           Dposition ( Slist , StartLine+row ) ;
