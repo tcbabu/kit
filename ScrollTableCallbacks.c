@@ -19,12 +19,12 @@
   static int Tblrow;
   static int DifPos = -1;
   static int SerDir = 1;
-  static int StartLine = 0 , EndLine = 0 , EndLinePrev =0,Nlines , Count,StartLinePrev=0;;
-  static int StartLineBkup=0,EndLineBkup=0;
+  static int StartLine = 0 , EndLine = 0 , Nlines , Count;
+  static int TblRow;
   static int AddMode = 0 , AddRow = -1;
   static int B1x , B1y;
   static double Vsize , Vpos;
-  static int MarkPos = 1,LastPosPrev=1,LastPosBkup=1;;
+  static int MarkPos = 1,LastPos=1;
   static int ExpandTab = 0 , Tabp = 8;
   static char *vi = NULL , *vs = NULL;
   static int Xl = -1 , Yl = -1 , Fz = -1 , By1 , DefWidth;
@@ -49,6 +49,40 @@
   static Dlink *BLS = NULL;
   static Dlink *DLS = NULL;
   static Dlink *Blist = NULL;
+  static Dlink *Llist=NULL;
+typedef struct  _posvec {
+     int Loc;
+     int Start;
+     int End;
+} POSVEC;
+static POSVEC *lpt;
+int LocPush() {  
+  POSVEC *pt;
+  pt=(POSVEC *)malloc(sizeof(POSVEC));
+  if(Llist == NULL) Llist=Dopen();
+  pt->Loc = kgGetTableRow ( Tbl ) ;
+  pt->Start = StartLine;
+  pt->End  = EndLine;
+  Dpush(Llist,pt);
+  return 1;
+}
+int LocPop() {
+  POSVEC *pt;
+  if(Llist == NULL) LocPush();
+  pt = Dpop(Llist);
+  if(pt == NULL) {
+     pt=(POSVEC *)malloc(sizeof(POSVEC));
+     pt->Loc = kgGetTableRow ( Tbl ) ;
+     pt->Start = StartLine;
+     pt->End   = EndLine;
+  }
+  TblRow = pt->Loc ;
+  StartLine = pt->Start;
+  EndLine  = pt->End;;
+  printf("Pop: %d %d %d\n",StartLine,EndLine,TblRow);
+  free(pt);
+  return 1;
+}
 #define RETURN(n) {\
    Vpos = ( double ) ( StartLine-1 ) *100.0/Count;\
        ReadTbl ( ) ;\
@@ -157,14 +191,11 @@
       Dpush ( BLS , Bk ) ;
       dpt = ( int * ) malloc ( sizeof ( int * ) *5 ) ;
       dpt [ 0 ] = 1;
-      dpt [ 1 ] = StartLinePrev;
-      dpt [ 2 ] = EndLinePrev;
+      dpt [ 1 ] = StartLine;
+      dpt [ 2 ] = EndLine;
       dpt [ 3 ] = kgGetTableRow ( Tbl ) ;
-      dpt [ 3 ] = LastPosPrev- StartLinePrev ;
-//      MarkPos = StartLine+kgGetTableRow ( Tbl ) ;
       dpt [ 4 ] = MarkPos;
    printf ("Push: %d %d %d %d\n",StartLine,EndLine,dpt[3],MarkPos);
-    printf("Push LastPos: %d %d %d\n",LastPosPrev,StartLinePrev,EndLinePrev);
       Dpush ( DLS , dpt ) ;
       count = Dcount ( BLS ) ;
 //   printf("Pushed: count= %d\n",count);
@@ -180,6 +211,7 @@
   static Dlink *Pop ( ) {
       Dlink *bk = ( Dlink * ) Dpop ( BLS ) ;
       int *dpt;
+      POSVEC *lpt;
       dpt = ( int * ) Dpop ( DLS ) ;
       if ( bk == NULL ) return NULL;
       while ( Checkbkup ( bk ) ) {
@@ -195,14 +227,7 @@
       }
       if ( Dcount ( BLS ) == 0 ) {
           Dpush ( BLS , Dnewlist ( bk , CopyRec ) ) ;
-#if 1
-          StartLineBkup = dpt [ 1 ] ;
-          EndLineBkup = dpt [ 2 ] ;
-          Tblrow = dpt [ 3 ] ;
-          LastPosBkup= StartLineBkup+Tblrow;
-          Tblrow = LastPosPrev-StartLinePrev;
-          StartLine = StartLinePrev;
-          EndLine   = EndLinePrev;
+#if 0
           MarkPos = dpt [ 4 ] ;
           kgSetInt ( MT , 0 , MarkPos ) ;
           kgUpdateWidget(MT);
@@ -215,13 +240,6 @@
           Dpush ( DLS , dpt ) ;
           return bk;
       }
-#if 0
-      StartLine = dpt [ 1 ] ;
-      EndLine = dpt [ 2 ] ;
-      Tblrow = dpt [ 3 ] ;
-      MarkPos = dpt [ 4 ] ;
-      kgSetInt ( MT , 0 , MarkPos ) ;
-#endif
       Count = Dcount ( bk ) ;
       PositionAt ( DifPos ) ;
       free ( dpt ) ;
@@ -803,11 +821,11 @@
           kgSetInt ( MT , 0 , MarkPos ) ;
           kgUpdateWidget ( MT ) ;
       }
-      int pos = LastPosPrev-StartLine;
+      int pos = LastPos-StartLine;
       ReadTbl ( ) ;
       Count = Dcount ( Slist ) ;
       if ( MarkPos > Count ) MarkPos = Count;
-      if ( LastPosPrev> Count ) LastPosPrev= Count;
+      if ( LastPos> Count ) LastPos= Count;
 #if 1
       if ( ( pos > 0 ) && ( pos < Nlines ) ) {
           WriteTbl ( ) ;
@@ -818,7 +836,7 @@
           return 1;
       }
 #endif
-      EndLine = LastPosPrev;
+      EndLine = LastPos;
       StartLine = EndLine -Nlines +1;
       if ( StartLine < 1 ) {
           StartLine = 1;
@@ -830,9 +848,6 @@
       kgSetAttnWidget ( Tbl->D , Tbl ) ;
       SetupVbar ( ) ;
       kgUpdateOn ( Tbl->D ) ;
-      LastPosPrev= LastPosBkup;
-      StartLinePrev = StartLineBkup;
-      EndLinePrev = EndLineBkup;
       return 1;
   }
   int ScrollTablehorizscroll1callback ( double val , int i , void *Tmp ) {
@@ -922,9 +937,7 @@
       D = ( DIALOG * ) Tmp;
       B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
       n = B->nx*B->ny;
-      LastPosPrev= StartLine+kgGetTableRow ( Tbl ) ;
-      EndLinePrev = EndLine;
-      StartLinePrev = StartLine;
+      LocPush();
       switch ( butno ) {
           case 1:
           row = kgGetTableRow ( Tbl ) ;
@@ -1790,6 +1803,8 @@
               }
               Dempty ( Slist ) ;
               Slist = bkup;
+              LocPop();
+              row = TblRow;
               for ( k = 0;k < Nlines;k++ ) {
                   kgSetString ( Tbl , k*2 , ( char * ) "" ) ;
                   kgSetString ( Tbl , k*2+1 , ( char * ) "" ) ;
@@ -1826,10 +1841,10 @@
                   }
               }
               WriteTbl ( ) ;
-              GotoLastPos ( ) ;
-              if ( ( Count >= Nlines ) && ( StartLine > 1 ) ) row = Nlines-1;
-//              kgSetTableCursorPos ( Tbl , row*Tbl->nx+1 , 0 ) ;
-              SetupVbar ( ) ;
+//              GotoLastPos ( ) ;
+//              if ( ( Count >= Nlines ) && ( StartLine > 1 ) ) row = Nlines-1;
+              kgSetTableCursorPos ( Tbl , row*Tbl->nx+1 , 0 ) ;
+//TCB              SetupVbar ( ) ;
               kgUpdateOn ( Tbl->D ) ;
           }
           else printf ( "flname== NULL\n" ) ;
@@ -2384,9 +2399,8 @@ i :  Index of Widget  (0 to max_widgets-1)
           if ( kgFolderBrowser ( NULL , 100 , 100 , Infile , ( char * ) "*" ) ) {
               kgSkipEvents ( Tmp ) ;
               pos = kgGetTableRow ( Tbl ) +StartLine;
-              LastPosPrev= pos ;
-      EndLinePrev = EndLine;
-      StartLinePrev = StartLine;
+              LastPos= pos ;
+              LocPush();
               ReadInFile ( Infile ) ;
               sprintf ( Msg , "Read in %s at %d" , Infile , pos ) ;
               Splash ( Msg ) ;
@@ -2413,9 +2427,8 @@ i :  Index of Widget  (0 to max_widgets-1)
 #endif
           break;
           case 4:
-              LastPosPrev= MarkPos ;
-      EndLinePrev = EndLine;
-      StartLinePrev = StartLine;
+              LastPos= MarkPos ;
+              LocPush();
           if ( CutToFile ( Bkup ) ) {
               SetupVbar ( ) ;
               GotoMark ( ) ;
@@ -2426,15 +2439,13 @@ i :  Index of Widget  (0 to max_widgets-1)
           WriteToFile ( Bkup ) ;
           break;
           case 6:
-              LastPosPrev= pos ;
-      EndLinePrev = EndLine;
-      StartLinePrev = StartLine;
+              LastPos= pos ;
+              LocPush();
           ReadInFile ( Bkup ) ;
           break;
           case 7:
-              LastPosPrev= pos ;
-      EndLinePrev = EndLine;
-      StartLinePrev = StartLine;
+              LastPos= pos ;
+          LocPush();
           slold = StartLine;
           if ( StartLine+row >= Count ) break;
           Dposition ( Slist , StartLine+row ) ;
