@@ -488,7 +488,7 @@ int LocPop() {
   }
   static int DeleteLine ( int row ) {
       char *buf;
-      ReadTbl ( ) ;
+ //     ReadTbl ( ) ;
 //      printf("StartLine: %d:%d\n",StartLine,EndLine);
       Dposition ( Slist , StartLine+row ) ;
       Ddelete ( Slist ) ;
@@ -2445,8 +2445,8 @@ i :  Index of Widget  (0 to max_widgets-1)
           ReadInFile ( Bkup ) ;
           break;
           case 7:
-              LastPos= pos ;
           LocPush();
+          Push();
           slold = StartLine;
           if ( StartLine+row >= Count ) break;
           Dposition ( Slist , StartLine+row ) ;
