@@ -656,21 +656,18 @@ int LocPop() {
       }
       if ( cellno == TAB_PRESS ) {
           ReadTbl ( ) ;
-          if ( Push ( ) ) WriteTbl ( ) ;
+          if ( Push ( ) ){LocPush(); WriteTbl ( ) ;}
           return ret;
       }
       if ( cellno == LINE_CHANGE ) {
           ReadTbl ( ) ;
-          if ( Push ( ) ) WriteTbl ( ) ;
-#if 0
-          Push ( ) ;
-          WriteTbl ( ) ;
-#endif
+          if ( Push ( ) ) {LocPush();WriteTbl ( ) ;}
           return ret;
       }
       if ( cellno == SCROLL_DOWN ) {
 //          kgUpdateOff(Tbl->D);
           ReadTbl ( ) ;
+          if ( Push ( ) ) {LocPush();}
           if ( EndLine < ( Count ) ) {
               StartLine++;
               EndLine++;
@@ -691,6 +688,7 @@ int LocPop() {
       }
       else if ( cellno == SCROLL_UP ) {
           ReadTbl ( ) ;
+          if ( Push ( ) ) {LocPush();}
           if ( StartLine > 1 ) {
               StartLine--;
               EndLine--;
