@@ -660,6 +660,7 @@ int LocPop() {
           return ret;
       }
       if ( cellno == LINE_CHANGE ) {
+          AddMode = 0;
           ReadTbl ( ) ;
           if ( Push ( ) ) {LocPush();WriteTbl ( ) ;}
           return ret;
@@ -708,6 +709,7 @@ int LocPop() {
           kgSkipEvents ( Tbl->D ) ;
       }
       else {
+          LocPush();
           if ( AddMode ) {
               int row = cellno/Tbl->nx;
               if ( row != AddRow ) {AddMode = 0;}
