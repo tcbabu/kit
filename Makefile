@@ -25,6 +25,6 @@ Setup.o	: Setup.c GclrSetup.c
 SetupCallbacks.o	: SetupCallbacks.c 
 	 $(CC) -c SetupCallbacks.c
 clean  	:
-	rm -f *.o kit
+	rm -f *.o kit Kit/kit
 install	: kit
 	cp kit /usr/bin/
