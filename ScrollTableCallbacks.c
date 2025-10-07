@@ -24,7 +24,7 @@
   static int AddMode = 0 , AddRow = -1;
   static int B1x , B1y;
   static double Vsize , Vpos;
-  static int MarkPos = 1,LastPos=1;
+  static int MarkPos = 1 , LastPos = 1;
   static int ExpandTab = 0 , Tabp = 8;
   static char *vi = NULL , *vs = NULL;
   static int Xl = -1 , Yl = -1 , Fz = -1 , By1 , DefWidth;
@@ -49,40 +49,40 @@
   static Dlink *BLS = NULL;
   static Dlink *DLS = NULL;
   static Dlink *Blist = NULL;
-  static Dlink *Llist=NULL;
-typedef struct  _posvec {
-     int Loc;
-     int Start;
-     int End;
-} POSVEC;
-static POSVEC *lpt;
-int LocPush() {  
-  POSVEC *pt;
-  pt=(POSVEC *)malloc(sizeof(POSVEC));
-  if(Llist == NULL) Llist=Dopen();
-  pt->Loc = kgGetTableRow ( Tbl ) ;
-  pt->Start = StartLine;
-  pt->End  = EndLine;
-  Dpush(Llist,pt);
-  return 1;
-}
-int LocPop() {
-  POSVEC *pt;
-  if(Llist == NULL) LocPush();
-  pt = Dpop(Llist);
-  if(pt == NULL) {
-     pt=(POSVEC *)malloc(sizeof(POSVEC));
-     pt->Loc = kgGetTableRow ( Tbl ) ;
-     pt->Start = StartLine;
-     pt->End   = EndLine;
+  static Dlink *Llist = NULL;
+  typedef struct _posvec {
+      int Loc;
+      int Start;
+      int End;
+  } POSVEC;
+  static POSVEC *lpt;
+  int LocPush ( ) {
+      POSVEC *pt;
+      pt = ( POSVEC * ) malloc ( sizeof ( POSVEC ) ) ;
+      if ( Llist == NULL ) Llist = Dopen ( ) ;
+      pt->Loc = kgGetTableRow ( Tbl ) ;
+      pt->Start = StartLine;
+      pt->End = EndLine;
+      Dpush ( Llist , pt ) ;
+      return 1;
   }
-  TblRow = pt->Loc ;
-  StartLine = pt->Start;
-  EndLine  = pt->End;;
+  int LocPop ( ) {
+      POSVEC *pt;
+      if ( Llist == NULL ) LocPush ( ) ;
+      pt = Dpop ( Llist ) ;
+      if ( pt == NULL ) {
+          pt = ( POSVEC * ) malloc ( sizeof ( POSVEC ) ) ;
+          pt->Loc = kgGetTableRow ( Tbl ) ;
+          pt->Start = StartLine;
+          pt->End = EndLine;
+      }
+      TblRow = pt->Loc ;
+      StartLine = pt->Start;
+      EndLine = pt->End;;
   //printf("Pop: %d %d %d\n",StartLine,EndLine,TblRow);
-  free(pt);
-  return 1;
-}
+      free ( pt ) ;
+      return 1;
+  }
 #define RETURN(n) {\
    Vpos = ( double ) ( StartLine-1 ) *100.0/Count;\
        ReadTbl ( ) ;\
@@ -230,12 +230,12 @@ int LocPop() {
 #if 0
           MarkPos = dpt [ 4 ] ;
           kgSetInt ( MT , 0 , MarkPos ) ;
-          kgUpdateWidget(MT);
+          kgUpdateWidget ( MT ) ;
 #endif
           Count = Dcount ( bk ) ;
-          if(MarkPos > Count ) MarkPos=Count;
+          if ( MarkPos > Count ) MarkPos = Count;
           kgSetInt ( MT , 0 , MarkPos ) ;
-          kgUpdateWidget(MT);
+          kgUpdateWidget ( MT ) ;
           PositionAt ( DifPos ) ;
           Dpush ( DLS , dpt ) ;
           return bk;
@@ -495,8 +495,8 @@ int LocPop() {
       Count = Dcount ( Slist ) ;
       if ( EndLine > Count ) {
           EndLine = Count;
-          if(Count > Nlines) row++;
-          if(row >= Nlines ) row= Nlines-1;
+          if ( Count > Nlines ) row++;
+          if ( row >= Nlines ) row = Nlines-1;
       }
       if ( Count == 0 ) {
           StartLine = 1;
@@ -521,7 +521,7 @@ int LocPop() {
       }
       WriteTbl ( ) ;
       SetupVbar ( ) ;
-      if(MarkPos>Count) {
+      if ( MarkPos > Count ) {
           MarkPos = Count;
           kgSetInt ( MT , 0 , MarkPos ) ;
           kgUpdateWidget ( MT ) ;
@@ -656,19 +656,19 @@ int LocPop() {
       }
       if ( cellno == TAB_PRESS ) {
           ReadTbl ( ) ;
-          if ( Push ( ) ){LocPush(); WriteTbl ( ) ;}
+          if ( Push ( ) ) {LocPush ( ) ; WriteTbl ( ) ;}
           return ret;
       }
       if ( cellno == LINE_CHANGE ) {
           AddMode = 0;
           ReadTbl ( ) ;
-          if ( Push ( ) ) {LocPush();WriteTbl ( ) ;}
+          if ( Push ( ) ) {LocPush ( ) ;WriteTbl ( ) ;}
           return ret;
       }
       if ( cellno == SCROLL_DOWN ) {
 //          kgUpdateOff(Tbl->D);
           ReadTbl ( ) ;
-          if ( Push ( ) ) {LocPush();}
+          if ( Push ( ) ) {LocPush ( ) ;}
           if ( EndLine < ( Count ) ) {
               StartLine++;
               EndLine++;
@@ -689,7 +689,7 @@ int LocPop() {
       }
       else if ( cellno == SCROLL_UP ) {
           ReadTbl ( ) ;
-          if ( Push ( ) ) {LocPush();}
+          if ( Push ( ) ) {LocPush ( ) ;}
           if ( StartLine > 1 ) {
               StartLine--;
               EndLine--;
@@ -709,7 +709,7 @@ int LocPop() {
           kgSkipEvents ( Tbl->D ) ;
       }
       else {
-          LocPush();
+          LocPush ( ) ;
           if ( AddMode ) {
               int row = cellno/Tbl->nx;
               if ( row != AddRow ) {AddMode = 0;}
@@ -825,7 +825,7 @@ int LocPop() {
       ReadTbl ( ) ;
       Count = Dcount ( Slist ) ;
       if ( MarkPos > Count ) MarkPos = Count;
-      if ( LastPos> Count ) LastPos= Count;
+      if ( LastPos > Count ) LastPos = Count;
 #if 1
       if ( ( pos > 0 ) && ( pos < Nlines ) ) {
           WriteTbl ( ) ;
@@ -880,7 +880,7 @@ int LocPop() {
       switch ( butno ) {
           case 1:
           if ( ! kgCheckMenu ( D , 50 , 200 , ( char * ) "Want to !c03ABORT ?" , \
-               0 ) ) {\
+          0 ) ) {\
               return 0;
           }
           pt [ 1 ] = NULL;
@@ -892,7 +892,7 @@ int LocPop() {
               break;
           }
           if ( kgCheckMenu ( D , 10 , 100 , ( char * ) "Want to keep Saved File ?" , \
-               1 ) ) {
+          1 ) ) {
               char *fpt;
               strcpy ( Buf , flname ) ;
               if ( ( fpt = RunGetFileName ( NULL , Buf ) ) == NULL ) break;
@@ -937,7 +937,7 @@ int LocPop() {
       D = ( DIALOG * ) Tmp;
       B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
       n = B->nx*B->ny;
-      LocPush();
+      LocPush ( ) ;
       switch ( butno ) {
           case 1:
           row = kgGetTableRow ( Tbl ) ;
@@ -949,7 +949,7 @@ int LocPop() {
               strcpy ( buf , "\n" ) ;
               Count = 1;
           }
-          if ( (row >= Count)  ) row = Count-1;
+          if ( ( row >= Count ) ) row = Count-1;
           kgSetTableCursor ( Tbl , ( row ) *Tbl->nx+1 ) ;
           kgSkipEvents ( Tbl->D ) ;
           kgUpdateOn ( Tmp ) ;
@@ -1161,7 +1161,7 @@ int LocPop() {
       k = 0;
       while ( spt [ k ] >= ' ' ) k++;
       ReadTbl ( ) ;
-      LocPush();
+      LocPush ( ) ;
       Count = Dcount ( Slist ) ;
       row = kgGetTableRow ( Tbl ) ;
       rowbk = row;
@@ -1335,8 +1335,8 @@ int LocPop() {
       Tbl->y2 = Tbl->width* ( Tbl->ny ) +Tbl->y1+4;
       sprintf ( Fmt , "%%%ds" , nchr ) ;
       elmt = ( T_ELMT * ) Tbl->elmt;
-      if ( Tbl->ny > nydef ) elmt = ( T_ELMT * ) realloc  \
-          ( elmt , Tbl->nx*Tbl->ny*sizeof ( T_ELMT ) ) ;
+      if ( Tbl->ny > nydef ) elmt = ( T_ELMT * ) realloc \
+       ( elmt , Tbl->nx*Tbl->ny*sizeof ( T_ELMT ) ) ;
       Tbl->elmt = elmt;
       nymax = Tbl->ny;
       if ( nymax > nyo ) nymax = nyo;
@@ -1804,7 +1804,7 @@ int LocPop() {
               }
               Dempty ( Slist ) ;
               Slist = bkup;
-              LocPop();
+              LocPop ( ) ;
               row = TblRow;
               for ( k = 0;k < Nlines;k++ ) {
                   kgSetString ( Tbl , k*2 , ( char * ) "" ) ;
@@ -1824,8 +1824,7 @@ int LocPop() {
                   if ( Dcount ( Slist ) == 0 ) Slist = Dreadfile ( flname ) ;
               }
               Count = Dcount ( Slist ) ;
-            
-              if ( ( EndLine - StartLine  )>  Count ) {
+              if ( ( EndLine - StartLine ) > Count ) {
                   EndLine = Count;
               }
               if ( EndLine >= Count ) {
@@ -2401,8 +2400,8 @@ i :  Index of Widget  (0 to max_widgets-1)
           if ( kgFolderBrowser ( NULL , 100 , 100 , Infile , ( char * ) "*" ) ) {
               kgSkipEvents ( Tmp ) ;
               pos = kgGetTableRow ( Tbl ) +StartLine;
-              LastPos= pos ;
-              LocPush();
+              LastPos = pos ;
+              LocPush ( ) ;
               ReadInFile ( Infile ) ;
               sprintf ( Msg , "Read in %s at %d" , Infile , pos ) ;
               Splash ( Msg ) ;
@@ -2429,8 +2428,8 @@ i :  Index of Widget  (0 to max_widgets-1)
 #endif
           break;
           case 4:
-              LastPos= MarkPos ;
-              LocPush();
+          LastPos = MarkPos ;
+          LocPush ( ) ;
           if ( CutToFile ( Bkup ) ) {
               SetupVbar ( ) ;
               GotoMark ( ) ;
@@ -2441,13 +2440,13 @@ i :  Index of Widget  (0 to max_widgets-1)
           WriteToFile ( Bkup ) ;
           break;
           case 6:
-              LastPos= pos ;
-              LocPush();
+          LastPos = pos ;
+          LocPush ( ) ;
           ReadInFile ( Bkup ) ;
           break;
           case 7:
-          LocPush();
-          Push();
+          LocPush ( ) ;
+          Push ( ) ;
           slold = StartLine;
           if ( StartLine+row >= Count ) break;
           Dposition ( Slist , StartLine+row ) ;
@@ -2654,8 +2653,8 @@ i :  Index of Widget  (0 to max_widgets-1)
       Tbl->y2 = Tbl->width* ( Tbl->ny ) +Tbl->y1+4;
       sprintf ( Fmt , "%%%ds" , nchr ) ;
       elmt = ( T_ELMT * ) Tbl->elmt;
-      if ( Tbl->ny > nydef ) elmt = ( T_ELMT * ) realloc  \
-          ( elmt , Tbl->nx*Tbl->ny*sizeof ( T_ELMT ) ) ;
+      if ( Tbl->ny > nydef ) elmt = ( T_ELMT * ) realloc \
+       ( elmt , Tbl->nx*Tbl->ny*sizeof ( T_ELMT ) ) ;
       Tbl->elmt = elmt;
       nymax = Tbl->ny;
       if ( nymax > nyo ) nymax = nyo;
