@@ -673,7 +673,7 @@
               StartLine++;
               EndLine++;
 #if 1
-// Not useful
+//              printf("ScrollDown\n");
               kgScrollDownTable ( Tbl , Tbl->ny-1 ) ;
               WriteTblRow ( Tbl->ny-1 ) ;
 #else
