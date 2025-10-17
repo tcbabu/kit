@@ -137,6 +137,7 @@
       else return 0;
   }
   static int PositionAt ( int pos ) {
+      Nlines= Tbl->ny;
       StartLine = pos -Nlines/2;
       if ( StartLine < 1 ) StartLine = 1;
       EndLine = StartLine +Nlines -1;
@@ -288,6 +289,7 @@
   }
   static int SetupTbl ( ) {
       int k;
+      Nlines = Tbl->ny;
       Count = Dcount ( Slist ) ;
       if ( Count <= Nlines ) {
 //          Count = Dcount ( Slist ) ;
@@ -1184,6 +1186,8 @@
       rln = strlen ( rpt ) ;
       k = 0;
       while ( spt [ k ] >= ' ' ) k++;
+      fprintf(stderr,"Nlines + %d %d\n",Nlines,Tbl->ny);
+      Nlines= Tbl->ny;
       ReadTbl ( ) ;
       LocPush ( ) ;
       Count = Dcount ( Slist ) ;
@@ -1534,6 +1538,7 @@
       E = Tbl->elmt;
       nlines = Tbl->ny;
       Nlines = Tbl->ny;
+      printf ("Nlines= %d\n",Nlines);
 #if 0
       if ( ( Strs == NULL ) || ( Strs [ 0 ] == NULL ) ) {
           cpt = ( char * ) malloc ( 3 ) ;
@@ -1734,10 +1739,11 @@
       DLS = Dopen ( ) ;
       Strs = ( char ** ) Dlinktoarray ( Slist ) ;
       StartLine = EndLine = 1;
+      LoadConfig ( Tmp ) ;
       E = Tbl->elmt;
       nlines = Tbl->ny;
       Nlines = Tbl->ny;
-      LoadConfig ( Tmp ) ;
+//      LoadConfig ( Tmp ) ;
       kgUpdateWidget ( Tbl ) ;
       if ( flname != NULL ) {
           if ( ( Strs == NULL ) || ( Strs [ 0 ] == NULL ) ) {
