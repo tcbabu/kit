@@ -53,7 +53,7 @@
   typedef struct _posvec {
       int Loc;
       int Start;
-      int End;
+      int Nlines;
   } POSVEC;
   static POSVEC *lpt;
   int LocPush ( ) {
@@ -62,23 +62,47 @@
       if ( Llist == NULL ) Llist = Dopen ( ) ;
       pt->Loc = kgGetTableRow ( Tbl ) ;
       pt->Start = StartLine;
-      pt->End = EndLine;
+      pt->Nlines = Tbl->ny;
       Dpush ( Llist , pt ) ;
       return 1;
   }
   int LocPop ( ) {
       POSVEC *pt;
+      int Nlinesorg;
+      int size ;
       if ( Llist == NULL ) LocPush ( ) ;
       pt = Dpop ( Llist ) ;
       if ( pt == NULL ) {
           pt = ( POSVEC * ) malloc ( sizeof ( POSVEC ) ) ;
           pt->Loc = kgGetTableRow ( Tbl ) ;
           pt->Start = StartLine;
-          pt->End = EndLine;
+          pt->Nlines = Tbl->ny;
       }
       TblRow = pt->Loc ;
       StartLine = pt->Start;
-      EndLine = pt->End;;
+      Nlinesorg = pt->Nlines;
+      Nlines= Tbl->ny;
+      if(TblRow >= Nlines ) {
+         size = EndLine -StartLine +1;
+         StartLine = StartLine +  TblRow;
+         TblRow= 0;         
+      }
+      EndLine = StartLine +Nlines -1;
+      if ( EndLine > Count ) {
+          EndLine = Count;
+      }
+      size = EndLine -StartLine +1;
+      while( (Count>=Nlines) && (size < Nlines) ) {
+         StartLine--;
+         TblRow++;
+         EndLine = StartLine +Nlines -1;
+         if ( EndLine > Count ) {
+            EndLine = Count;
+         }
+         size = EndLine -StartLine +1;
+      }
+
+
   //printf("Pop: %d %d %d\n",StartLine,EndLine,TblRow);
       free ( pt ) ;
       return 1;
@@ -1782,7 +1806,7 @@
 //        Dwritefile ( Slist , SaveFile ) ;
           Dwritefile ( Slist , Buf ) ;
           break;
-          case 2:
+          case 2:   //Undo segment
 //        printf("%s\n",flname);
           row = kgGetTableRow ( Tbl ) ;
           curpos = kgGetTableCurpos ( Tbl ) ;
@@ -2512,7 +2536,7 @@ i :  Index of Widget  (0 to max_widgets-1)
           i++;
       };
       n = 1;
-      sprintf ( Msg , "Kit Ver 2.0: File: %s" , flname ) ;
+      sprintf ( Msg , "Kit Ver 3.0: File: %s" , flname ) ;
       strcpy ( D->name , Msg ) ; /* Dialog name you may change */
       Tbl = ( DIT * ) kgGetNamedWidget ( D , ( char * ) "ScrollTable" ) ;
       Tbl->Font = 10;
