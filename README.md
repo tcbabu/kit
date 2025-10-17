@@ -11,6 +11,12 @@ These Debian binaries may be available on in SourceForge, so one should
 get it from Sourceforge, may not be Github.
 
 -----------------------------------------------
+Ver 3.0 dated 7th Oct 2025.
+Better positioning of cursor after 'Undo'.
+Scroll speed is improved for Debian based systems 
+(it was anyway good for my LFS based Kulina Linux).
+Also fixed some bugs.
+Hope 'kit' is much better now.
 
 Kit is graphical Text Editor of Linux. It is developed using Kulina Graphics Library
 kglib. Hence to build from source you need to install kglib also.
