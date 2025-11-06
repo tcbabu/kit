@@ -173,7 +173,7 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
     1,1, 
     e5,
     1,1,
-    NULL,ScrollTabletextbox1callback ,0 ,0,18,9 /* *args, Callback H
+    NULL,ScrollTabletextbox1callback ,0 ,0,18,9 /* *args, Callback H‹Eà‹HLH‹Eà‹xHH‹Eà‹pDH‹Eà‹P@H‹EèHƒìQA‰ùA‰ð‰Ñºà */
  };
   strcpy(t5.Wid,(char *)"SearchText");
   t5.pt=NULL;
