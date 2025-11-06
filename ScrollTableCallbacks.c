@@ -588,17 +588,66 @@
   }
   static int ReadInLink ( Dlink *Rlist ) {
       void *ptmp;
-      int count = Count , row;
+      int count = Count , row,rcount=0,shift=0;
       if ( Rlist != NULL ) {
           row = kgGetTableRow ( Tbl ) ;
           Dposition ( Slist , StartLine+row ) ;
           Resetlink ( Rlist ) ;
+          rcount = Dcount(Rlist);
+          Resetlink ( Rlist ) ;
           while ( ( ptmp = Getrecord ( Rlist ) ) != NULL ) Dadd ( Slist , ptmp ) ;
           Dfree ( Rlist ) ;
-          if ( count < Nlines ) SetupTbl ( ) ;
-          SetupVbar ( ) ;
+          if(count < Nlines ) shift=Nlines-count;
+          Count = Dcount(Slist);
+          count = Count;
+          if ( count <= Nlines ){
+          SetupTbl ( ) ;
           WriteTbl ( ) ;
-          kgSetTableCursorPos ( Tbl , row *Tbl->nx+1 , 0 ) ;
+          kgSetTableCursorPos ( Tbl , (rcount+row) *Tbl->nx+1 , 0 ) ;
+          }
+          else {
+            int offset=0;
+            StartLine += rcount;
+            EndLine   += rcount;
+            offset = Nlines -1 +StartLine - EndLine;
+            if(offset > 0){
+                StartLine -=offset;
+                EndLine = StartLine+Nlines-1;
+                shift+=offset;
+            }
+          SetupTbl ( ) ;
+          WriteTbl ( ) ;
+          kgSetTableCursorPos ( Tbl , (shift+row) *Tbl->nx+1 , 0 ) ;
+          }
+          kgUpdateOn ( Tbl->D ) ;
+      }
+      return 1;
+  }
+  static int ReadInLink_org ( Dlink *Rlist ) {
+      void *ptmp;
+      int count = Count , row,rcount=0;
+      if ( Rlist != NULL ) {
+          row = kgGetTableRow ( Tbl ) ;
+          Dposition ( Slist , StartLine+row ) ;
+          Resetlink ( Rlist ) ;
+          rcount = Dcount(Rlist);
+          Resetlink ( Rlist ) ;
+          while ( ( ptmp = Getrecord ( Rlist ) ) != NULL ) Dadd ( Slist , ptmp ) ;
+          Dfree ( Rlist ) ;
+          Count = Dcount(Slist);
+          count = Count;
+          if ( count < Nlines ){
+          SetupTbl ( ) ;
+          WriteTbl ( ) ;
+          kgSetTableCursorPos ( Tbl , (rcount+row) *Tbl->nx+1 , 0 ) ;
+          }
+          else {
+            StartLine += rcount;
+            EndLine   += rcount;
+          SetupTbl ( ) ;
+          WriteTbl ( ) ;
+          kgSetTableCursorPos ( Tbl , (row) *Tbl->nx+1 , 0 ) ;
+          }
           kgUpdateOn ( Tbl->D ) ;
       }
       return 1;
@@ -2295,18 +2344,40 @@
   static int ReadInFile ( char *Infile ) {
       Dlink *Rlist = Dreadfile ( Infile ) ;
       void *ptmp;
-      int count = Count , row;
+      int count = Count , row,rcount,shift=0;
       if ( Rlist != NULL ) {
           ReadTbl ( ) ;
           row = kgGetTableRow ( Tbl ) ;
           Dposition ( Slist , StartLine+row ) ;
           Resetlink ( Rlist ) ;
+          rcount = Dcount(Rlist);
+          Resetlink ( Rlist ) ;
           while ( ( ptmp = Getrecord ( Rlist ) ) != NULL ) Dadd ( Slist , ptmp ) ;
           Dfree ( Rlist ) ;
-          if ( count < Nlines ) SetupTbl ( ) ;
-          SetupVbar ( ) ;
+          if(count < Nlines ) shift=Nlines-count;
+          Count = Dcount(Slist);
+          count = Count;
+          if ( count <= Nlines ){
+          SetupTbl ( ) ;
           WriteTbl ( ) ;
-          kgSetTableCursorPos ( Tbl , row *Tbl->nx+1 , 0 ) ;
+          kgSetTableCursorPos ( Tbl , (rcount+row) *Tbl->nx+1 , 0 ) ;
+          }
+          else {
+            int offset=0;
+            StartLine += rcount;
+            EndLine   += rcount;
+            offset = Nlines -1 +StartLine - EndLine;
+            if(offset > 0){
+                StartLine -=offset;
+                EndLine = StartLine+Nlines-1;
+                shift+=offset;
+            }
+          SetupTbl ( ) ;
+          WriteTbl ( ) ;
+          kgSetTableCursorPos ( Tbl , (shift+row) *Tbl->nx+1 , 0 ) ;
+          }
+          
+          SetupVbar ( ) ;
           kgUpdateOn ( Tbl->D ) ;
       }
       return 1;
@@ -2542,7 +2613,7 @@ i :  Index of Widget  (0 to max_widgets-1)
           i++;
       };
       n = 1;
-      sprintf ( Msg , "Kit Ver 3.0: File: %s" , flname ) ;
+      sprintf ( Msg , "Kit Ver 3.1: File: %s" , flname ) ;
       strcpy ( D->name , Msg ) ; /* Dialog name you may change */
       Tbl = ( DIT * ) kgGetNamedWidget ( D , ( char * ) "ScrollTable" ) ;
       Tbl->Font = 10;
