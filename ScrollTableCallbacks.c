@@ -2602,7 +2602,7 @@ i :  Index of Widget  (0 to max_widgets-1)
           i++;
       };
       n = 1;
-      sprintf ( Msg , "Kit Ver 3.1: File: %s" , flname ) ;
+      sprintf ( Msg , "Kit Ver 3.2: File: %s" , flname ) ;
       strcpy ( D->name , Msg ) ; /* Dialog name you may change */
       Tbl = ( DIT * ) kgGetNamedWidget ( D , ( char * ) "ScrollTable" ) ;
       Tbl->Font = 10;
