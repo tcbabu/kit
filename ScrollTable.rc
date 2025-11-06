@@ -1,7 +1,7 @@
 D      //GUI dimensions xo,yo,xl,yl,lw,rw,tw,bw,df,bor_type,bkup
 768 141 957 601
 4 4 4 4
-11 4 1 0 1 1 0 0 0 0 1 0 0.000000 1 750 400 0
+13 4 1 0 1 1 0 0 0 1 1 0 0.000000 1 800 400 0
 //Table Box
 T
 T     //code
@@ -15,7 +15,7 @@ T     //code
 "%80s"
 925 557  //x2,y2
 0 1 20000 //Cursor Position,bordr+10*type(0:0)+1000*t->width(20)
-16 10 0 //hide
+10 10 0 //hide
 "ScrollTable"
 //VertScroll
 v
@@ -27,60 +27,60 @@ v     //code
 //Horiz bar
 h
 h     //code
-336 561  //x1,y1
-515 592  //x2,y2
+389 561  //x1,y1
+568 592  //x2,y2
 2 0  //xgap,ygap
 84 //length 
 25 //Width 
 2 1  //Nx,Ny,
 1 //status
-"!w32!c38Abort" //title 
+"!c31Abort" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
 -235255250 //back ground color
- //keyboard code
+~ //keyboard code
 1 //status
-"!w32!c38Done" //title 
+"!c38Done" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
 -235255250 //back ground color
- //keyboard code
-2 0.500000 0  //type,fac
+~ //keyboard code
+8 0.500000 0  //type,fac
 0 0 //hide
 "SplButn"
 //Button Box
 n
 n     //code
-712 36  //x1,y1
-914 66  //x2,y2
+617 37  //x1,y1
+856 67  //x2,y2
 2 2  //xgap,ygap
-64 //length 
+76 //length 
 24 //Width 
 3 1  //Nx,Ny,
 1 //status
-"Delete" //title 
+"Del.Line" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--216216216 //back ground color
- //keyboard code
+-240245255 //back ground color
+~ //keyboard code
 1 //status
-"Add" //title 
+"AddLine" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--216216216 //back ground color
- //keyboard code
+-240245255 //back ground color
+~ //keyboard code
 1 //status
-"Insert" //title 
+"InsertLine" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
--216216216 //back ground color
- //keyboard code
-1 0.500000 0  //type,fac
+-240245255 //back ground color
+~ //keyboard code
+9 0.300000 0  //type,fac
 0 0 //hide
 "Button1"
 //Button Box
@@ -98,46 +98,46 @@ NULL // XPM
 NULL // XPM 
 NULL // XPM 
 -221221221 //back ground color
- //keyboard code
+~ //keyboard code
 1 //status
 "Undo" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
 -221221221 //back ground color
- //keyboard code
+~ //keyboard code
 1 0.500000 0  //type,fac
 0 0 //hide
 "Button2"
 //Text Box
 t
 t     //code
-90 6  //x1,y1
+124 6  //x1,y1
 20 //Width 
 1 1  //Nx,Ny,
 //element formats
 "%15s" sw: 1
-270 34  //x2,y2
+299 34  //x2,y2
 1 1 10 //Cursor Position,bordr+10*type(1:0)
 18 9 0 //hide
 "SearchText"
 //Button Box
 n
 n     //code
-13 6  //x1,y1
-90 36  //x2,y2
+47 6  //x1,y1
+124 36  //x2,y2
 2 2  //xgap,ygap
 72 //length 
 24 //Width 
 1 1  //Nx,Ny,
 1 //status
-"!w34Search" //title 
+"Search" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
 -240245255 //back ground color
- //keyboard code
-8 0.500000 0  //type,fac
+~ //keyboard code
+7 0.300000 0  //type,fac
 0 0 //hide
 "SearchButn"
 //Button Box
@@ -150,47 +150,47 @@ n     //code
 24 //Width 
 7 1  //Nx,Ny,
 1 //status
-"ReadIn" //title 
+"Read in" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
 -221221221 //back ground color
- //keyboard code
+~ //keyboard code
 1 //status
 "Mark" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
 -221221221 //back ground color
- //keyboard code
+~ //keyboard code
 1 //status
-"WriteTo" //title 
+"Write To" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
 -221221221 //back ground color
- //keyboard code
+~ //keyboard code
 1 //status
 "Cut" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
 -221221221 //back ground color
- //keyboard code
+~ //keyboard code
 1 //status
 "Copy" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
 -221221221 //back ground color
- //keyboard code
+~ //keyboard code
 1 //status
 "Paste" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
 -221221221 //back ground color
- //keyboard code
+~ //keyboard code
 1 //status
 "Join" //title 
 NULL // XPM 
@@ -204,51 +204,51 @@ NULL // XPM
 //Button Box
 n
 n     //code
-270 6  //x1,y1
-344 36  //x2,y2
+299 6  //x1,y1
+369 36  //x2,y2
 2 2  //xgap,ygap
 64 //length 
 24 //Width 
 1 1  //Nx,Ny,
 1 //status
-"!w34Replace" //title 
+"Replace" //title 
 NULL // XPM 
 NULL // XPM 
 NULL // XPM 
 -240245255 //back ground color
- //keyboard code
-8 0.500000 0  //type,fac
+{ //keyboard code
+7 0.300000 0  //type,fac
 0 0 //hide
 "Replace"
 //Text Box
 t
 t     //code
-340 6  //x1,y1
+370 6  //x1,y1
 20 //Width 
 1 1  //Nx,Ny,
 //element formats
 "%15s" sw: 1
-520 36  //x2,y2
+545 36  //x2,y2
 1 1 10 //Cursor Position,bordr+10*type(1:0)
 18 9 0 //hide
 "Tbox2"
 //Text Box
 t
 t     //code
-10 558  //x1,y1
+10 566  //x1,y1
 20 //Width 
 1 1  //Nx,Ny,
 //element formats
-"MarkPos%4d" sw: 1
-162 586  //x2,y2
+"!h34MarkPos%4d" sw: 1
+162 594  //x2,y2
 1 1 0 //Cursor Position,bordr+10*type(0:0)
 18 9 0 //hide
 "MarkText"
 //Button Box
 n
 n     //code
-161 557  //x1,y1
-192 587  //x2,y2
+161 565  //x1,y1
+192 595  //x2,y2
 2 2  //xgap,ygap
 25 //length 
 25 //Width 
@@ -259,7 +259,54 @@ NULL // XPM
 NULL // XPM 
 NULL // XPM 
 -235255250 //back ground color
- //keyboard code
+~ //keyboard code
 5 0.500000 0  //type,fac
 0 0 //hide
 "Go"
+//Button Box
+n
+n     //code
+196 567  //x1,y1
+223 594  //x2,y2
+2 2  //xgap,ygap
+20 //length 
+20 //Width 
+1 1  //Nx,Ny,
+1 //status
+"" //title 
+NULL // XPM 
+NULL // XPM 
+NULL // XPM 
+-1 //back ground color
+~ //keyboard code
+9 0.500000 0  //type,fac
+0 0 //hide
+"Setup"
+//Button Box
+n
+n     //code
+15 5  //x1,y1
+44 35  //x2,y2
+2 2  //xgap,ygap
+24 //length 
+24 //Width 
+1 1  //Nx,Ny,
+1 //status
+"" //title 
+NULL // XPM 
+NULL // XPM 
+NULL // XPM 
+-1 //back ground color
+~ //keyboard code
+10 0.150000 0  //type,fac
+0 0 //hide
+"Direction"
+//Pixmap Box
+p
+p     //code
+18 8  //x1,y1
+44 34 //x2,y2
+NULL // XPM 
+-1   // background color 
+0 0 // border hide
+"Arrow"
