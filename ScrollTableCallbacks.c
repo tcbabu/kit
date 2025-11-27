@@ -964,7 +964,7 @@
           1 ) ) {
               char *fpt;
               strcpy ( Buf , flname ) ;
-              if ( ( fpt = RunGetFileName ( NULL , Buf ) ) == NULL ) break;
+              if ( ( fpt = RunGetFileName ( Tmp , Buf ) ) == NULL ) break;
               strcpy ( Buf , fpt ) ;
               free ( fpt ) ;
               Dempty ( Slist ) ;
@@ -1849,7 +1849,7 @@
           case 1:
           ReadTbl ( ) ;
           strcpy ( Buf , flname ) ;
-          if ( ( fpt = RunGetFileName ( NULL , Buf ) ) == NULL ) break;
+          if ( ( fpt = RunGetFileName ( Tmp , Buf ) ) == NULL ) break;
           strcpy ( Buf , fpt ) ;
           free ( fpt ) ;
 //        Dwritefile ( Slist , SaveFile ) ;
@@ -2498,7 +2498,7 @@ i :  Index of Widget  (0 to max_widgets-1)
           }
           break;
           case 3:
-          fpt = RunGetFileName ( NULL , NULL ) ;
+          fpt = RunGetFileName ( Tmp , NULL ) ;
           if ( WriteToFile ( fpt ) ) {
               if ( fpt != NULL ) {
                   sprintf ( Msg , "Wrote to  %s" , fpt ) ;
