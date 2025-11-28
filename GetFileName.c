@@ -28,7 +28,7 @@
       D = ( DIALOG * ) Tmp;
       B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
       n = B->nx*B->ny;
-      if ( kgFolderBrowser ( NULL , 100 , 100 , flname , ( char * ) "*" ) ) {
+      if ( kgFolderBrowser (Tmp , 100 , 100 , flname , ( char * ) "*" ) ) {
           kgSetString ( Tx , 0 , flname ) ;
           kgUpdateWidget ( Tx ) ;
           kgUpdateOn ( Tmp ) ;
