@@ -28,10 +28,16 @@
       D = ( DIALOG * ) Tmp;
       B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
       n = B->nx*B->ny;
-      if ( kgFolderBrowser ( NULL , 100 , 100 , flname , ( char * ) "*" ) ) {
+      if ( kgFolderBrowser (Tmp , 100 , 100 , flname , ( char * ) "*" ) ) {
           kgSetString ( Tx , 0 , flname ) ;
           kgUpdateWidget ( Tx ) ;
           kgUpdateOn ( Tmp ) ;
+#if 0
+/* not using now  */
+          pt[1]=(void *)malloc(strlen(flname)+1);
+          strcpy ( (char *)pt[1],flname);
+          kgSetExit(Tmp);
+#endif
       }
       switch ( butno ) {
           case 1:
@@ -109,6 +115,7 @@
  /* pt[0] is inputs given by caller */
       DIA *d;
       int i , n;
+      kgCheckParentPosition(Tmp);
       d = D->d;
       i = 0;while ( d [ i ] .t != NULL ) {;
           i++;

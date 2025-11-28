@@ -964,9 +964,13 @@
           1 ) ) {
               char *fpt;
               strcpy ( Buf , flname ) ;
-              if ( ( fpt = RunGetFileName ( NULL , Buf ) ) == NULL ) break;
+#if 0
+              if ( ( fpt = RunGetFileName ( Tmp , Buf ) ) == NULL ) break;
               strcpy ( Buf , fpt ) ;
               free ( fpt ) ;
+#else
+              if( !kgFolderBrowser(Tmp,100,100,Buf,(char *)"*")) break;
+#endif
               Dempty ( Slist ) ;
               Slist = Dreadfile ( SaveFile ) ;
               Dwritefile ( Slist , Buf ) ;
@@ -1849,9 +1853,13 @@
           case 1:
           ReadTbl ( ) ;
           strcpy ( Buf , flname ) ;
-          if ( ( fpt = RunGetFileName ( NULL , Buf ) ) == NULL ) break;
+#if 0
+          if ( ( fpt = RunGetFileName ( Tmp , Buf ) ) == NULL ) break;
           strcpy ( Buf , fpt ) ;
           free ( fpt ) ;
+#else
+              if( !kgFolderBrowser(Tmp,100,100,Buf,(char *)"*")) break;
+#endif
 //        Dwritefile ( Slist , SaveFile ) ;
           Dwritefile ( Slist , Buf ) ;
           break;
@@ -2407,8 +2415,8 @@
               s = endpos;
               e = MarkPos;
           }
-          sprintf ( Buf1 , "Copy lines %d to %d ?" , s , e ) ;
-          if ( s != e ) if ( ! kgQstMenu ( Tbl->D , 10 , 100 , Buf1 , 1 ) ) return 0;
+          sprintf ( Buf1 , "Copy lines %d to %d to !c03%-s?" , s , e ,fpt) ;
+          if ( s != e ) if ( ! kgQstMenu ( Tbl->D , 50 , 100 , Buf1 , 1 ) ) return 0;
           Dposition ( Slist , s ) ;
           for ( k = s;k <= e;k++ ) {
               spt = ( char * ) Getrecord ( Slist ) ;
@@ -2441,7 +2449,7 @@
               e = MarkPos;
           }
           sprintf ( Buf1 , "Cut(&copy) lines %d to %d ?" , s , e ) ;
-          if ( s != e ) if ( ! kgQstMenu ( Tbl->D , 10 , 100 , Buf1 , 1 ) ) return 0;
+          if ( s != e ) if ( ! kgQstMenu ( Tbl->D , 50 , 100 , Buf1 , 1 ) ) return 0;
           Dposition ( Slist , s ) ;
           for ( k = s;k <= e;k++ ) {
               spt = ( char * ) Dpick ( Slist ) ;
@@ -2487,7 +2495,7 @@ i :  Index of Widget  (0 to max_widgets-1)
       switch ( butno ) {
           case 1:
           Infile [ 0 ] = '\0';
-          if ( kgFolderBrowser ( NULL , 100 , 100 , Infile , ( char * ) "*" ) ) {
+          if ( kgFolderBrowser ( Tmp , 100 , 100 , Infile , ( char * ) "*" ) ) {
               kgSkipEvents ( Tmp ) ;
               pos = kgGetTableRow ( Tbl ) +StartLine;
               LastPos = pos ;
@@ -2498,12 +2506,18 @@ i :  Index of Widget  (0 to max_widgets-1)
           }
           break;
           case 3:
-          fpt = RunGetFileName ( NULL , NULL ) ;
+#if 0
+          fpt = RunGetFileName ( Tmp , NULL ) ;
+#else
+          Buf[0]='\0';
+          if( !kgFolderBrowser(Tmp,100,100,Buf,(char *)"*")) break;
+          fpt = Buf;
+#endif
           if ( WriteToFile ( fpt ) ) {
               if ( fpt != NULL ) {
                   sprintf ( Msg , "Wrote to  %s" , fpt ) ;
                   Splash ( Msg ) ;
-                  free ( fpt ) ;
+//                  free ( fpt ) ;
               }
           }
           break;
