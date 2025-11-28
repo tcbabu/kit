@@ -18,8 +18,15 @@ Scroll speed is improved for Debian based systems
 Also fixed some bugs.
 Hope 'kit' is much better now.
 
+
 Kit is graphical Text Editor of Linux. It is developed using Kulina Graphics Library
 kglib. Hence to build from source you need to install kglib also.
+
+Ver 3.1 as on 6th Nov 2025
+Modified the GUI a little bit. Most important, Cursor positioning is updated,
+especially after reading in file and after a paste
+
+
 25th Oct 2024
 Tried kit on a version of Ubuntu and Slackware
 Scrolling is very slow in Ubuntu(???) Not much problem
