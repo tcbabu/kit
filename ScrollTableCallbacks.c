@@ -1498,7 +1498,7 @@
       Gc = & ( D->gc ) ;
       B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
       n = B->nx*B->ny;
-      if ( ( ipt = ( int * ) RunSetup ( NULL , Tbl ) ) != NULL ) {
+      if ( ( ipt = ( int * ) RunSetup ( Tmp , Tbl ) ) != NULL ) {
           if ( Tbl->width < 2*Tbl->FontSize ) Tbl->width = 2*Tbl->FontSize;
           DefWidth = Tbl->width;
           Fz = Tbl->FontSize;

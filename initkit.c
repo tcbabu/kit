@@ -155,6 +155,7 @@
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
  /* pt[0] is inputs given by caller */
       DIA *d;
+      kgCheckParentPosition(Tmp);
       P = ( DIP * ) kgGetNamedWidget ( Tmp , ( char * ) "initkitimg" ) ;
       P->xpm = ( void * ) MakeImage ( ( float ) ( P->x2-P->x1 ) ,  \
           ( float ) ( P->y2-P->y1 ) ) ;

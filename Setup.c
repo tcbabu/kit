@@ -402,8 +402,8 @@
           D.xo = D.yo = 0; D.xl = xres; D.yl = yres;
 //     D.StackPos = 1; // you may need it
       } /* end of fullscreen mode */
-      ModifySetup ( & D , GrpId ) ; /* add extras to gui*/
       ModifySetupGc ( & D ) ; /* set colors for gui if do not like default*/
+      ModifySetup ( & D , GrpId ) ; /* add extras to gui*/
       ret = kgUi ( & D ) ;
       kgCleanUi ( & D ) ;
       return ret;
