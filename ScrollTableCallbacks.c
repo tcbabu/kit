@@ -2431,6 +2431,38 @@
       }
       return 1;
   }
+  static int CopyToBuf ( char *fpt ) {
+      if ( fpt != NULL ) {
+          Dlink *Wlist = Dopen ( ) ;
+          char *dpt , *spt;
+          int endpos = StartLine+kgGetTableRow ( Tbl ) ;
+          int k , s , e;
+//          printf("File : %s\n",fpt);
+          ReadTbl ( ) ;
+          if ( endpos >= MarkPos ) {
+              s = MarkPos;
+              e = endpos;
+          }
+          else {
+              s = endpos;
+              e = MarkPos;
+          }
+          sprintf ( Buf1 , "Copy lines %d to %d ?" , s , e ) ;
+          if ( s != e ) if ( ! kgQstMenu ( Tbl->D , 50 , 100 , Buf1 , 1 ) ) return 0;
+          Dposition ( Slist , s ) ;
+          for ( k = s;k <= e;k++ ) {
+              spt = ( char * ) Getrecord ( Slist ) ;
+              if ( spt == NULL ) break;
+              dpt = ( char * ) malloc ( strlen ( spt ) +1 ) ;
+              strcpy ( dpt , spt ) ;
+              Dadd ( Wlist , dpt ) ;
+          }
+          WriteClipBoard ( Wlist ) ;
+          Dwritefile ( Wlist , fpt ) ;
+          Dempty ( Wlist ) ;
+      }
+      return 1;
+  }
   static int CutToFile ( char *fpt ) {
       int k;
       if ( fpt != NULL ) {
@@ -2541,7 +2573,7 @@ i :  Index of Widget  (0 to max_widgets-1)
           }
           break;
           case 5:
-          WriteToFile ( Bkup ) ;
+          CopyToBuf( Bkup ) ;
           break;
           case 6:
           LastPos = pos ;
