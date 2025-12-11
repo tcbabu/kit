@@ -270,7 +270,7 @@
   }
   static int Splash ( char *Msg ) {
 //    kgSplashMessage ( Tbl->D , 50 , 100 , 400 , 25 , Msg , 23 , 0 , 15 ) ;
-      RunkgMessage(Tbl->D,Msg);
+      kgMessageSplash(Tbl->D,Msg);
       return 1;
   }
   static int SetupVbar ( ) {
@@ -1830,7 +1830,8 @@
       kgUpdateWidget ( V ) ;
       kgUpdateWidget ( Tbl ) ;
       kgSetTableCursor ( Tbl , 1 ) ;
-      kgSetDefaultAttnWidget ( Tmp , Tbl ) ;
+//      kgSetDefaultAttnWidget ( Tmp , Tbl ) ;
+      kgSetDefaultAttnWidget ( Tmp , ST ) ;
       Push ( ) ;
       kgEnableSelection ( Tmp ) ;
       kgUpdateOn ( Tmp ) ;
