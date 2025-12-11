@@ -269,7 +269,8 @@
       return bk;
   }
   static int Splash ( char *Msg ) {
-      kgSplashMessage ( Tbl->D , 50 , 100 , 400 , 25 , Msg , 23 , 0 , 15 ) ;
+//    kgSplashMessage ( Tbl->D , 50 , 100 , 400 , 25 , Msg , 23 , 0 , 15 ) ;
+      RunkgMessage(Tbl->D,Msg);
       return 1;
   }
   static int SetupVbar ( ) {
