@@ -84,14 +84,16 @@ void ModifyScrollTableGc(void *Tmp) {
   gc->scroll_dim = 42;
   kgDefineColor(6,0,255,255);
   gc->ItemHighColor = 6;
+#if 0
    gc->GuiFontSize=10;
-   gc->InputFontSize=9;
+   gc->InputFontSize=14;
    gc->MenuFont = 40;
    gc->PromptFont = 23;
    gc->ButtonFont = 45;
    gc->ButtonFont = 28;
    gc->ButtonFont = 40;
-   gc->MsgFont = 23;
+   gc->MsgFont = 0;
    gc->Font=23;
+#endif
 //  kgMkgclr("ScrollTable",Tmp);
 }

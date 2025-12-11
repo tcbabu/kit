@@ -269,7 +269,8 @@
       return bk;
   }
   static int Splash ( char *Msg ) {
-      kgSplashMessage ( Tbl->D , 50 , 100 , 400 , 25 , Msg , 23 , 0 , 15 ) ;
+//    kgSplashMessage ( Tbl->D , 50 , 100 , 400 , 25 , Msg , 23 , 0 , 15 ) ;
+      kgMessageSplash(Tbl->D,Msg);
       return 1;
   }
   static int SetupVbar ( ) {
@@ -1498,7 +1499,7 @@
       Gc = & ( D->gc ) ;
       B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
       n = B->nx*B->ny;
-      if ( ( ipt = ( int * ) RunSetup ( NULL , Tbl ) ) != NULL ) {
+      if ( ( ipt = ( int * ) RunSetup ( Tmp , Tbl ) ) != NULL ) {
           if ( Tbl->width < 2*Tbl->FontSize ) Tbl->width = 2*Tbl->FontSize;
           DefWidth = Tbl->width;
           Fz = Tbl->FontSize;
@@ -1829,7 +1830,8 @@
       kgUpdateWidget ( V ) ;
       kgUpdateWidget ( Tbl ) ;
       kgSetTableCursor ( Tbl , 1 ) ;
-      kgSetDefaultAttnWidget ( Tmp , Tbl ) ;
+//      kgSetDefaultAttnWidget ( Tmp , Tbl ) ;
+      kgSetDefaultAttnWidget ( Tmp , ST ) ;
       Push ( ) ;
       kgEnableSelection ( Tmp ) ;
       kgUpdateOn ( Tmp ) ;
@@ -2431,6 +2433,38 @@
       }
       return 1;
   }
+  static int CopyToBuf ( char *fpt ) {
+      if ( fpt != NULL ) {
+          Dlink *Wlist = Dopen ( ) ;
+          char *dpt , *spt;
+          int endpos = StartLine+kgGetTableRow ( Tbl ) ;
+          int k , s , e;
+//          printf("File : %s\n",fpt);
+          ReadTbl ( ) ;
+          if ( endpos >= MarkPos ) {
+              s = MarkPos;
+              e = endpos;
+          }
+          else {
+              s = endpos;
+              e = MarkPos;
+          }
+          sprintf ( Buf1 , "Copy lines %d to %d ?" , s , e ) ;
+          if ( s != e ) if ( ! kgQstMenu ( Tbl->D , 50 , 100 , Buf1 , 1 ) ) return 0;
+          Dposition ( Slist , s ) ;
+          for ( k = s;k <= e;k++ ) {
+              spt = ( char * ) Getrecord ( Slist ) ;
+              if ( spt == NULL ) break;
+              dpt = ( char * ) malloc ( strlen ( spt ) +1 ) ;
+              strcpy ( dpt , spt ) ;
+              Dadd ( Wlist , dpt ) ;
+          }
+          WriteClipBoard ( Wlist ) ;
+          Dwritefile ( Wlist , fpt ) ;
+          Dempty ( Wlist ) ;
+      }
+      return 1;
+  }
   static int CutToFile ( char *fpt ) {
       int k;
       if ( fpt != NULL ) {
@@ -2541,7 +2575,7 @@ i :  Index of Widget  (0 to max_widgets-1)
           }
           break;
           case 5:
-          WriteToFile ( Bkup ) ;
+          CopyToBuf( Bkup ) ;
           break;
           case 6:
           LastPos = pos ;

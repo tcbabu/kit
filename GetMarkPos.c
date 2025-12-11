@@ -74,6 +74,7 @@
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
  /* pt[0] is inputs given by caller */
       DIA *d;
+      kgCheckParentPosition(Tmp);
       int i , n;
       d = D->d;
       i = 0;while ( d [ i ] .t != NULL ) {;
