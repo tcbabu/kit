@@ -1830,8 +1830,8 @@
       kgUpdateWidget ( V ) ;
       kgUpdateWidget ( Tbl ) ;
       kgSetTableCursor ( Tbl , 1 ) ;
-//      kgSetDefaultAttnWidget ( Tmp , Tbl ) ;
-      kgSetDefaultAttnWidget ( Tmp , ST ) ;
+      kgSetDefaultAttnWidget ( Tmp , Tbl ) ;
+//      kgSetDefaultAttnWidget ( Tmp , ST ) ;
       Push ( ) ;
       kgEnableSelection ( Tmp ) ;
       kgUpdateOn ( Tmp ) ;
