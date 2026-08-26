@@ -1,4 +1,4 @@
-void ModifyScrollTableGc(void *Tmp) { 
+void ModifykgeditGc(void *Tmp) {
   DIALOG *D;
   Gclr *gc;
   D = (DIALOG *)Tmp;

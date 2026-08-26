@@ -7,7 +7,7 @@
   static DIALOG *Per;
   static Gclr *Gc ;
   char FontName [ 300 ] ;
-  void ModifyScrollTableGc ( void *Tmp ) ;
+  void ModifykgeditGc ( void *Tmp ) ;
   static int Fonto , Font , Fsizeo , Fsize , Fclro , Fclr , Nclro , \
        Nclr , Widtho , Width , Bclro , Bclr , Lclro , Lclr;
   int Setupbutton1callback ( int butno , int i , void *Tmp ) {
@@ -302,7 +302,7 @@
           case 1:
           break;
           case 2:
-          ModifyScrollTableGc ( Tbl->D ) ;
+          ModifykgeditGc ( Tbl->D ) ;
           Font = 10;
           Fsize = 10;
           Width = 20;

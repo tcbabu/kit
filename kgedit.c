@@ -1,7 +1,7 @@
 #include <kulina.h>
-#include "ScrollTableCallbacks.h"
-#include "GclrScrollTable.c"
-int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
+#include "kgeditCallbacks.h"
+#include "Gclrkgedit.c"
+int kgeditGroup( DIALOG *D,void **v,void *pt) {
   int GrpId=0,oitems=0,i,j;
   DIA *d=NULL,*dtmp;
   T_ELMT *e0  ; 
@@ -31,28 +31,28 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
    }
   DIT T0 = { 
     'T',
-    8,66,  
-    925,557,
+    6,73,  
+    922,559,
     20, 
     2,24, 
     e0,
-    0,1,
-    NULL,ScrollTabletablebox1callback , /* *args, Callback  */ 
-    0,0,10,10
+    4,1,
+    NULL,kgeditKEDtablecallback , /* *args, Callback  */ 
+    0,0,16,10
    };
-  strcpy(T0.Wid,(char *)"ScrollTable");
+  strcpy(T0.Wid,(char *)"KEDtable");
   T0.pt=NULL;
   T0.type = 0;
   T0.item = -1;
   DIV v1 = { 
     'v',
-    925,66,  
-    945,558,  
+    925,72,  
+    945,564,  
     0,  
     100.000000,0.000000,5.000000,  
-    NULL,ScrollTablevertscroll1callback /* *args, Callback  */
+    NULL,kgeditKEDscrollcallback /* *args, Callback  */
   };
-  strcpy(v1.Wid,(char *)"VertScroll");
+  strcpy(v1.Wid,(char *)"KEDscroll");
   v1.item = -1;
   BUT_STR  *butn2=NULL; 
   butn2= (BUT_STR *)malloc(sizeof(BUT_STR)*2);
@@ -62,28 +62,28 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   butn2[0].xpmp=NULL;
   butn2[0].xpmh=NULL;
   butn2[0].bkgr=-235255250;
-  butn2[0].butncode=15329662;
+  butn2[0].butncode=-1077952642;
   butn2[1].sw=1;
   strcpy(butn2[1].title,(char *)"!c38Done");
   butn2[1].xpmn=NULL;
   butn2[1].xpmp=NULL;
   butn2[1].xpmh=NULL;
   butn2[1].bkgr=-235255250;
-  butn2[1].butncode=15922814;
+  butn2[1].butncode=19998078;
   DIL h2 = { 
     'h',
-    389,561,  
-    568,592,
+    380,572,  
+    559,604,
     2,0,  
     84, 
     25, 
     2,1, 
-    8,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
+    8,0.500000,0,1,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
     butn2, 
-    ScrollTablesplbutton1callback ,  /* *args, Callback */
+    kgeditKEDfinishcallback ,  /* *args, Callback */
     NULL  /* any args */
   };
-  strcpy(h2.Wid,(char *)"SplButn");
+  strcpy(h2.Wid,(char *)"KEDfinish");
   h2.item = -1;
   BUT_STR  *butn3=NULL; 
   butn3= (BUT_STR *)malloc(sizeof(BUT_STR)*3);
@@ -93,339 +93,396 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   butn3[0].xpmp=NULL;
   butn3[0].xpmh=NULL;
   butn3[0].bkgr=-240245255;
-  butn3[0].butncode=16053374;
+  butn3[0].butncode=126;
   butn3[1].sw=1;
   strcpy(butn3[1].title,(char *)"AddLine");
   butn3[1].xpmn=NULL;
   butn3[1].xpmp=NULL;
   butn3[1].xpmh=NULL;
   butn3[1].bkgr=-240245255;
-  butn3[1].butncode=-16777090;
+  butn3[1].butncode=126;
   butn3[2].sw=1;
   strcpy(butn3[2].title,(char *)"InsertLine");
   butn3[2].xpmn=NULL;
   butn3[2].xpmp=NULL;
   butn3[2].xpmh=NULL;
   butn3[2].bkgr=-240245255;
-  butn3[2].butncode=-16777090;
+  butn3[2].butncode=126;
   DIN b3 = { 
     'n',
-    617,37,  
-    856,67,
+    624,46,  
+    858,70,
     2,2,  
     76, 
     24, 
     3,1, 
     9,0.300000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
     butn3, 
-    ScrollTablebutton1callback , /* *args, Callback */
+    kgeditKEDopt2callback , /* *args, Callback */
     NULL  /* any args */
   };
-  strcpy(b3.Wid,(char *)"Button1");
+  strcpy(b3.Wid,(char *)"KEDopt2");
   b3.item = -1;
   BUT_STR  *butn4=NULL; 
-  butn4= (BUT_STR *)malloc(sizeof(BUT_STR)*2);
+  butn4= (BUT_STR *)malloc(sizeof(BUT_STR)*7);
   butn4[0].sw=1;
-  strcpy(butn4[0].title,(char *)"Save");
+  strcpy(butn4[0].title,(char *)"Read in");
   butn4[0].xpmn=NULL;
   butn4[0].xpmp=NULL;
   butn4[0].xpmh=NULL;
   butn4[0].bkgr=-221221221;
-  butn4[0].butncode=-16777090;
+  butn4[0].butncode=126;
   butn4[1].sw=1;
-  strcpy(butn4[1].title,(char *)"Undo");
+  strcpy(butn4[1].title,(char *)"Mark");
   butn4[1].xpmn=NULL;
   butn4[1].xpmp=NULL;
   butn4[1].xpmh=NULL;
   butn4[1].bkgr=-221221221;
   butn4[1].butncode=126;
+  butn4[2].sw=1;
+  strcpy(butn4[2].title,(char *)"Write To");
+  butn4[2].xpmn=NULL;
+  butn4[2].xpmp=NULL;
+  butn4[2].xpmh=NULL;
+  butn4[2].bkgr=-221221221;
+  butn4[2].butncode=126;
+  butn4[3].sw=1;
+  strcpy(butn4[3].title,(char *)"Cut");
+  butn4[3].xpmn=NULL;
+  butn4[3].xpmp=NULL;
+  butn4[3].xpmh=NULL;
+  butn4[3].bkgr=-221221221;
+  butn4[3].butncode=126;
+  butn4[4].sw=1;
+  strcpy(butn4[4].title,(char *)"Copy");
+  butn4[4].xpmn=NULL;
+  butn4[4].xpmp=NULL;
+  butn4[4].xpmh=NULL;
+  butn4[4].bkgr=-221221221;
+  butn4[4].butncode=126;
+  butn4[5].sw=1;
+  strcpy(butn4[5].title,(char *)"Paste");
+  butn4[5].xpmn=NULL;
+  butn4[5].xpmp=NULL;
+  butn4[5].xpmh=NULL;
+  butn4[5].bkgr=-221221221;
+  butn4[5].butncode=126;
+  butn4[6].sw=1;
+  strcpy(butn4[6].title,(char *)"Join");
+  butn4[6].xpmn=NULL;
+  butn4[6].xpmp=NULL;
+  butn4[6].xpmh=NULL;
+  butn4[6].bkgr=-221221221;
+  butn4[6].butncode=126;
   DIN b4 = { 
     'n',
-    13,36,  
-    148,66,
+    154,46,  
+    627,71,
     2,2,  
     64, 
-    24, 
-    2,1, 
+    22, 
+    7,1, 
     1,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
     butn4, 
-    ScrollTablebutton2callback , /* *args, Callback */
+    kgeditKEDopt1callback , /* *args, Callback */
     NULL  /* any args */
   };
-  strcpy(b4.Wid,(char *)"Button2");
+  strcpy(b4.Wid,(char *)"KEDopt1");
   b4.item = -1;
   T_ELMT *e5  ; 
   e5 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e5[0].fmt = (char *)malloc(5);
-  strcpy(e5[0].fmt,(char *)"%15s");
+  e5[0].fmt = (char *)malloc(15);
+  strcpy(e5[0].fmt,(char *)"!h34MarkPos%4d");
   e5[0].v=(void *)v[48];
   e5[0].sw=1;
   e5[0].noecho=0;
   e5[0].img=NULL;
   DIT t5 = { 
     't',
-    124,6,  
-    299,34,
+    5,569,  
+    157,600,
     20, 
     1,1, 
     e5,
     1,1,
-    NULL,ScrollTabletextbox1callback ,0 ,0,18,9 
+    NULL,kgeditKEDmarkcallback ,0 ,0,18,9 
   };
     /* *args,Callback,border,hide,font,fontsize */
-  strcpy(t5.Wid,(char *)"SearchText");
+  strcpy(t5.Wid,(char *)"KEDmark");
   t5.pt=NULL;
-  t5.type = 1;
+  t5.type = 0;
   t5.item = -1;
   BUT_STR  *butn6=NULL; 
   butn6= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn6[0].sw=1;
-  strcpy(butn6[0].title,(char *)"Search");
+  strcpy(butn6[0].title,(char *)"Go");
   butn6[0].xpmn=NULL;
   butn6[0].xpmp=NULL;
   butn6[0].xpmh=NULL;
-  butn6[0].bkgr=-240245255;
-  butn6[0].butncode=126;
+  butn6[0].bkgr=-235255250;
+  butn6[0].butncode=10;
   DIN b6 = { 
     'n',
-    47,6,  
-    124,36,
-    2,2,  
-    72, 
-    24, 
-    1,1, 
-    7,0.300000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
-    butn6, 
-    ScrollTablebutton3callback , /* *args, Callback */
-    NULL  /* any args */
-  };
-  strcpy(b6.Wid,(char *)"SearchButn");
-  b6.item = -1;
-  BUT_STR  *butn7=NULL; 
-  butn7= (BUT_STR *)malloc(sizeof(BUT_STR)*7);
-  butn7[0].sw=1;
-  strcpy(butn7[0].title,(char *)"Read in");
-  butn7[0].xpmn=NULL;
-  butn7[0].xpmp=NULL;
-  butn7[0].xpmh=NULL;
-  butn7[0].bkgr=-221221221;
-  butn7[0].butncode=126;
-  butn7[1].sw=1;
-  strcpy(butn7[1].title,(char *)"Mark");
-  butn7[1].xpmn=NULL;
-  butn7[1].xpmp=NULL;
-  butn7[1].xpmh=NULL;
-  butn7[1].bkgr=-221221221;
-  butn7[1].butncode=126;
-  butn7[2].sw=1;
-  strcpy(butn7[2].title,(char *)"Write To");
-  butn7[2].xpmn=NULL;
-  butn7[2].xpmp=NULL;
-  butn7[2].xpmh=NULL;
-  butn7[2].bkgr=-221221221;
-  butn7[2].butncode=126;
-  butn7[3].sw=1;
-  strcpy(butn7[3].title,(char *)"Cut");
-  butn7[3].xpmn=NULL;
-  butn7[3].xpmp=NULL;
-  butn7[3].xpmh=NULL;
-  butn7[3].bkgr=-221221221;
-  butn7[3].butncode=126;
-  butn7[4].sw=1;
-  strcpy(butn7[4].title,(char *)"Copy");
-  butn7[4].xpmn=NULL;
-  butn7[4].xpmp=NULL;
-  butn7[4].xpmh=NULL;
-  butn7[4].bkgr=-221221221;
-  butn7[4].butncode=126;
-  butn7[5].sw=1;
-  strcpy(butn7[5].title,(char *)"Paste");
-  butn7[5].xpmn=NULL;
-  butn7[5].xpmp=NULL;
-  butn7[5].xpmh=NULL;
-  butn7[5].bkgr=-221221221;
-  butn7[5].butncode=126;
-  butn7[6].sw=1;
-  strcpy(butn7[6].title,(char *)"Join");
-  butn7[6].xpmn=NULL;
-  butn7[6].xpmp=NULL;
-  butn7[6].xpmh=NULL;
-  butn7[6].bkgr=-221221221;
-  butn7[6].butncode=126;
-  DIN b7 = { 
-    'n',
-    148,36,  
-    616,66,
-    2,2,  
-    64, 
-    24, 
-    7,1, 
-    1,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
-    butn7, 
-    ScrollTablebutton4callback , /* *args, Callback */
-    NULL  /* any args */
-  };
-  strcpy(b7.Wid,(char *)"Optionals");
-  b7.item = -1;
-  BUT_STR  *butn8=NULL; 
-  butn8= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
-  butn8[0].sw=1;
-  strcpy(butn8[0].title,(char *)"Replace");
-  butn8[0].xpmn=NULL;
-  butn8[0].xpmp=NULL;
-  butn8[0].xpmh=NULL;
-  butn8[0].bkgr=-240245255;
-  butn8[0].butncode=123;
-  DIN b8 = { 
-    'n',
-    299,6,  
-    369,36,
-    2,2,  
-    64, 
-    24, 
-    1,1, 
-    7,0.300000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
-    butn8, 
-    ScrollTablebutton5callback , /* *args, Callback */
-    NULL  /* any args */
-  };
-  strcpy(b8.Wid,(char *)"Replace");
-  b8.item = -1;
-  T_ELMT *e9  ; 
-  e9 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e9[0].fmt = (char *)malloc(5);
-  strcpy(e9[0].fmt,(char *)"%15s");
-  e9[0].v=(void *)v[49];
-  e9[0].sw=1;
-  e9[0].noecho=0;
-  e9[0].img=NULL;
-  DIT t9 = { 
-    't',
-    370,6,  
-    545,36,
-    20, 
-    1,1, 
-    e9,
-    1,1,
-    NULL,ScrollTabletextbox2callback ,0 ,0,18,9 
-  };
-    /* *args,Callback,border,hide,font,fontsize */
-  strcpy(t9.Wid,(char *)"Tbox2");
-  t9.pt=NULL;
-  t9.type = 1;
-  t9.item = -1;
-  T_ELMT *e10  ; 
-  e10 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
-  e10[0].fmt = (char *)malloc(15);
-  strcpy(e10[0].fmt,(char *)"!h34MarkPos%4d");
-  e10[0].v=(void *)v[50];
-  e10[0].sw=1;
-  e10[0].noecho=0;
-  e10[0].img=NULL;
-  DIT t10 = { 
-    't',
-    10,566,  
-    162,594,
-    20, 
-    1,1, 
-    e10,
-    1,1,
-    NULL,ScrollTabletextbox3callback ,0 ,0,18,9 
-  };
-    /* *args,Callback,border,hide,font,fontsize */
-  strcpy(t10.Wid,(char *)"MarkText");
-  t10.pt=NULL;
-  t10.type = 0;
-  t10.item = -1;
-  BUT_STR  *butn11=NULL; 
-  butn11= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
-  butn11[0].sw=1;
-  strcpy(butn11[0].title,(char *)"Go");
-  butn11[0].xpmn=NULL;
-  butn11[0].xpmp=NULL;
-  butn11[0].xpmh=NULL;
-  butn11[0].bkgr=-235255250;
-  butn11[0].butncode=-1077952642;
-  DIN b11 = { 
-    'n',
-    161,565,  
-    192,595,
+    155,569,  
+    186,599,
     2,2,  
     25, 
     25, 
     1,1, 
     5,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
-    butn11, 
-    ScrollTablebutton6callback , /* *args, Callback */
+    butn6, 
+    kgeditKEDgocallback , /* *args, Callback */
     NULL  /* any args */
   };
-  strcpy(b11.Wid,(char *)"Go");
-  b11.item = -1;
-  BUT_STR  *butn12=NULL; 
-  butn12= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
-  butn12[0].sw=1;
-  strcpy(butn12[0].title,(char *)"");
-  butn12[0].xpmn=NULL;
-  butn12[0].xpmp=NULL;
-  butn12[0].xpmh=NULL;
-  butn12[0].bkgr=-1;
-  butn12[0].butncode=126;
-  DIN b12 = { 
+  strcpy(b6.Wid,(char *)"KEDgo");
+  b6.item = -1;
+  BUT_STR  *butn7=NULL; 
+  butn7= (BUT_STR *)malloc(sizeof(BUT_STR)*2);
+  butn7[0].sw=1;
+  strcpy(butn7[0].title,(char *)"File");
+  butn7[0].xpmn=NULL;
+  butn7[0].xpmp=NULL;
+  butn7[0].xpmh=NULL;
+  butn7[0].bkgr=-216216216;
+  butn7[0].butncode=126;
+  butn7[1].sw=1;
+  strcpy(butn7[1].title,(char *)"Undo");
+  butn7[1].xpmn=NULL;
+  butn7[1].xpmp=NULL;
+  butn7[1].xpmh=NULL;
+  butn7[1].bkgr=-216216216;
+  butn7[1].butncode=126;
+  DIN b7 = { 
     'n',
-    196,567,  
-    223,594,
+    12,46,  
+    154,72,
     2,2,  
-    20, 
-    20, 
-    1,1, 
-    9,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
-    butn12, 
-    ScrollTablebutton7callback , /* *args, Callback */
+    64, 
+    24, 
+    2,1, 
+    1,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
+    butn7, 
+    kgeditKEDsavecallback , /* *args, Callback */
     NULL  /* any args */
   };
-  strcpy(b12.Wid,(char *)"Setup");
-  b12.item = -1;
-  BUT_STR  *butn13=NULL; 
-  butn13= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
-  butn13[0].sw=1;
-  strcpy(butn13[0].title,(char *)"");
-  butn13[0].xpmn=NULL;
-  butn13[0].xpmp=NULL;
-  butn13[0].xpmh=NULL;
-  butn13[0].bkgr=-1;
-  butn13[0].butncode=126;
-  DIN b13 = { 
+  strcpy(b7.Wid,(char *)"KEDsave");
+  b7.item = -1;
+  BUT_STR  *butn8=NULL; 
+  butn8= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
+  butn8[0].sw=1;
+  strcpy(butn8[0].title,(char *)"SetStrings");
+  butn8[0].xpmn=NULL;
+  butn8[0].xpmp=NULL;
+  butn8[0].xpmh=NULL;
+  butn8[0].bkgr=-177186177;
+  butn8[0].butncode=10;
+  DIN b8 = { 
     'n',
-    15,5,  
-    44,35,
+    283,570,  
+    378,600,
+    2,2,  
+    92, 
+    24, 
+    1,1, 
+    2,0.500000,0,1,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
+    butn8, 
+    kgeditKEDstringscallback , /* *args, Callback */
+    NULL  /* any args */
+  };
+  strcpy(b8.Wid,(char *)"KEDstrings");
+  b8.item = -1;
+  BUT_STR  *butn9=NULL; 
+  butn9= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
+  butn9[0].sw=1;
+  strcpy(butn9[0].title,(char *)"!c38Search");
+  butn9[0].xpmn=NULL;
+  butn9[0].xpmp=NULL;
+  butn9[0].xpmh=NULL;
+  butn9[0].bkgr=-177186177;
+  butn9[0].butncode=126;
+  DIN b9 = { 
+    'n',
+    32,19,  
+    102,49,
+    2,2,  
+    64, 
+    24, 
+    1,1, 
+    2,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
+    butn9, 
+    kgeditKEDsearchcallback , /* *args, Callback */
+    NULL  /* any args */
+  };
+  strcpy(b9.Wid,(char *)"KEDsearch");
+  b9.item = -1;
+  BUT_STR  *butn10=NULL; 
+  butn10= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
+  butn10[0].sw=1;
+  strcpy(butn10[0].title,(char *)"!c03Replace");
+  butn10[0].xpmn=NULL;
+  butn10[0].xpmp=NULL;
+  butn10[0].xpmh=NULL;
+  butn10[0].bkgr=-177186177;
+  butn10[0].butncode=126;
+  DIN b10 = { 
+    'n',
+    276,19,  
+    350,49,
+    2,2,  
+    64, 
+    24, 
+    1,1, 
+    2,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
+    butn10, 
+    kgeditKEDreplacecallback , /* *args, Callback */
+    NULL  /* any args */
+  };
+  strcpy(b10.Wid,(char *)"KEDreplace");
+  b10.item = -1;
+  BUT_STR  *butn11=NULL; 
+  butn11= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
+  butn11[0].sw=1;
+  strcpy(butn11[0].title,(char *)"");
+  butn11[0].xpmn=NULL;
+  butn11[0].xpmp=NULL;
+  butn11[0].xpmh=NULL;
+  butn11[0].bkgr=-1;
+  butn11[0].butncode=126;
+  DIN b11 = { 
+    'n',
+    -1,23,  
+    29,51,
     2,2,  
     24, 
     24, 
     1,1, 
     10,0.150000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
-    butn13, 
-    ScrollTablebutton8callback , /* *args, Callback */
+    butn11, 
+    kgeditKEDdircallback , /* *args, Callback */
     NULL  /* any args */
   };
-  strcpy(b13.Wid,(char *)"Direction");
-  b13.item = -1;
-  char *xpm14=   NULL; /* pixmap info */ 
-  DIP p14 = { 
+  strcpy(b11.Wid,(char *)"KEDdir");
+  b11.item = -1;
+  char *xpm12=   NULL; /* pixmap info */ 
+  DIP p12 = { 
     'p',
-    18,8,  
-    44,34,  
-    (void *)xpm14,
+    3,23,  
+    29,49,  
+    (void *)xpm12,
     -1, /* bkgr colour */ 
       0,0,0.000000 /* border hide transparency*/ 
   };
-  strcpy(p14.Wid,(char *)"Arrow");
-  p14.item = -1;
+  strcpy(p12.Wid,(char *)"KEDarrow");
+  p12.item = -1;
+  BUT_STR  *butn13=NULL; 
+  butn13= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
+  butn13[0].sw=1;
+  strcpy(butn13[0].title,(char *)"Help");
+  butn13[0].xpmn=NULL;
+  butn13[0].xpmp=NULL;
+  butn13[0].xpmh=NULL;
+  butn13[0].bkgr=-177186177;
+  butn13[0].butncode=126;
+  DIN b13 = { 
+    'n',
+    213,572,  
+    287,600,
+    2,2,  
+    64, 
+    24, 
+    1,1, 
+    2,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
+    butn13, 
+    kgeditKEDhelpcallback , /* *args, Callback */
+    NULL  /* any args */
+  };
+  strcpy(b13.Wid,(char *)"KEDhelp");
+  b13.item = -1;
+  BUT_STR  *butn14=NULL; 
+  butn14= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
+  butn14[0].sw=1;
+  strcpy(butn14[0].title,(char *)"");
+  butn14[0].xpmn=NULL;
+  butn14[0].xpmp=NULL;
+  butn14[0].xpmh=NULL;
+  butn14[0].bkgr=-1;
+  butn14[0].butncode=-1077952642;
+  DIN b14 = { 
+    'n',
+    184,574,  
+    211,599,
+    2,2,  
+    20, 
+    20, 
+    1,1, 
+    9,0.500000,0,0,0,1,/* button type and roundinfg factor(0-0.5),bordr,hide ,nodrawbkgr*/ 
+    butn14, 
+    kgeditKEDsetupcallback , /* *args, Callback */
+    NULL  /* any args */
+  };
+  strcpy(b14.Wid,(char *)"KEDsetup");
+  b14.item = -1;
+  T_ELMT *e15  ; 
+  e15 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
+  e15[0].fmt = (char *)malloc(5);
+  strcpy(e15[0].fmt,(char *)"%15s");
+  e15[0].v=(void *)v[49];
+  e15[0].sw=1;
+  e15[0].noecho=0;
+  e15[0].img=NULL;
+  DIT t15 = { 
+    't',
+    99,19,  
+    279,49,
+    20, 
+    1,1, 
+    e15,
+    1,1,
+    NULL,kgeditKEDstboxcallback ,0 ,0,18,9 
+  };
+    /* *args,Callback,border,hide,font,fontsize */
+  strcpy(t15.Wid,(char *)"KEDstbox");
+  t15.pt=NULL;
+  t15.type = 1;
+  t15.item = -1;
+  T_ELMT *e16  ; 
+  e16 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
+  e16[0].fmt = (char *)malloc(5);
+  strcpy(e16[0].fmt,(char *)"%15s");
+  e16[0].v=(void *)v[50];
+  e16[0].sw=1;
+  e16[0].noecho=0;
+  e16[0].img=NULL;
+  DIT t16 = { 
+    't',
+    347,19,  
+    527,49,
+    20, 
+    1,1, 
+    e16,
+    1,1,
+    NULL,kgeditKEDrtboxcallback ,0 ,0,18,9 
+  };
+    /* *args,Callback,border,hide,font,fontsize */
+  strcpy(t16.Wid,(char *)"KEDrtbox");
+  t16.pt=NULL;
+  t16.type = 1;
+  t16.item = -1;
+  DIM m17 = { 
+    'm',
+    322,4,  
+    585,21,  
+    0,0  
+  };
+  strncpy(m17.msg,(char *)"< null >",499);
+  strcpy(m17.Wid,(char *)"KEDtitle");
+  m17.item = -1;
   dtmp = D->d;
   i=0;
   if(dtmp!= NULL) while(dtmp[i].t!=NULL)i++;
-  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+16));
+  dtmp = (DIA *)realloc(dtmp,sizeof(DIA )*(i+19));
   d =dtmp+i; 
-  d[15].t=NULL;
+  d[18].t=NULL;
   d[0].t = (DIT *)malloc(sizeof(DIT));
   *d[0].t = T0;
   d[0].t->item = -1;
@@ -435,52 +492,63 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
   d[2].t = (DIT *)malloc(sizeof(DIL));
   *d[2].h = h2;
   d[2].h->item = -1;
-  ScrollTablesplbutton1init(d[2].h,pt) ;
+  kgeditKEDfinishinit(d[2].h,pt) ;
   d[3].t = (DIT *)malloc(sizeof(DIN));
   *d[3].N = b3;
   d[3].N->item = -1;
-  ScrollTablebutton1init(d[3].N,pt) ;
+  kgeditKEDopt2init(d[3].N,pt) ;
   d[4].t = (DIT *)malloc(sizeof(DIN));
   *d[4].N = b4;
   d[4].N->item = -1;
-  ScrollTablebutton2init(d[4].N,pt) ;
+  kgeditKEDopt1init(d[4].N,pt) ;
   d[5].t = (DIT *)malloc(sizeof(DIT));
   *d[5].t = t5;
   d[5].t->item = -1;
   d[6].t = (DIT *)malloc(sizeof(DIN));
   *d[6].N = b6;
   d[6].N->item = -1;
-  ScrollTablebutton3init(d[6].N,pt) ;
+  kgeditKEDgoinit(d[6].N,pt) ;
   d[7].t = (DIT *)malloc(sizeof(DIN));
   *d[7].N = b7;
   d[7].N->item = -1;
-  ScrollTablebutton4init(d[7].N,pt) ;
+  kgeditKEDsaveinit(d[7].N,pt) ;
   d[8].t = (DIT *)malloc(sizeof(DIN));
   *d[8].N = b8;
   d[8].N->item = -1;
-  ScrollTablebutton5init(d[8].N,pt) ;
-  d[9].t = (DIT *)malloc(sizeof(DIT));
-  *d[9].t = t9;
-  d[9].t->item = -1;
-  d[10].t = (DIT *)malloc(sizeof(DIT));
-  *d[10].t = t10;
-  d[10].t->item = -1;
+  kgeditKEDstringsinit(d[8].N,pt) ;
+  d[9].t = (DIT *)malloc(sizeof(DIN));
+  *d[9].N = b9;
+  d[9].N->item = -1;
+  kgeditKEDsearchinit(d[9].N,pt) ;
+  d[10].t = (DIT *)malloc(sizeof(DIN));
+  *d[10].N = b10;
+  d[10].N->item = -1;
+  kgeditKEDreplaceinit(d[10].N,pt) ;
   d[11].t = (DIT *)malloc(sizeof(DIN));
   *d[11].N = b11;
   d[11].N->item = -1;
-  ScrollTablebutton6init(d[11].N,pt) ;
-  d[12].t = (DIT *)malloc(sizeof(DIN));
-  *d[12].N = b12;
-  d[12].N->item = -1;
-  ScrollTablebutton7init(d[12].N,pt) ;
+  kgeditKEDdirinit(d[11].N,pt) ;
+  d[12].t = (DIT *)malloc(sizeof(DIP));
+  *d[12].p = p12;
+  d[12].p->item = -1;
   d[13].t = (DIT *)malloc(sizeof(DIN));
   *d[13].N = b13;
   d[13].N->item = -1;
-  ScrollTablebutton8init(d[13].N,pt) ;
-  d[14].t = (DIT *)malloc(sizeof(DIP));
-  *d[14].p = p14;
-  d[14].p->item = -1;
-  d[15].t = NULL;
+  kgeditKEDhelpinit(d[13].N,pt) ;
+  d[14].t = (DIT *)malloc(sizeof(DIN));
+  *d[14].N = b14;
+  d[14].N->item = -1;
+  kgeditKEDsetupinit(d[14].N,pt) ;
+  d[15].t = (DIT *)malloc(sizeof(DIT));
+  *d[15].t = t15;
+  d[15].t->item = -1;
+  d[16].t = (DIT *)malloc(sizeof(DIT));
+  *d[16].t = t16;
+  d[16].t->item = -1;
+  d[17].t = (DIT *)malloc(sizeof(DIM));
+  *d[17].m = m17;
+  d[17].m->item = -1;
+  d[18].t = NULL;
   GrpId=kgOpenGrp(D);
   D->d = dtmp;
   j=0;
@@ -490,7 +558,7 @@ int ScrollTableGroup( DIALOG *D,void **v,void *pt) {
 
 /* One can also use the following code to add Widgets to an existing Dialog */
 
-int MakeScrollTableGroup(DIALOG *D,void *arg) {
+int MakekgeditGroup(DIALOG *D,void *arg) {
    int GrpId;
    WIDGETGRP *Gpt;
 /*************************************************
@@ -645,15 +713,15 @@ int MakeScrollTableGroup(DIALOG *D,void *arg) {
    char  *v47 ;
    v47 = (char *)malloc(sizeof(char)*500);
    v47[0] = '\0';
-   char  *v48 ;
-   v48 = (char *)malloc(sizeof(char)*500);
-   v48[0] = '\0';
+   int  *v48 ;
+   v48 = (int *)malloc(sizeof(int));
+   *v48 = 1;
    char  *v49 ;
    v49 = (char *)malloc(sizeof(char)*500);
    v49[0] = '\0';
-   int  *v50 ;
-   v50 = (int *)malloc(sizeof(int));
-   *v50 = 1;
+   char  *v50 ;
+   v50 = (char *)malloc(sizeof(char)*500);
+   v50[0] = '\0';
    void** v=(void **)malloc(sizeof(void*)*52);
    v[51]=NULL;
    v[0]=(void *)(v0);
@@ -709,13 +777,14 @@ int MakeScrollTableGroup(DIALOG *D,void *arg) {
    v[50]=(void *)(v50);
    void *pt=NULL; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
-   GrpId = ScrollTableGroup(D,v,pt);
+   GrpId = kgeditGroup(D,v,pt);
    Gpt = kgGetWidgetGrp(D,GrpId);
    Gpt->arg= v; // kulina will double free this; you may modify
+   kgeditSetup(D,Gpt->arg);
    return GrpId;
 }
 
-int ScrollTable( void *parent,void **v,void *pt) {
+int kgedit( void *parent,void **v,void *pt) {
   int ret=1,GrpId,k;
   DIALOG D;
   DIA *d=NULL;
@@ -723,25 +792,25 @@ int ScrollTable( void *parent,void **v,void *pt) {
   kgInitUi(&D);
   D.d=NULL;
 #if 1
-  GrpId = ScrollTableGroup(&D,v,pt);
+  GrpId = kgeditGroup(&D,v,pt);
 #else 
-  GrpId = MakeScrollTableGroup(&D,pt); // can try this also
+  GrpId = MakekgeditGroup(&D,pt); // can try this also
 #endif 
   d = D.d;
   D.d = d;
   D.bkup = 1; /* set to 1 for backup */
   D.bor_type = 4;
-  D.df = 13;
+  D.df = 16;
   D.tw = 4;
   D.bw = 4;
   D.lw = 4;
   D.rw = 4;
   D.xo = 768;   /* Position of Dialog */ 
   D.yo = 141;
-  D.xl = 957;    /*  Length of Dialog */
-  D.yl = 601;    /*  Width  of Dialog */
-  D.Initfun = ScrollTableinit;    /*   init fuction for Dialog */
-  D.Cleanupfun = ScrollTablecleanup;    /*   init fuction for Dialog */
+  D.xl = 959;    /*  Length of Dialog */
+  D.yl = 607;    /*  Width  of Dialog */
+  D.Initfun = kgeditinit;    /*   init fuction for Dialog */
+  D.Cleanupfun = kgeditcleanup;    /*   cleanup fuction for Dialog */
   D.kbattn = 0;    /*  1 for drawing keyborad attention */
   D.butattn = 0;    /*  1 for drawing button attention */
   D.fullscreen = 0;    /*  1 for for fullscreen mode */
@@ -756,15 +825,15 @@ int ScrollTable( void *parent,void **v,void *pt) {
   D.MinWidth = 800;    /*   for Resize option */
   D.MinHeight = 400;    /*   for Resize option */
 #if 1 
-  D.Callback = ScrollTableCallBack;    /*  default Callback  */
+  D.Callback = kgeditCallBack;    /*  default Callback  */
 #else 
   D.Callback = NULL;    
 #endif
-  D.ResizeCallback = ScrollTableResizeCallBack;  /*  Resize callback */
+  D.ResizeCallback = kgeditResizeCallBack;  /*  Resize callback */
 #if 0 
   D.WaitCallback = NULL;  /*  Wait callback */
 #else 
-  D.WaitCallback = ScrollTableWaitCallBack;  /*  Wait callback */
+  D.WaitCallback = kgeditWaitCallBack;  /*  Wait callback */
 #endif
   D.Fixpos = 1;    /*  1 for Fixing Position */
   D.NoTaskBar = 0;    /*  1 for not showing in task bar*/
@@ -773,7 +842,7 @@ int ScrollTable( void *parent,void **v,void *pt) {
   D.Shapexpm = NULL;    /*  PNG/jpeg file for window shape;Black color will not be drawn */
   D.parent = parent;    /*  1 for not showing in task bar*/
   D.pt = pt;    /*  any data to be passed by user*/
-//  strcpy(D.name,"Kulina Designer ver 2.0");    /*  Dialog name you may change */
+//  strcpy(D.name,"Kulina Designer ver 3.0");    /*  Dialog name you may change */
   if(D.fullscreen!=1) {    /*  if not fullscreen mode */
      int xres,yres; 
      kgDisplaySize(&xres,&yres); 
@@ -785,13 +854,13 @@ int ScrollTable( void *parent,void **v,void *pt) {
      D.xo=D.yo=0; D.xl = xres; D.yl=yres;
 //     D.StackPos = 1; // you may need it
   }    /*  end of fullscreen mode */
-  ModifyScrollTable(&D,GrpId);    /*  add extras to  gui*/
-  ModifyScrollTableGc(&D);    /*  set colors for gui if do not like default*/
+  ModifykgeditGc(&D);    /*  set colors for gui if do not like default*/
+  Modifykgedit(&D,GrpId);    /*  add extras to  gui*/
   ret= kgUi(&D);
   kgCleanUi(&D);
   return ret;
 }
-void *RunScrollTable(void *parent ,void *args) {
+void *Runkgedit(void *parent ,void *args) {
 /*************************************************
 
     TableBox1  48 data values
@@ -848,9 +917,9 @@ void *RunScrollTable(void *parent ,void *args) {
    char  v45[500]="" ;
    char  v46[500]="" ;
    char  v47[500]="" ;
-   char  v48[500]="" ;
+   int   v48 = 1;
    char  v49[500]="" ;
-   int   v50 = 1;
+   char  v50[500]="" ;
    void* v[51];
    v[0]=(void *)(v0);
    v[1]=(void *)(v1);
@@ -900,12 +969,12 @@ void *RunScrollTable(void *parent ,void *args) {
    v[45]=(void *)(v45);
    v[46]=(void *)(v46);
    v[47]=(void *)(v47);
-   v[48]=(void *)(v48);
+   v[48]=(void *)(&v48);
    v[49]=(void *)(v49);
-   v[50]=(void *)(&v50);
+   v[50]=(void *)(v50);
    void *pt[2]={NULL,NULL}; /* pointer to send any extra information */
                   /* it will be aviilable in Callbacks */
    pt[0]=args;
-   ScrollTable(parent,v,(void *)pt );
+   kgedit(parent,v,(void *)pt );
    return pt[1];
 }

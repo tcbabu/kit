@@ -1,0 +1,16 @@
+int GetFontStringGFselectcallback(int item,int i,void *Tmp) ;
+void  GetFontStringGFselectinit (DIX *X,void *pt) ;
+int GetFontStringGFaddcallback(int butno,int i,void *Tmp) ;
+void  GetFontStringGFaddinit (DIN *B,void *pt) ;
+int GetFontStringGFdonecallback(int butno,int i,void *Tmp) ;
+void  GetFontStringGFdoneinit (DIL *B,void *pt) ;
+int GetFontStringinit(void *Tmp) ;
+int GetFontStringcleanup(void *Tmp) ;
+void *RunGetFontString(void *,void *) ;
+int MakeGetFontStringGroup(DIALOG *,void *) ;
+void * GetFontStringAction(void *,void *) ;
+int GetFontStringSetup(void *Tmp,void *args) ;
+int ModifyGetFontString(void *Tmp,int GrpId) ;
+int GetFontStringCallBack(void *Tmp,void *tmp) ;
+int GetFontStringResizeCallBack(void *Tmp) ;
+int GetFontStringWaitCallBack(void *Tmp) ;

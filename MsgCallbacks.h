@@ -1,0 +1,13 @@
+void * MsgmsScrollinit (DIS *S,void *pt) ;
+int MsgmsDonecallback(int butno,int i,void *Tmp) ;
+void  MsgmsDoneinit (DIL *B,void *pt) ;
+int Msginit(void *Tmp) ;
+int Msgcleanup(void *Tmp) ;
+void *RunMsg(void *,void *) ;
+int MakeMsgGroup(DIALOG *,void *) ;
+void * MsgAction(void *,void *) ;
+int MsgSetup(void *Tmp,void *args) ;
+int ModifyMsg(void *Tmp,int GrpId) ;
+int MsgCallBack(void *Tmp,void *tmp) ;
+int MsgResizeCallBack(void *Tmp) ;
+int MsgWaitCallBack(void *Tmp) ;

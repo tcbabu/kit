@@ -1,0 +1,13 @@
+int SboxSBXtboxcallback(int cellno,int i,void *Tmp) ;
+int SboxSBXdonecallback(int butno,int i,void *Tmp) ;
+void  SboxSBXdoneinit (DIL *B,void *pt) ;
+int Sboxinit(void *Tmp) ;
+int Sboxcleanup(void *Tmp) ;
+void *RunSbox(void *,void *) ;
+int MakeSboxGroup(DIALOG *,void *) ;
+void * SboxAction(void *,void *) ;
+int SboxSetup(void *Tmp,void *args) ;
+int ModifySbox(void *Tmp,int GrpId) ;
+int SboxCallBack(void *Tmp,void *tmp) ;
+int SboxResizeCallBack(void *Tmp) ;
+int SboxWaitCallBack(void *Tmp) ;
