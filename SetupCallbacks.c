@@ -7,7 +7,7 @@
   static DIALOG *Per;
   static Gclr *Gc ;
   char FontName [ 300 ] ;
-  void ModifyScrollTableGc ( void *Tmp ) ;
+  void ModifykgeditGc ( void *Tmp ) ;
   static int Fonto , Font , Fsizeo , Fsize , Fclro , Fclr , Nclro , \
        Nclr , Widtho , Width , Bclro , Bclr , Lclro , Lclr;
   int Setupbutton1callback ( int butno , int i , void *Tmp ) {
@@ -30,7 +30,7 @@
       }
 #else
 //  printf("Font = %d\n",Font);
-      kgGetFreeTypeFont ( NULL , & Font ) ;
+      kgGetFreeTypeFont ( Tmp , & Font ) ;
 //  printf("Font = %d\n",Font);
       strcpy ( FontName , kgGetOthFont ( Font ) ) ;
       kgWrite ( Fmsg , FontName ) ;
@@ -302,7 +302,7 @@
           case 1:
           break;
           case 2:
-          ModifyScrollTableGc ( Tbl->D ) ;
+          ModifykgeditGc ( Tbl->D ) ;
           Font = 10;
           Fsize = 10;
           Width = 20;
@@ -385,6 +385,7 @@
       Gc = & ( Per->gc ) ;
       DIA *d;
       int i , n;
+      kgCheckParentPosition(Tmp);
       d = D->d;
       i = 0;while ( d [ i ] .t != NULL ) {;
           i++;
@@ -396,6 +397,7 @@
           int xres , yres;
           kgDisplaySize ( & xres , & yres ) ;
       // D->xo=D->yo=0; D->xl = xres-10; D->yl=yres-80;
+    //      if(D->parent != NULL) {D->xo=100;D->yo=100;}
       }
       else { // for fullscreen
           int xres , yres;
