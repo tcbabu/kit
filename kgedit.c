@@ -62,14 +62,14 @@ int kgeditGroup( DIALOG *D,void **v,void *pt) {
   butn2[0].xpmp=NULL;
   butn2[0].xpmh=NULL;
   butn2[0].bkgr=-235255250;
-  butn2[0].butncode=-1077952642;
+  butn2[0].butncode=1406;
   butn2[1].sw=1;
   strcpy(butn2[1].title,(char *)"!c38Done");
   butn2[1].xpmn=NULL;
   butn2[1].xpmp=NULL;
   butn2[1].xpmh=NULL;
   butn2[1].bkgr=-235255250;
-  butn2[1].butncode=19998078;
+  butn2[1].butncode=1406;
   DIL h2 = { 
     'h',
     380,572,  
@@ -220,7 +220,7 @@ int kgeditGroup( DIALOG *D,void **v,void *pt) {
   butn6[0].xpmp=NULL;
   butn6[0].xpmh=NULL;
   butn6[0].bkgr=-235255250;
-  butn6[0].butncode=10;
+  butn6[0].butncode=31;
   DIN b6 = { 
     'n',
     155,569,  
@@ -244,7 +244,7 @@ int kgeditGroup( DIALOG *D,void **v,void *pt) {
   butn7[0].xpmp=NULL;
   butn7[0].xpmh=NULL;
   butn7[0].bkgr=-216216216;
-  butn7[0].butncode=126;
+  butn7[0].butncode=2174;
   butn7[1].sw=1;
   strcpy(butn7[1].title,(char *)"Undo");
   butn7[1].xpmn=NULL;
@@ -275,7 +275,7 @@ int kgeditGroup( DIALOG *D,void **v,void *pt) {
   butn8[0].xpmp=NULL;
   butn8[0].xpmh=NULL;
   butn8[0].bkgr=-177186177;
-  butn8[0].butncode=10;
+  butn8[0].butncode=31;
   DIN b8 = { 
     'n',
     283,570,  
@@ -294,12 +294,12 @@ int kgeditGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn9=NULL; 
   butn9= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn9[0].sw=1;
-  strcpy(butn9[0].title,(char *)"!c38Search");
+  strcpy(butn9[0].title,(char *)"Search");
   butn9[0].xpmn=NULL;
   butn9[0].xpmp=NULL;
   butn9[0].xpmh=NULL;
   butn9[0].bkgr=-177186177;
-  butn9[0].butncode=126;
+  butn9[0].butncode=31;
   DIN b9 = { 
     'n',
     32,19,  
@@ -318,12 +318,12 @@ int kgeditGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn10=NULL; 
   butn10= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn10[0].sw=1;
-  strcpy(butn10[0].title,(char *)"!c03Replace");
+  strcpy(butn10[0].title,(char *)"Replace");
   butn10[0].xpmn=NULL;
   butn10[0].xpmp=NULL;
   butn10[0].xpmh=NULL;
   butn10[0].bkgr=-177186177;
-  butn10[0].butncode=126;
+  butn10[0].butncode=125;
   DIN b10 = { 
     'n',
     276,19,  
@@ -347,7 +347,7 @@ int kgeditGroup( DIALOG *D,void **v,void *pt) {
   butn11[0].xpmp=NULL;
   butn11[0].xpmh=NULL;
   butn11[0].bkgr=-1;
-  butn11[0].butncode=126;
+  butn11[0].butncode=-1077952642;
   DIN b11 = { 
     'n',
     -1,23,  
@@ -406,7 +406,7 @@ int kgeditGroup( DIALOG *D,void **v,void *pt) {
   butn14[0].xpmp=NULL;
   butn14[0].xpmh=NULL;
   butn14[0].bkgr=-1;
-  butn14[0].butncode=-1077952642;
+  butn14[0].butncode=126;
   DIN b14 = { 
     'n',
     184,574,  
