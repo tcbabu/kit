@@ -2896,14 +2896,16 @@ int kgeditKEDstboxcallback(int cellno,int i,void *Tmp) {
    i     : widget id starting from 0 
    Tmp   : Pointer to DIALOG 
    *************************************************/ 
-  DIALOG *D;DIT *T;T_ELMT *e; 
-  int ret=1;
-  void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
-// pt[0] is args passed as inputs; pt[1] is output pointer
-  D = (DIALOG *)Tmp;
-  T = (DIT *)kgGetWidget(Tmp,i);
-  e = T->elmt;
-  return ret;
+      DIALOG *D;DIT *T;T_ELMT *e;
+      int ret = 1;
+      void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
+      D = ( DIALOG * ) Tmp;
+      T = ( DIT * ) kgGetWidget ( Tmp , i ) ;
+      e = T->elmt;
+      strcpy(SrString,kgGetString(T,0));
+      if ( SerDir ) SearchTbl ( ) ;
+      else SearchTblRev ( ) ;
+      return ret;
 }
 int kgeditKEDrtboxcallback(int cellno,int i,void *Tmp) {
   /************************************************* 
