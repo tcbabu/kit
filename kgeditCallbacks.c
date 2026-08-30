@@ -1553,6 +1553,7 @@ int kgeditKEDfinishcallback( int butno,int i,void *Tmp) {
           case 1:
           if ( ! kgCheckMenu ( D , 50 , 200 , ( char * ) "Want to !c03ABORT ?" , \
               0 ) ) {\
+              kgSetAttnWidget ( Tbl->D , Tbl ) ;
               return 0;
           }
           pt [ 1 ] = NULL;
@@ -1592,6 +1593,7 @@ int kgeditKEDfinishcallback( int butno,int i,void *Tmp) {
           kgCloseBusy ( Busy ) ;
           break;
       }
+      kgSetAttnWidget ( Tbl->D , Tbl ) ;
       remove ( Bkup ) ;
       remove ( SaveFile ) ;
       return ret;
@@ -2420,6 +2422,7 @@ int kgeditKEDsavecallback(int butno,int i,void *Tmp) {
 #endif
       break;
   }
+  kgSetAttnWidget ( Tbl->D , Tbl ) ;
   return ret;
 }
 void  kgeditKEDsaveinit (DIN *B,void *ptmp) {
@@ -2449,6 +2452,7 @@ int kgeditKEDstringscallback(int butno,int i,void *Tmp) {
       RunSbox(Tmp,Strs);
       break;
   }
+  kgSetAttnWidget ( Tbl->D , Tbl ) ;
   return ret;
 }
 void  kgeditKEDsearchinit (DIN *B,void *ptmp) {
@@ -2771,6 +2775,7 @@ int kgeditKEDhelpcallback(int butno,int i,void *Tmp) {
       RunMsg(Tmp,hmsg);
       break;
   }
+  kgSetAttnWidget ( Tbl->D , Tbl ) ;
   return ret;
 }
 void  kgeditKEDhelpinit (DIN *B,void *ptmp) {
@@ -2796,6 +2801,7 @@ int kgeditKEDdowncallback(int butno,int i,void *Tmp) {
     case 1: //   
       break;
   }
+  kgSetAttnWidget ( Tbl->D , Tbl ) ;
   return ret;
 }
 void  kgeditKEDdowninit (DIN *B,void *ptmp) {
@@ -2831,6 +2837,7 @@ int kgeditKEDdircallback(int butno,int i,void *Tmp) {
           case 1:
           break;
       }
+      kgSetAttnWidget ( Tbl->D , Tbl ) ;
       return ret;
 }
 void  kgeditKEDdirinit (DIN *B,void *ptmp) {
@@ -2881,6 +2888,7 @@ int kgeditKEDsetupcallback(int butno,int i,void *Tmp) {
           case 1:
           break;
       }
+      kgSetAttnWidget ( Tbl->D , Tbl ) ;
       return ret;
   }
  void  kgeditKEDsetupinit (DIN *B,void *ptmp) {
@@ -2905,6 +2913,7 @@ int kgeditKEDstboxcallback(int cellno,int i,void *Tmp) {
       strcpy(SrString,kgGetString(T,0));
       if ( SerDir ) SearchTbl ( ) ;
       else SearchTblRev ( ) ;
+      kgSetAttnWidget ( Tbl->D , Tbl ) ;
       return ret;
 }
 int kgeditKEDrtboxcallback(int cellno,int i,void *Tmp) {
@@ -2921,6 +2930,7 @@ int kgeditKEDrtboxcallback(int cellno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   T = (DIT *)kgGetWidget(Tmp,i);
   e = T->elmt;
+  kgSetAttnWidget ( Tbl->D , Tbl ) ;
   return ret;
 }
 int kgeditinit(void *Tmp) {
