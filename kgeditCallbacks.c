@@ -871,7 +871,7 @@ int kitWarn(void *Tmp,Dlink *Data,char *Msg);
               strcpy ( dpt , spt ) ;
               Dadd ( Wlist , dpt ) ;
           }
-          ret = kitWriteWarn(Tbl->D,Wlist,Buf1);
+          ret = kitWarn(Tbl->D,Wlist,Buf1);
           if(ret > 0) {
             WriteClipBoard ( Wlist ) ;
             Dwritefile ( Wlist , fpt ) ;
