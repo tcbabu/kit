@@ -62,14 +62,14 @@ int kgeditGroup( DIALOG *D,void **v,void *pt) {
   butn2[0].xpmp=NULL;
   butn2[0].xpmh=NULL;
   butn2[0].bkgr=-235255250;
-  butn2[0].butncode=1406;
+  butn2[0].butncode=638;
   butn2[1].sw=1;
   strcpy(butn2[1].title,(char *)"!c38Done");
   butn2[1].xpmn=NULL;
   butn2[1].xpmp=NULL;
   butn2[1].xpmh=NULL;
   butn2[1].bkgr=-235255250;
-  butn2[1].butncode=1406;
+  butn2[1].butncode=126;
   DIL h2 = { 
     'h',
     380,572,  
@@ -93,21 +93,21 @@ int kgeditGroup( DIALOG *D,void **v,void *pt) {
   butn3[0].xpmp=NULL;
   butn3[0].xpmh=NULL;
   butn3[0].bkgr=-240245255;
-  butn3[0].butncode=126;
+  butn3[0].butncode=-16777090;
   butn3[1].sw=1;
   strcpy(butn3[1].title,(char *)"AddLine");
   butn3[1].xpmn=NULL;
   butn3[1].xpmp=NULL;
   butn3[1].xpmh=NULL;
   butn3[1].bkgr=-240245255;
-  butn3[1].butncode=126;
+  butn3[1].butncode=-16777090;
   butn3[2].sw=1;
   strcpy(butn3[2].title,(char *)"InsertLine");
   butn3[2].xpmn=NULL;
   butn3[2].xpmp=NULL;
   butn3[2].xpmh=NULL;
   butn3[2].bkgr=-240245255;
-  butn3[2].butncode=126;
+  butn3[2].butncode=-16777090;
   DIN b3 = { 
     'n',
     624,46,  
@@ -131,49 +131,49 @@ int kgeditGroup( DIALOG *D,void **v,void *pt) {
   butn4[0].xpmp=NULL;
   butn4[0].xpmh=NULL;
   butn4[0].bkgr=-221221221;
-  butn4[0].butncode=126;
+  butn4[0].butncode=724711294;
   butn4[1].sw=1;
   strcpy(butn4[1].title,(char *)"Mark");
   butn4[1].xpmn=NULL;
   butn4[1].xpmp=NULL;
   butn4[1].xpmh=NULL;
   butn4[1].bkgr=-221221221;
-  butn4[1].butncode=126;
+  butn4[1].butncode=-399362178;
   butn4[2].sw=1;
   strcpy(butn4[2].title,(char *)"Write To");
   butn4[2].xpmn=NULL;
   butn4[2].xpmp=NULL;
   butn4[2].xpmh=NULL;
   butn4[2].bkgr=-221221221;
-  butn4[2].butncode=126;
+  butn4[2].butncode=1429354366;
   butn4[3].sw=1;
   strcpy(butn4[3].title,(char *)"Cut");
   butn4[3].xpmn=NULL;
   butn4[3].xpmp=NULL;
   butn4[3].xpmh=NULL;
   butn4[3].bkgr=-221221221;
-  butn4[3].butncode=126;
+  butn4[3].butncode=-16777090;
   butn4[4].sw=1;
   strcpy(butn4[4].title,(char *)"Copy");
   butn4[4].xpmn=NULL;
   butn4[4].xpmp=NULL;
   butn4[4].xpmh=NULL;
   butn4[4].bkgr=-221221221;
-  butn4[4].butncode=126;
+  butn4[4].butncode=-16777090;
   butn4[5].sw=1;
   strcpy(butn4[5].title,(char *)"Paste");
   butn4[5].xpmn=NULL;
   butn4[5].xpmp=NULL;
   butn4[5].xpmh=NULL;
   butn4[5].bkgr=-221221221;
-  butn4[5].butncode=126;
+  butn4[5].butncode=1406;
   butn4[6].sw=1;
   strcpy(butn4[6].title,(char *)"Join");
   butn4[6].xpmn=NULL;
   butn4[6].xpmp=NULL;
   butn4[6].xpmh=NULL;
   butn4[6].bkgr=-221221221;
-  butn4[6].butncode=126;
+  butn4[6].butncode=382;
   DIN b4 = { 
     'n',
     154,46,  
@@ -205,12 +205,14 @@ int kgeditGroup( DIALOG *D,void **v,void *pt) {
     1,1, 
     e5,
     1,1,
-    NULL,kgeditKEDmarkcallback ,0 ,0,18,9 
+    NULL,kgeditKEDmarkcallback ,0 ,0,5,9 
   };
     /* *args,Callback,border,hide,font,fontsize */
   strcpy(t5.Wid,(char *)"KEDmark");
   t5.pt=NULL;
   t5.type = 0;
+  t5.Font = -1;
+  t5.FontSize = 9;
   t5.item = -1;
   BUT_STR  *butn6=NULL; 
   butn6= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
@@ -244,7 +246,7 @@ int kgeditGroup( DIALOG *D,void **v,void *pt) {
   butn7[0].xpmp=NULL;
   butn7[0].xpmh=NULL;
   butn7[0].bkgr=-216216216;
-  butn7[0].butncode=2174;
+  butn7[0].butncode=126;
   butn7[1].sw=1;
   strcpy(butn7[1].title,(char *)"Undo");
   butn7[1].xpmn=NULL;
@@ -294,12 +296,12 @@ int kgeditGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn9=NULL; 
   butn9= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn9[0].sw=1;
-  strcpy(butn9[0].title,(char *)"Search");
+  strcpy(butn9[0].title,(char *)"!c38Search");
   butn9[0].xpmn=NULL;
   butn9[0].xpmp=NULL;
   butn9[0].xpmh=NULL;
   butn9[0].bkgr=-177186177;
-  butn9[0].butncode=31;
+  butn9[0].butncode=126;
   DIN b9 = { 
     'n',
     32,19,  
@@ -318,12 +320,12 @@ int kgeditGroup( DIALOG *D,void **v,void *pt) {
   BUT_STR  *butn10=NULL; 
   butn10= (BUT_STR *)malloc(sizeof(BUT_STR)*1);
   butn10[0].sw=1;
-  strcpy(butn10[0].title,(char *)"Replace");
+  strcpy(butn10[0].title,(char *)"!c03Replace");
   butn10[0].xpmn=NULL;
   butn10[0].xpmp=NULL;
   butn10[0].xpmh=NULL;
   butn10[0].bkgr=-177186177;
-  butn10[0].butncode=125;
+  butn10[0].butncode=126;
   DIN b10 = { 
     'n',
     276,19,  
@@ -347,7 +349,7 @@ int kgeditGroup( DIALOG *D,void **v,void *pt) {
   butn11[0].xpmp=NULL;
   butn11[0].xpmh=NULL;
   butn11[0].bkgr=-1;
-  butn11[0].butncode=-1077952642;
+  butn11[0].butncode=126;
   DIN b11 = { 
     'n',
     -1,23,  
@@ -438,12 +440,14 @@ int kgeditGroup( DIALOG *D,void **v,void *pt) {
     1,1, 
     e15,
     1,1,
-    NULL,kgeditKEDstboxcallback ,0 ,0,18,9 
+    NULL,kgeditKEDstboxcallback ,0 ,0,5,9 
   };
     /* *args,Callback,border,hide,font,fontsize */
   strcpy(t15.Wid,(char *)"KEDstbox");
   t15.pt=NULL;
   t15.type = 1;
+  t15.Font = -1;
+  t15.FontSize = 9;
   t15.item = -1;
   T_ELMT *e16  ; 
   e16 =(T_ELMT *)malloc(sizeof(T_ELMT)*1);
@@ -461,12 +465,14 @@ int kgeditGroup( DIALOG *D,void **v,void *pt) {
     1,1, 
     e16,
     1,1,
-    NULL,kgeditKEDrtboxcallback ,0 ,0,18,9 
+    NULL,kgeditKEDrtboxcallback ,0 ,0,5,9 
   };
     /* *args,Callback,border,hide,font,fontsize */
   strcpy(t16.Wid,(char *)"KEDrtbox");
   t16.pt=NULL;
   t16.type = 1;
+  t16.Font = -1;
+  t16.FontSize = 9;
   t16.item = -1;
   DIM m17 = { 
     'm',
@@ -788,7 +794,7 @@ int kgedit( void *parent,void **v,void *pt) {
   int ret=1,GrpId,k;
   DIALOG D;
   DIA *d=NULL;
-  D.VerId=2107030000;
+  D.VerId=-1685927296;
   kgInitUi(&D);
   D.d=NULL;
 #if 1
