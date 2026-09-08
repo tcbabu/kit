@@ -304,6 +304,7 @@ int WmsgWaitCallBack(void *Tmp) {
 int kitWarn(void *Tmp,Dlink *Data,char *Msg) {
    int ret =1;
    void *pt[3];
+   if(Dcount(Data)< 4) return 1;
    pt[0]=(void *)Data;
    pt[1]= (void *)Msg;
    pt[2]= (void *)(&ret);
