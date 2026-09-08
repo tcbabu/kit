@@ -1,0 +1,15 @@
+void * WmsgMsgscroll1init (DIS *S,void *pt) ;
+int WmsgSplbutn1callback(int butno,int i,void *Tmp) ;
+void  WmsgSplbutn1init (DIL *B,void *pt) ;
+int WmsgSplbutn2callback(int butno,int i,void *Tmp) ;
+void  WmsgSplbutn2init (DIL *B,void *pt) ;
+int Wmsginit(void *Tmp) ;
+int Wmsgcleanup(void *Tmp) ;
+void *RunWmsg(void *,void *) ;
+int MakeWmsgGroup(DIALOG *,void *) ;
+void * WmsgAction(void *,void *) ;
+int WmsgSetup(void *Tmp,void *args) ;
+int ModifyWmsg(void *Tmp,int GrpId) ;
+int WmsgCallBack(void *Tmp,void *tmp) ;
+int WmsgResizeCallBack(void *Tmp) ;
+int WmsgWaitCallBack(void *Tmp) ;
