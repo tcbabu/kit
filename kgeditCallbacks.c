@@ -16,6 +16,8 @@ void *RunSbox(void *,void *);
 void *RunSetup(void *,void *);
 void *kgGetFontString(void *,void *);
 void *RunMsg(void *parent ,void *args);
+int kitWriteWarn(void *Tmp,Dlink *Data,char *Msg);
+int kitWarn(void *Tmp,Dlink *Data,char *Msg);
   static DIT *Tbl;
   static T_ELMT *E;
   static Dlink *Slist;
@@ -803,6 +805,7 @@ void *RunMsg(void *parent ,void *args);
       return len;
   }
   static int WriteToFile ( char *fpt ) {
+      int ret = 0;
       if ( fpt != NULL ) {
           Dlink *Wlist = Dopen ( ) ;
           char *dpt , *spt;
@@ -818,8 +821,11 @@ void *RunMsg(void *parent ,void *args);
               s = endpos;
               e = MarkPos;
           }
-          sprintf ( Buf1 , "Copy lines %d to %d to !c03%-s?" , s , e ,fpt) ;
-          if ( s != e ) if ( ! kgQstMenu ( Tbl->D , 50 , 100 , Buf1 , 1 ) ) return 0;
+          sprintf ( Buf1 , "Copy following lines (%d to %d) to !c03%-s?" , s , e ,fpt) ;
+         
+//          if ( s != e ) {
+//           if ( ! kgQstMenu ( Tbl->D , 50 , 100 , Buf1 , 1 ) ) return 0;
+//          }
           Dposition ( Slist , s ) ;
           for ( k = s;k <= e;k++ ) {
               spt = ( char * ) Getrecord ( Slist ) ;
@@ -828,13 +834,18 @@ void *RunMsg(void *parent ,void *args);
               strcpy ( dpt , spt ) ;
               Dadd ( Wlist , dpt ) ;
           }
-          WriteClipBoard ( Wlist ) ;
-          Dwritefile ( Wlist , fpt ) ;
+          ret = kitWriteWarn(Tbl->D,Wlist,Buf1);
+//may be a bad idea          WriteClipBoard ( Wlist ) ;
+          if(ret > 0) {
+            if(ret == 1)Dwritefile ( Wlist , fpt ) ;
+            else Dappendfile(Wlist,fpt);
+          }
           Dempty ( Wlist ) ;
       }
-      return 1;
+      return ret;
   }
   static int CopyToBuf ( char *fpt ) {
+      int ret =0;
       if ( fpt != NULL ) {
           Dlink *Wlist = Dopen ( ) ;
           char *dpt , *spt;
@@ -860,8 +871,11 @@ void *RunMsg(void *parent ,void *args);
               strcpy ( dpt , spt ) ;
               Dadd ( Wlist , dpt ) ;
           }
-          WriteClipBoard ( Wlist ) ;
-          Dwritefile ( Wlist , fpt ) ;
+          ret = kitWriteWarn(Tbl->D,Wlist,Buf1);
+          if(ret > 0) {
+            WriteClipBoard ( Wlist ) ;
+            Dwritefile ( Wlist , fpt ) ;
+          }
           Dempty ( Wlist ) ;
       }
       return 1;
@@ -884,7 +898,21 @@ void *RunMsg(void *parent ,void *args);
               e = MarkPos;
           }
           sprintf ( Buf1 , "Cut(&copy) lines %d to %d ?" , s , e ) ;
-          if ( s != e ) if ( ! kgQstMenu ( Tbl->D , 50 , 100 , Buf1 , 1 ) ) return 0;
+//          if ( s != e ) if ( ! kgQstMenu ( Tbl->D , 50 , 100 , Buf1 , 1 ) ) return 0;
+          Dposition ( Slist , s ) ;
+          for ( k = s;k <= e;k++ ) {
+              spt = ( char * ) Getrecord ( Slist ) ;
+              if ( spt == NULL ) break;
+              dpt = ( char * ) malloc ( strlen ( spt ) +1 ) ;
+              strcpy ( dpt , spt ) ;
+              Dadd ( Wlist , dpt ) ;
+          }
+          if(kitWarn(Tbl->D,Wlist,Buf1)==0) {
+            Dempty(Wlist);
+            return 0;
+          }          
+          Dempty(Wlist);
+          Wlist = Dopen();
           Dposition ( Slist , s ) ;
           for ( k = s;k <= e;k++ ) {
               spt = ( char * ) Dpick ( Slist ) ;
@@ -1957,6 +1985,12 @@ int kgeditKEDopt1callback(int butno,int i,void *Tmp) {
           CopyToBuf( Bkup ) ;
           break;
           case 6:
+          Dlink *Bk = Dreadfile(Bkup);
+          if(kitWarn(Tbl->D,Bk,"Paste the lines shown below ?")== 0) {
+             Dempty(Bk);
+             break;
+          }
+          Dempty(Bk);
           LastPos = pos ;
           LocPush ( ) ;
           ReadInFile ( Bkup ) ;
@@ -2940,7 +2974,7 @@ int kgeditinit(void *Tmp) {
     Tmp :  Pointer to DIALOG  
    ***********************************/ 
   /* you add any initialisation here */
-      int ret = 1 , k;
+      int ret = 1 , k,ln;
       int nlines ;
       DIALOG *D;
       D = ( DIALOG * ) Tmp;
@@ -2951,9 +2985,20 @@ int kgeditinit(void *Tmp) {
       void **pt = ( void ** ) kgGetArgPointer ( Tmp ) ; // Change as required
       flname = ( char * ) pt [ 0 ] ;
       if(flname[0]=='\0') {
+        kgUpdateOn(Tmp);
         strcpy(flname,getenv("PWD"));
         strcat(flname,"/");
         if(!kgFolderBrowser(Tmp,50,50,flname,"*")) exit(0);
+        ln = strlen(flname);
+        if(flname[ln-1]=='/'){         
+           sprintf(Buf,"New%-d.txt",getpid());
+           strcat(flname,Buf);
+        }
+        if(flname[0]==' ') flname[0]='\0';
+        if(flname[0]=='\0') {
+           sprintf(Buf,"%-s/New%-d.txt",getenv("PWD"),getpid());
+           strcpy(flname,Buf);
+        }
       }
       Tbl = ( DIT * ) kgGetNamedWidget ( Tmp , ( char * ) "KEDtable" ) ;
       V = ( DIV * ) kgGetNamedWidget ( D , ( char * ) "KEDscroll" ) ;

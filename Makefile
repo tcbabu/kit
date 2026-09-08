@@ -3,10 +3,12 @@ KULINA=/usr
 CC	=cc -fPIC -pthread
 kit	: kgedit.o kgeditCallbacks.o kgeditmain.o \
 	 Sbox.o GetFontString.o GetFontStringCallbacks.o \
+	 Wmsg.o WmsgCallbacks.o  \
 	 Msg.o MsgCallbacks.o Setup.o SetupCallbacks.o
 	 $(CC) -o kit kgedit.o kgeditCallbacks.o kgeditmain.o \
 	 Sbox.o GetFontString.o GetFontStringCallbacks.o \
 	 Msg.o MsgCallbacks.o Setup.o SetupCallbacks.o \
+	 Wmsg.o WmsgCallbacks.o  \
 	  -I$(KULINA)/include $(KULINA)/lib/libkulina.a $(KULINA)/lib/libgm.a -L/usr/X11R6/lib -lX11 -lXext -lm -lpthread -lz -lbz2 -lGL
 	 ar -rD  libkgedit.a  kgedit.o kgeditCallbacks.o 
 	 $(CC) -shared -o  libkgedit.so  kgedit.o kgeditCallbacks.o 

@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
 void *Runkgedit(void *,void *);
 int main(int argc,char *argv[]) {
@@ -6,6 +8,7 @@ int main(int argc,char *argv[]) {
   char *pt;
   char File[300];
   strcpy(File, "");
+//  sprintf(File,"%-s/New%-d.txt",getenv("PWD"),getpid());
   pt=  File;
   if(argc>1) {
      pt=argv[1];
