@@ -300,7 +300,7 @@ int kitWarn(void *Tmp,Dlink *Data,char *Msg);
       return 1;
   }
   static int Splash ( char *Msg ) {
-//    kgSplashMessage ( Tbl->D , 50 , 100 , 400 , 25 , Msg , 23 , 0 , 15 ) ;
+//      kgSplashMessage ( Tbl->D , 50 , 100 , 400 , 25 , Msg , 23 , 0 , 15 ) ;
       kgMessageSplash(Tbl->D,Msg);
       return 1;
   }
@@ -862,7 +862,7 @@ int kitWarn(void *Tmp,Dlink *Data,char *Msg);
               e = MarkPos;
           }
           sprintf ( Buf1 , "Copy lines %d to %d ?" , s , e ) ;
-          if ( s != e ) if ( ! kgQstMenu ( Tbl->D , 50 , 100 , Buf1 , 1 ) ) return 0;
+ //         if ( s != e ) if ( ! kgQstMenu ( Tbl->D , 50 , 100 , Buf1 , 1 ) ) return 0;
           Dposition ( Slist , s ) ;
           for ( k = s;k <= e;k++ ) {
               spt = ( char * ) Getrecord ( Slist ) ;
@@ -1955,6 +1955,7 @@ int kgeditKEDopt1callback(int butno,int i,void *Tmp) {
           fpt = Buf;
 #endif
           if ( WriteToFile ( fpt ) ) {
+              kgUpdateOn(Tmp);
               if ( fpt != NULL ) {
                   sprintf ( Msg , "Wrote to  %s" , fpt ) ;
                   Splash ( Msg ) ;
@@ -1967,9 +1968,9 @@ int kgeditKEDopt1callback(int butno,int i,void *Tmp) {
           kgSetInt ( MT , 0 , MarkPos ) ;
           kgUpdateWidget ( MT ) ;
           kgUpdateOn ( Tbl->D ) ;
-#if 0
-// sprintf ( Msg , "Marked Line: %d" , MarkPos ) ;
-// Splash ( Msg ) ;
+#if 1
+ sprintf ( Msg , "Marked Line: %d" , MarkPos ) ;
+ Splash ( Msg ) ;
 #endif
           break;
           case 4:
@@ -1978,11 +1979,13 @@ int kgeditKEDopt1callback(int butno,int i,void *Tmp) {
           if ( CutToFile ( Bkup ) ) {
               SetupVbar ( ) ;
               GotoMark ( ) ;
+              Splash((char *)"Cut and copied to Clip");
               kgUpdateOn ( Tmp ) ;
           }
           break;
           case 5:
           CopyToBuf( Bkup ) ;
+          Splash((char *)"Copied lines to Clip");
           break;
           case 6:
           Dlink *Bk = Dreadfile(Bkup);
@@ -1994,6 +1997,7 @@ int kgeditKEDopt1callback(int butno,int i,void *Tmp) {
           LastPos = pos ;
           LocPush ( ) ;
           ReadInFile ( Bkup ) ;
+          Splash((char *)"Pasted Clip");
           break;
           case 7:
           LocPush ( ) ;

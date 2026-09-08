@@ -220,6 +220,7 @@ int Wmsg( void *parent,void **v,void *pt) {
   ModifyWmsg(&D,GrpId);    /*  add extras to  gui*/
   ret= kgUi(&D);
   kgCleanUi(&D);
+  if(D.parent != NULL )kgUpdateOn(D.parent);
   return ret;
 }
 void *RunWmsg(void *parent ,void *args) {
