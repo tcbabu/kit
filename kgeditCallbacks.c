@@ -766,11 +766,13 @@ void *RunMsg(void *parent ,void *args);
               kgSetTableCursorPos ( Tbl , ( rcount+row ) *Tbl->nx+1 , 0 ) ;
           }
           else {
+#if 0
               StartLine += rcount;
               EndLine += rcount;
               if ( shift > 0 ) {
                   StartLine -= shift;
               }
+#endif
               SetupTbl ( ) ;
               WriteTbl ( ) ;
               kgSetTableCursorPos ( Tbl , ( shift+row ) *Tbl->nx+1 , 0 ) ;
