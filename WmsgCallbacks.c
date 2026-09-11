@@ -311,6 +311,7 @@ int kitWarn(void *Tmp,Dlink *Data,char *Msg) {
    pt[1]= (void *)Msg;
    pt[2]= (void *)(&ret);
    RunWmsg(Tmp,pt);
+   if(Tmp != NULL)kgUpdateOn(Tmp);
    return ret;
 }
 int kitWriteWarn(void *Tmp,Dlink *Data,char *Msg) {
@@ -320,5 +321,6 @@ int kitWriteWarn(void *Tmp,Dlink *Data,char *Msg) {
    pt[1]= (void *)Msg;
    pt[2]= (void *)(&ret);
    RunWmsg(Tmp,pt);
+   if(Tmp != NULL)kgUpdateOn(Tmp);
    return ret;
 }

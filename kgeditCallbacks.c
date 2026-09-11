@@ -878,7 +878,7 @@ int kitWarn(void *Tmp,Dlink *Data,char *Msg);
           }
           Dempty ( Wlist ) ;
       }
-      return 1;
+      return ret;
   }
   static int CutToFile ( char *fpt ) {
       int k;
@@ -1984,8 +1984,7 @@ int kgeditKEDopt1callback(int butno,int i,void *Tmp) {
           }
           break;
           case 5:
-          CopyToBuf( Bkup ) ;
-          Splash((char *)"Copied lines to Clip");
+          if(CopyToBuf( Bkup )) Splash((char *)"Copied lines to Clip");
           break;
           case 6:
           Dlink *Bk = Dreadfile(Bkup);
