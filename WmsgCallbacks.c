@@ -219,6 +219,8 @@ int ModifyWmsg(void *Tmp,int GrpId) {
   int i,n;
   if(D->parent != NULL) D->bkup= 1;
   else D->bkup=0;
+  D->xo=0;
+  D->yo=0;
   kgCheckParentPosition(Tmp);
   d = D->d;
 
