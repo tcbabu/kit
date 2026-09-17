@@ -1603,7 +1603,7 @@ int kgeditKEDfinishcallback( int butno,int i,void *Tmp) {
               strcpy ( Buf , fpt ) ;
               free ( fpt ) ;
 #else
-              if( !kgFolderBrowser(Tmp,100,100,Buf,(char *)"*")) break;
+              if( !kgFolderBrowser(Tmp,0,0,Buf,(char *)"*")) break;
 #endif
               Dempty ( Slist ) ;
               Slist = Dreadfile ( SaveFile ) ;
@@ -1936,7 +1936,7 @@ int kgeditKEDopt1callback(int butno,int i,void *Tmp) {
       switch ( butno ) {
           case 1:
           Infile [ 0 ] = '\0';
-          if ( kgFolderBrowser ( Tmp , 100 , 100 , Infile , ( char * ) "*" ) ) {
+          if ( kgFolderBrowser ( Tmp , 0 , 0 , Infile , ( char * ) "*" ) ) {
               kgSkipEvents ( Tmp ) ;
               pos = kgGetTableRow ( Tbl ) +StartLine;
               LastPos = pos ;
@@ -1951,7 +1951,7 @@ int kgeditKEDopt1callback(int butno,int i,void *Tmp) {
           fpt = RunGetFileName ( Tmp , NULL ) ;
 #else
           Buf[0]='\0';
-          if( !kgFolderBrowser(Tmp,100,100,Buf,(char *)"*")) break;
+          if( !kgFolderBrowser(Tmp,0,0,Buf,(char *)"*")) break;
           fpt = Buf;
 #endif
           if ( WriteToFile ( fpt ) ) {
@@ -2312,7 +2312,7 @@ int kgeditKEDsavecallback(int butno,int i,void *Tmp) {
                "Open New File (if needed save before opening) ?",0)) {
               strcpy(FileName,getenv("PWD"));
               strcat(FileName,"/");
-              if(!kgFolderBrowser(Tmp,50,50,FileName,"*")) break;
+              if(!kgFolderBrowser(Tmp,0,0,FileName,"*")) break;
               DII *I = (DII *)kgGetNamedWidget(Tmp,(char *)"KEDtitle");
               sprintf(Buf,"!z34!f12File : %-s",FileName);
               kgWrite(I,Buf);
@@ -2333,7 +2333,7 @@ int kgeditKEDsavecallback(int butno,int i,void *Tmp) {
             char File[300];
             strcpy(File,getenv("PWD"));
             strcat(File,"/");
-            if(kgFolderBrowser(Tmp,50,50,File,(char *)"*")){
+            if(kgFolderBrowser(Tmp,0,0,File,(char *)"*")){
               kgDisableSelection ( D ) ;
               Busy = kgOpenBusy ( D , B->x1+10 , B->y1 ) ;
               ReadTbl ( ) ;
@@ -2991,7 +2991,7 @@ int kgeditinit(void *Tmp) {
         kgUpdateOn(Tmp);
         strcpy(flname,getenv("PWD"));
         strcat(flname,"/");
-        if(!kgFolderBrowser(Tmp,50,50,flname,"*")) exit(0);
+        if(!kgFolderBrowser(Tmp,0,0,flname,"*")) exit(0);
         ln = strlen(flname);
         if(flname[ln-1]=='/'){         
            sprintf(Buf,"New%-d.txt",getpid());

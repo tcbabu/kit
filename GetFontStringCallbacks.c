@@ -155,7 +155,7 @@ int GetFontStringGFaddcallback(int butno,int i,void *Tmp) {
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
   DIX *X = (DIX *)kgGetNamedWidget(Tmp,(char *)"GFselect");
-  if ( kgFolderBrowser (Tmp , 100 , 100 , flname , ( char * ) "*.ttf *.otf" ) ) {
+  if ( kgFolderBrowser (Tmp , 0 , 0 , flname , ( char * ) "*.ttf *.otf" ) ) {
 //  if (kgGetFreeTypeFont(Tmp,flname) != NULL) {
           kgAddFont(flname);
           ret =UpdateBrowser ( Tmp ) ;
@@ -303,7 +303,7 @@ int GetFontStringGFotfcallback(int butno,int i,void *Tmp) {
   D = (DIALOG *)Tmp;
   B = (DIN *)kgGetWidget(Tmp,i);
   n = B->nx*B->ny;
-  if ( kgFolderBrowser (NULL , 100 , 100 , flname , ( char * ) "*.otf" ) ) {
+  if ( kgFolderBrowser (Tmp , 0 , 0 , flname , ( char * ) "*.otf" ) ) {
 //  if (kgGetFreeTypeFont(Tmp,flname) != NULL) {
           kgAddFont(flname);
           UpdateBrowser ( Tmp ) ;
