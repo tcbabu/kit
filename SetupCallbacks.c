@@ -23,7 +23,7 @@
       B = ( DIN * ) kgGetWidget ( Tmp , i ) ;
       n = B->nx*B->ny;
 #if 0
-      if ( kgFolderBrowser ( NULL , 200 , 100 , FontName , ( char * ) "*" ) ) {
+      if ( kgFolderBrowser ( Tmp , 0 , 0 , FontName , ( char * ) "*" ) ) {
           kgSetString ( FT , 0 , FontName ) ;
           kgUpdateWidget ( FT ) ;
           kgUpdateOn ( D ) ;
@@ -93,7 +93,7 @@
       n = B->nx*B->ny;
       int r , g , b;
       kgGetDefaultRGB ( Fclr , & r , & g , & b ) ;
-      kgGetColor ( NULL , 200 , 100 , & r , & g , & b ) ;
+      kgGetColor ( Tmp , 0 , 0 , & r , & g , & b ) ;
       Fclr = 91;
       kgDefineColor ( Fclr , r , g , b ) ;
       kgChangeButtonColor ( CB , 0 , r , g , b ) ;
@@ -122,7 +122,7 @@
       n = B->nx*B->ny;
       int r , g , b;
       kgGetDefaultRGB ( Nclr , & r , & g , & b ) ;
-      kgGetColor ( NULL , 200 , 100 , & r , & g , & b ) ;
+      kgGetColor ( Tmp, 0 , 0 , & r , & g , & b ) ;
       Nclr = 92;
       kgDefineColor ( Nclr , r , g , b ) ;
       kgChangeButtonColor ( NB , 0 , r , g , b ) ;
@@ -169,7 +169,7 @@
       n = B->nx*B->ny;
       int r , g , b;
       kgGetDefaultRGB ( Bclr , & r , & g , & b ) ;
-      kgGetColor ( NULL , 200 , 100 , & r , & g , & b ) ;
+      kgGetColor ( Tmp, 0 , 0 , & r , & g , & b ) ;
       Bclr = 93;
       kgDefineColor ( Bclr , r , g , b ) ;
       kgChangeButtonColor ( BB , 0 , r , g , b ) ;
@@ -198,7 +198,7 @@
       n = B->nx*B->ny;
       int r , g , b;
       kgGetDefaultRGB ( Lclr , & r , & g , & b ) ;
-      kgGetColor ( NULL , 200 , 100 , & r , & g , & b ) ;
+      kgGetColor ( Tmp, 0 , 0 , & r , & g , & b ) ;
       Lclr = 94;
       kgDefineColor ( Lclr , r , g , b ) ;
       kgChangeButtonColor ( LB , 0 , r , g , b ) ;
@@ -385,7 +385,11 @@
       Gc = & ( Per->gc ) ;
       DIA *d;
       int i , n;
+      D->xo = 0;
+      D->yo =0;
       kgCheckParentPosition(Tmp);
+//      Print_gui_data(D,"setup.rc");
+
       d = D->d;
       i = 0;while ( d [ i ] .t != NULL ) {;
           i++;
