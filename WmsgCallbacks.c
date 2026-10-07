@@ -191,7 +191,9 @@ int Wmsginit(void *Tmp) {
   DIS *S = (DIS *)kgGetNamedWidget(Tmp,(char *)"Msgscroll1");
   Dlink *L = (Dlink *)Args[0];
   Resetlink(L);
+#if 0
   while ( (cpt = (char *)Getrecord(L))!= NULL) kgWrite(S,cpt);
+#endif
 //  kgUpdateOn(Tmp);;
   return ret;
 }
@@ -303,6 +305,17 @@ int WmsgWaitCallBack(void *Tmp) {
   int ret = 0;
   void **pt= (void **)kgGetArgPointer(Tmp); // Change as required
 // pt[0] is args passed as inputs; pt[1] is output pointer
+  void **Args=(void **)pt[0];
+  char *cpt;
+  int i;
+  DIS *S = (DIS *)kgGetNamedWidget(Tmp,(char *)"Msgscroll1");
+  Dlink *L = (Dlink *)Args[0];
+//  Resetlink(L);
+  while ( (cpt = (char *)Getrecord(L))!= NULL) {
+     kgWrite(S,cpt);
+     i++;
+     if(i==20) break;
+  }
   return ret;
 }
 int kitWarn(void *Tmp,Dlink *Data,char *Msg) {
