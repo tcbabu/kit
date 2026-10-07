@@ -185,6 +185,8 @@ int ModifySbox(void *Tmp,int GrpId) {
  /* pt[0] is inputs given by caller */
   DIA *d;
   int i,n;
+  D->xo=0;
+  D->yo=0;
   kgCheckParentPosition(Tmp);
   d = D->d;
 

@@ -13,7 +13,7 @@ int WmsgGroup( DIALOG *D,void **v,void *pt) {
     NULL,
     NULL ,
     NULL,NULL, /* *args, Callback*/
-    20,6,22,1,1,1,0
+    16,6,22,1,1,1,0
 //     line width,offset (not used),scroll width,highlight item(not used)
 //     border on/off,bkgr on/off,hide on/off
 //     uses Gclr items: msg_fill,msg_char,msg_bodr,scroll_fill,scroll_dim,scroll_vbright)
@@ -220,7 +220,7 @@ int Wmsg( void *parent,void **v,void *pt) {
   ModifyWmsg(&D,GrpId);    /*  add extras to  gui*/
   ret= kgUi(&D);
   kgCleanUi(&D);
-  if(D.parent != NULL )kgUpdateOn(D.parent);
+//  if(D.parent != NULL )kgUpdateOn(D.parent);
   return ret;
 }
 void *RunWmsg(void *parent ,void *args) {
