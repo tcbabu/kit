@@ -3115,7 +3115,7 @@ int Modifykgedit(void *Tmp,int GrpId) {
      i++;
   };
   n=1;
-  strcpy(D->name,"Kit (Kulina edITor) Ver. 4.0");    /*  Dialog name you may change */
+  strcpy(D->name,"Kit (Kulina edITor) Ver. 4.1");    /*  Dialog name you may change */
 //    sprintf(D->name,"%-s",(char *)pt[0]);
 #if 0
   if(D->fullscreen!=1) {    /*  if not fullscreen mode */
